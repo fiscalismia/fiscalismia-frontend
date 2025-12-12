@@ -1,7 +1,10 @@
 FROM node:20-alpine as build
 
-# initialize global scope build args by supplying --build-arg flag in podman build
+# initialize/override global scope build args by supplying --build-arg flag in podman build
 ARG BUILD_VERSION
+ARG BACKEND_PORT=80
+ARG BACKEND_PROTOCOL="http"
+ARG BACKEND_DOMAIN="localhost"
 
 ### INITIAL SETUP ###
 WORKDIR /build-dir/
@@ -14,8 +17,16 @@ COPY .eslintrc.js ./
 COPY src/ ./src
 
 ### NPM INSTALL & BUILD ###
-# bakes version string into compiled JS files
+# Consume the ARGS to make them available in subsequent stages
+ARG BUILD_VERSION
+ARG BACKEND_PORT
+ARG BACKEND_PROTOCOL
+ARG BACKEND_DOMAIN
+# bakes env vars into compiled js files
 ENV VITE_BUILD_VERSION=$BUILD_VERSION
+ENV VITE_BACKEND_PORT=$BACKEND_PORT
+ENV VITE_BACKEND_PROTOCOL=$BACKEND_PROTOCOL
+ENV VITE_BACKEND_DOMAIN=$BACKEND_DOMAIN
 RUN npm ci --only=production=false
 RUN npm run build
 
@@ -25,8 +36,7 @@ RUN npm run build
 # Use the official unprivileged nginx image (runs as nginx user by default)
 FROM nginxinc/nginx-unprivileged:1.27-alpine
 WORKDIR /etc/nginx
-# Consume the ARG to make it available in subsequent stages
-ARG BUILD_VERSION
+
 # Set the environment variable in the final image so Ansible can inspect it
 ENV ANSIBLE_BUILD_VERSION=$BUILD_VERSION
 # construct minimum viable final container from build stage
