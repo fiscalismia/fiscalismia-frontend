@@ -181,6 +181,5 @@ export const investmentInputCategories = {
 };
 
 export const serverConfig = {
-  NODE_ROOT_URL: 'http://localhost:3002/',
   API_BASE_URL: 'http://localhost:3002/api/fiscalismia'
 };

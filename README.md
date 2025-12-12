@@ -174,13 +174,12 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    ```bash
    cd ~/git/fiscalismia-backend
    docker compose down --volumes
-
-   # with local db in development mode
    docker compose up --build
 
    # with cloud db in development mode
    CLOUD_DB=true docker compose up --build
    ```
+
 
 2. **Option 2: Locally with Dev DB**
 
@@ -202,29 +201,34 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    npm run dev
    ```
 
-3. **Option 3: Podman-Docker:**
+4. **Option 4: Individual Containers**
 
-   <details open>
-   <summary><b>Run only the frontend container (Linux Syntax)</b></summary>
+   **DEV Frontend & DEV Backend & local DB**
 
    ```bash
-   podman build --pull --no-cache --rm -f "Dockerfile" -t fiscalismia-frontend:latest "."
-   podman run -v $PWD/src:/fiscalismia-frontend/src --env-file .env --net fiscalismia-network --rm -it -p 3001:3001 --name fiscalismia-frontend fiscalismia-frontend:latest
+   docker compose down --volumes
+   docker compose up --build --detach --no-deps fiscalismia-backend fiscalismia-postgres
+   podman build \
+      --pull \
+      --no-cache \
+      --rm \
+      -f "Dockerfile.dev" \
+      -t fiscalismia-frontend:latest "."
+   podman run \
+      --name fiscalismia-frontend \
+      --env-file .env \
+      --rm \
+      -it \
+      -v $PWD/src:/fiscalismia-frontend/src \
+      --net fiscalismia-network \
+      -p 3001:3001 \
+      fiscalismia-frontend:latest
    ```
 
-   </details>
+
+   **PROD Frontend & DEV Backend & local DB**
 
    ------
-
-   <details closed>
-   <summary><b>Run only the frontend container (Windows Syntax)</b></summary>
-
-   ```bash
-   podman build --pull --no-cache --rm -f "Dockerfile" -t fiscalismia-frontend:latest "."
-   podman run -v %cd%\src:/fiscalismia-frontend/src --env-file .env --rm -it -p 3001:3001 --name fiscalismia-frontend fiscalismia-frontend:latest
-   ```
-
-   </details>
 
 ## Usage
 

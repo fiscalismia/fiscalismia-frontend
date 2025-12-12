@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hangrybear666/fiscalismia-frontend.git"
+    "url": "git+https://github.com/fiscalismia/fiscalismia-frontend.git"
   },
   "keywords": [
     "fiscalis",
@@ -24,9 +24,9 @@
   "author": "Corey Lauster",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hangrybear666/fiscalismia-frontend/issues"
+    "url": "https://github.com/fiscalismia/fiscalismia-frontend/issues"
   },
-  "homepage": "https://github.com/hangrybear666/fiscalismia-frontend#readme",
+  "homepage": "https://github.com/fiscalismia/fiscalismia-frontend#readme",
   "dependencies": {
     "@ag-grid-community/core": "^31.3.2",
     "@emotion/react": "^11.11.1",
