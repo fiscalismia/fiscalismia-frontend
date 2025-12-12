@@ -16,7 +16,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import { Line } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useTheme } from '@mui/material/styles';
-import { faker } from '@faker-js/faker';
+import { getRandomInt } from '../../utils/sharedFunctions';
 
 ChartJS.register(
   CategoryScale,
@@ -244,7 +244,7 @@ export default function ContentLineChart(props: ContentLineChartProps) {
       {
         fill: true,
         label: dataSet1Name ? dataSet1Name : 'Dataset 1',
-        data: dataSet1 ? dataSet1 : labels.map(() => faker.number.int({ min: 0, max: 100 })),
+        data: dataSet1 ? dataSet1 : labels.map(() => getRandomInt(0, 100)),
         backgroundColor: pointColor1 ? pointColor1 : 'rgba(64,64,64,0.7)',
         borderColor: lineColor1 ? lineColor1 : 'rgba(94,85,23,0.7)',
         elements: line1Config,
@@ -253,7 +253,7 @@ export default function ContentLineChart(props: ContentLineChartProps) {
       {
         fill: true,
         label: dataSet2Name ? dataSet2Name : 'Dataset 2',
-        data: dataSet2 ? dataSet2 : labels.map(() => faker.number.int({ min: -1000, max: 1000 })),
+        data: dataSet2 ? dataSet2 : labels.map(() => getRandomInt(-1000, 1000)),
         backgroundColor: pointColor2 ? pointColor2 : 'rgba(64,64,64,0.6)',
         borderColor: lineColor2 ? lineColor2 : 'rgba(18, 28, 84, 0.7)',
         elements: line2Config,

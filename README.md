@@ -206,13 +206,14 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    **DEV Frontend & DEV Backend & local DB**
 
    ```bash
+   cd ~/git/fiscalismia-backend
    docker compose down --volumes
    docker compose up --build --detach --no-deps fiscalismia-backend fiscalismia-postgres
+   cd ~/git/fiscalismia-frontend
    podman build \
+      -f "Dockerfile.dev" \
       --pull \
       --no-cache \
-      --rm \
-      -f "Dockerfile.dev" \
       -t fiscalismia-frontend:latest "."
    podman run \
       --name fiscalismia-frontend \
@@ -227,6 +228,33 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
 
 
    **PROD Frontend & DEV Backend & local DB**
+   ```bash
+   # NET_BIND_SERVICE allows non-priviledged service user in container to bind to ports below 1024
+   # also requires to adjust sysctl config on linux host since kernels prevent this behavior
+   # this command sets it ephemerally for the session and is lost after reboot.
+   sudo sysctl net.ipv4.ip_unprivileged_port_start=80
+
+   cd ~/git/fiscalismia-backend
+   docker compose down --volumes
+   docker compose up --build --detach --no-deps fiscalismia-backend fiscalismia-postgres
+   cd ~/git/fiscalismia-frontend
+   podman build \
+      -f "Dockerfile" \
+      --build-arg BUILD_VERSION=0,9.0 \
+      --build-arg BACKEND_PORT=80 \
+      --build-arg BACKEND_PROTOCOL=http \
+      --build-arg BACKEND_DOMAIN=localhost \
+      -t fiscalismia-frontend:latest "."
+   podman run \
+      --name fiscalismia-frontend \
+      --env-file .env \
+      --rm \
+      -it \
+      -v $PWD/src:/fiscalismia-frontend/src \
+      --net fiscalismia-network \
+      -p 3001:3001 \
+      fiscalismia-frontend:latest
+   ```
 
    ------
 

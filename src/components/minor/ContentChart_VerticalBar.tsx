@@ -13,7 +13,7 @@ import {
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Bar } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { faker } from '@faker-js/faker';
+import { getRandomInt } from '../../utils/sharedFunctions';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ChartDataLabels, Title, Tooltip, Legend, annotationPlugin);
 
@@ -142,25 +142,25 @@ export default function ContentVerticalBarChart(props: ContentVerticalBarChartPr
     datasets: [
       {
         label: dataSet1Name ? dataSet1Name : 'Dataset 1',
-        data: dataSet1 ? dataSet1 : labels.map(() => faker.number.int({ min: 0, max: 100 })),
+        data: dataSet1 ? dataSet1 : labels.map(() => getRandomInt(0, 100)),
         backgroundColor: color1 ? color1 : palette.primary.main,
         elements: barConfig
       },
       {
         label: dataSet2Name ? dataSet2Name : 'Dataset 2',
-        data: dataSet2 ? dataSet2 : labels.map(() => faker.number.int({ min: 0, max: 100 })),
+        data: dataSet2 ? dataSet2 : labels.map(() => getRandomInt(0, 100)),
         backgroundColor: color2 ? color2 : palette.secondary.main,
         elements: barConfig
       },
       {
         label: dataSet3Name ? dataSet3Name : 'Dataset 3',
-        data: dataSet3 ? dataSet3 : labels.map(() => faker.number.int({ min: 0, max: 100 })),
+        data: dataSet3 ? dataSet3 : labels.map(() => getRandomInt(0, 100)),
         backgroundColor: color3 ? color3 : palette.tertiary.dark,
         elements: barConfig
       },
       {
         label: dataSet4Name ? dataSet4Name : 'Dataset 4',
-        data: dataSet4 ? dataSet4 : labels.map(() => faker.number.int({ min: 0, max: 100 })),
+        data: dataSet4 ? dataSet4 : labels.map(() => getRandomInt(0, 100)),
         backgroundColor: color4 ? color4 : palette.success.dark,
         elements: barConfig
       }

@@ -19,4 +19,5 @@
 
 ## Minor Improvements Post Release
 - Refactor investmentInputCategories to have key value access instead of hardcoded array indices
+- Consider removing faker in production since it is a huge library with a 2600kb chunk size
 

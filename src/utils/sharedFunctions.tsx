@@ -166,6 +166,15 @@ export function constructContentVerticalBarChartObject(
 }
 
 /**
+ * @param min lowest value
+ * @param max highest value
+ * @returns random int between min and max
+ */
+export function getRandomInt(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
  * extracts all uniqure effective dates of a single dataset
  * @param {*} singleDataSet
  * @param {'asc' | 'desc'} sort optional override to sort descending

@@ -27,14 +27,14 @@ ENV VITE_BUILD_VERSION=$BUILD_VERSION
 ENV VITE_BACKEND_PORT=$BACKEND_PORT
 ENV VITE_BACKEND_PROTOCOL=$BACKEND_PROTOCOL
 ENV VITE_BACKEND_DOMAIN=$BACKEND_DOMAIN
-RUN npm ci --only=production=false
+RUN npm ci --only=production
 RUN npm run build
 
 #   __   ___  __        ___           ___               __
 #  /__` |__  |__) \  / |__     |  | |  |  |__|    |\ | / _` | |\ | \_/
 #  .__/ |___ |  \  \/  |___    |/\| |  |  |  |    | \| \__> | | \| / \
 # Use the official unprivileged nginx image (runs as nginx user by default)
-FROM nginxinc/nginx-unprivileged:1.27-alpine
+FROM docker.io/nginxinc/nginx-unprivileged:1.29.3-alpine
 WORKDIR /etc/nginx
 
 # Set the environment variable in the final image so Ansible can inspect it
@@ -46,7 +46,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # Port 80 would actually need root priviliges
 EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
 
-# podman build --pull --no-cache --rm -f "Dockerfile" -t fiscalismia-frontend:latest "."
-# podman run --network fiscalismia-network --env-file .env --rm -d -it -p 3001:8080 --name fiscalismia-frontend fiscalismia-frontend:latest
+CMD ["nginx", "-g", "daemon off;"]
