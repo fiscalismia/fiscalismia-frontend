@@ -102,7 +102,7 @@ jobs:
           org.opencontainers.image.created=${{ env.BUILD_TIMESTAMP }}
           org.opencontainers.image.source=${{ github.repositoryUrl }}
           org.opencontainers.image.revision=${{ github.sha }}
-          org.opencontainers.image.description="Demo Dashboard and Reporting UI to play around with for Fiscalismia, a Web Service for visualizing, analyzing, aggregating, importing and exporting personal finance data."
+          org.opencontainers.image.description=Demo Dashboard and Reporting UI to play around with for Fiscalismia, a Web Service for visualizing, analyzing, aggregating, importing and exporting personal finance data.
           org.opencontainers.image.licenses=MIT
 
     - name: Buildah Image Creation - Production
@@ -124,7 +124,7 @@ jobs:
           org.opencontainers.image.created=${{ env.BUILD_TIMESTAMP }}
           org.opencontainers.image.source=${{ github.repositoryUrl }}
           org.opencontainers.image.revision=${{ github.sha }}
-          org.opencontainers.image.description="Production-ready Dashboard and Reporting UI for Fiscalismia, a Web Service for visualizing, analyzing, aggregating, importing and exporting personal finance data."
+          org.opencontainers.image.description=Production-ready Dashboard and Reporting UI for Fiscalismia, a Web Service for visualizing, analyzing, aggregating, importing and exporting personal finance data.
           org.opencontainers.image.licenses=MIT
 
     - name: Log in to Github Container Registry
