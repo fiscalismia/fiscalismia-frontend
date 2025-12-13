@@ -2,10 +2,10 @@ FROM node:20-alpine as build
 
 # initialize/override global scope build args by supplying --build-arg flag in podman build
 ARG FRONTEND_VERSION
-ARG BACKEND_PORT="80"
-ARG BACKEND_PROTOCOL="http"
-ARG BACKEND_DOMAIN="localhost"
-ARG NGINX_CONF="nginx.conf"
+ARG BACKEND_PORT
+ARG BACKEND_PROTOCOL
+ARG BACKEND_DOMAIN
+ARG NGINX_CONF
 
 ### INITIAL SETUP ###
 WORKDIR /build-dir/
