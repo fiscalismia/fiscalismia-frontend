@@ -266,12 +266,12 @@ cd $REMOTE_DIR
 podman run \
    --name fiscalismia-frontend \
    --rm \
+   --pull=always \
    --net host \
    --cap-add=NET_BIND_SERVICE \
    -v /etc/letsencrypt/live/demo.fiscalismia.com/fullchain.pem:/etc/nginx/certs/fullchain.pem:ro,z \
    -v /etc/letsencrypt/live/demo.fiscalismia.com/privkey.pem:/etc/nginx/certs/privkey.pem:ro,z \
    -u 0:0 \
-   -p 443:443 \
    ghcr.io/fiscalismia/fiscalismia-frontend-demo:latest
 EOF
 
