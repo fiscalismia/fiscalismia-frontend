@@ -249,10 +249,10 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       --name fiscalismia-frontend \
       --env-file .env \
       --rm \
-      -it \
-      -v $PWD/src:/fiscalismia-frontend/src \
       --net fiscalismia-network \
-      -p 3001:3001 \
+      --sysctl net.ipv4.ip_unprivileged_port_start=0 \
+      --cap-add=NET_BIND_SERVICE \
+      -p 443:443 \
       fiscalismia-frontend:latest
    ```
 

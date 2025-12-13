@@ -42,42 +42,33 @@ export default defineConfig({
           if (
             id.includes('node_modules/react') ||
             id.includes('node_modules/react-dom') ||
-            id.includes('node_modules/react-router-dom')
+            id.includes('node_modules/react-router-dom') ||
+            id.includes('@mui') ||
+            id.includes('@emotion')
           ) {
-            return 'react-vendor';
+            return 'core-vendor';
           }
 
-          // 2. UI Library (MUI & Emotion)
-          // These are heavy and used together. Grouping them ensures they are cached together.
-          if (id.includes('@mui') || id.includes('@emotion')) {
-            return 'mui-vendor';
-          }
-
-          // 3. Data Grid (AG Grid)
+          // 2. Data Grid (AG Grid)
           // Heavy specific library, should be its own chunk so it doesn't block the main UI load if not needed immediately.
           if (id.includes('@ag-grid-community') || id.includes('ag-grid-react')) {
             return 'ag-grid-vendor';
           }
 
-          // 4. Charting (Chart.js & wrappers)
+          // 3. Charting (Chart.js & wrappers)
           if (id.includes('chart.js') || id.includes('react-chartjs-2') || id.includes('chartjs-plugin')) {
             return 'charting-vendor';
           }
 
-          // 5. Icons (FontAwesome)
+          // 4. Icons (FontAwesome)
           if (id.includes('@fortawesome')) {
             return 'icons-vendor';
           }
 
-          // 6. Utilities (Axios, jwt-decode, etc.)
+          // 5. Utilities (Axios, jwt-decode, etc.)
           // Grouping small utils prevents having 100 tiny HTTP requests.
           if (id.includes('axios') || id.includes('jwt-decode') || id.includes('cors') || id.includes('dotenv')) {
             return 'utils-vendor';
-          }
-
-          // 7. Large Data/Mocks (Faker)
-          if (id.includes('@faker-js')) {
-            return 'mock-data-vendor';
           }
         },
 

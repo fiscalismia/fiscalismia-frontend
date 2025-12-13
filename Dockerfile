@@ -40,11 +40,10 @@ WORKDIR /etc/nginx
 # Set the environment variable in the final image so Ansible can inspect it
 ENV ANSIBLE_BUILD_VERSION=$BUILD_VERSION
 # construct minimum viable final container from build stage
-WORKDIR /etc/nginx
 COPY --from=build /build-dir/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Port 80 would actually need root priviliges
-EXPOSE 8080
+# HTTP/S Ingress
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
