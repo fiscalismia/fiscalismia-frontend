@@ -240,7 +240,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    cd ~/git/fiscalismia-frontend
    podman build \
       -f "Dockerfile" \
-      --build-arg BUILD_VERSION=0,9.0 \
+      --build-arg FRONTEND_VERSION=0,9.0 \
       --build-arg BACKEND_PORT=80 \
       --build-arg BACKEND_PROTOCOL=http \
       --build-arg BACKEND_DOMAIN=localhost \

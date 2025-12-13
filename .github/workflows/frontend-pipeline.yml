@@ -1,0 +1,146 @@
+name: Fiscalismia-Frontend Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - pipeline_testing
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-and-security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout SCM
+      uses: actions/checkout@v5
+      # https://github.com/actions/checkout
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v6.1.0
+      # https://github.com/actions/setup-node
+      with:
+        node-version: '20.12.2'
+
+    - name: Install dependencies
+      run: |
+        npm ci
+        npm i -g snyk
+
+    - name: Compiler Type Checks
+      run: npm run typeCheck
+
+    - name: Eslint Analysis
+      run: npm run eslintAnalysis
+
+    # - name: Snyk Static Code Security Analysis
+    #   env:
+    #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    #   run: |
+    #     snyk auth $SNYK_TOKEN
+    #     npm run snykCodeAnalysis
+
+    # - name: Snyk Dependency Security Analysis
+    #   env:
+    #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    #   run: |
+    #     snyk auth $SNYK_TOKEN
+    #     npm run snykDependencyAnalysis
+
+    - name: Publish Typecheck & Eslint & Snyk Reports
+      uses: actions/upload-artifact@v5.0.0
+      # https://github.com/actions/upload-artifact
+      with:
+        name: Fiscalismia-Frontend-Reports
+        path: |
+          reports/
+          !reports/.gitkeep
+
+  build-and-publish-image:
+    runs-on: ubuntu-latest
+    needs:
+      - test-and-security-scan
+
+    permissions:
+      contents: read
+      actions: read
+      packages: write # to publish to ghcr.io
+
+    steps:
+    - name: Checkout SCM
+      uses: actions/checkout@v5
+      # https://github.com/actions/checkout
+
+    - name: Buildah Image Creation - Demo
+      id: build-demo-image
+      uses: redhat-actions/buildah-build@v2.13
+      # https://github.com/redhat-actions/buildah-build/releases
+      with:
+        image: fiscalismia-frontend-demo
+        tags: latest ${{ github.sha }}
+        containerfiles: |
+          ./Dockerfile
+        build-args: |
+          FRONTEND_VERSION=0,9.1
+          BACKEND_PORT=80
+          BACKEND_PROTOCOL=http
+          BACKEND_DOMAIN=localhost
+
+    - name: Buildah Image Creation - Production
+      id: build-production-image
+      uses: redhat-actions/buildah-build@v2.13
+      # https://github.com/redhat-actions/buildah-build/releases
+      with:
+        image: fiscalismia-frontend
+        tags: latest ${{ github.sha }}
+        containerfiles: |
+          ./Dockerfile
+        build-args: |
+          FRONTEND_VERSION=0,9.1
+          BACKEND_PORT=443
+          BACKEND_PROTOCOL=https
+          BACKEND_DOMAIN=backend.fiscalismia.com
+
+    - name: Log in to Github Container Registry
+      if: github.event_name == 'push'
+      uses: redhat-actions/podman-login@v1.7
+      # https://github.com/redhat-actions/podman-login/releases
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push Demo Image to GHCR
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: push-demo-to-ghcr
+      uses: redhat-actions/push-to-registry@v2.8
+      # https://github.com/redhat-actions/push-to-registry/releases
+      with:
+        image: ${{ steps.build-demo-image.outputs.image }}
+        tags: ${{ steps.build-demo-image.outputs.tags }}
+        registry: ghcr.io/fiscalismia
+
+    - name: Push Production Image to GHCR
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: push-prod-to-ghcr
+      uses: redhat-actions/push-to-registry@v2.8
+      # https://github.com/redhat-actions/push-to-registry/releases
+      with:
+        image: ${{ steps.build-production-image.outputs.image }}
+        tags: ${{ steps.build-production-image.outputs.tags }}
+        registry: ghcr.io/fiscalismia
+
+    - name: Print image url
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        echo "Production Image pushed to ${{ steps.push-prod-to-ghcr.outputs.registry-paths }}"
+        echo "Demo Image pushed to ${{ steps.push-demo-to-ghcr.outputs.registry-paths }}"
+
+    - name: Print build success (PR)
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "Build successful for PR"
+        echo "Demo Image would be: ${{ steps.build-demo-image.outputs.image }}:${{ steps.build-demo-image.outputs.tags }}"
+        echo "Production Image would be: ${{ steps.build-production-image.outputs.image }}:${{ steps.build-production-image.outputs.tags }}"
