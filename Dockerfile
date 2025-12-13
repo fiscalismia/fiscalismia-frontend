@@ -5,6 +5,7 @@ ARG FRONTEND_VERSION
 ARG BACKEND_PORT=80
 ARG BACKEND_PROTOCOL="http"
 ARG BACKEND_DOMAIN="localhost"
+ARG NGINX_CONF=nginx.conf
 
 ### INITIAL SETUP ###
 WORKDIR /build-dir/
@@ -22,6 +23,7 @@ ARG FRONTEND_VERSION
 ARG BACKEND_PORT
 ARG BACKEND_PROTOCOL
 ARG BACKEND_DOMAIN
+ARG NGINX_CONF
 # bakes env vars into compiled js files
 ENV VITE_BUILD_VERSION=$FRONTEND_VERSION
 ENV VITE_BACKEND_PORT=$BACKEND_PORT
@@ -41,7 +43,7 @@ WORKDIR /etc/nginx
 ENV ANSIBLE_BUILD_VERSION=$FRONTEND_VERSION
 # construct minimum viable final container from build stage
 COPY --from=build /build-dir/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY $NGINX_CONF /etc/nginx/nginx.conf
 
 # HTTP/S Ingress
 EXPOSE 443

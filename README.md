@@ -226,7 +226,6 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       fiscalismia-frontend:latest
    ```
 
-
    **PROD Frontend & DEV Backend & local DB**
    ```bash
    # NET_BIND_SERVICE allows non-priviledged service user in container to bind to ports below 1024
@@ -255,6 +254,28 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       -p 443:443 \
       fiscalismia-frontend:latest
    ```
+
+5. **Option 5: Deploy Demo Container on Hetzner Instance**
+
+```bash
+cd ~/git/fiscalismia-frontend/
+REMOTE_DIR=/usr/local/etc/fiscalismia-frontend
+ssh demo "mkdir -p $REMOTE_DIR"
+scp .env demo:$REMOTE_DIR/
+ssh demo << EOF
+cd $REMOTE_DIR
+podman run \
+   --name fiscalismia-frontend \
+   --env-file .env \
+   --rm \
+   --net host \
+   --cap-add=NET_BIND_SERVICE \
+   -v /etc/letsencrypt/live/demo.fiscalismia.com/fullchain.pem:/etc/nginx/certs/fullchain.pem:ro,z \
+   -v /etc/letsencrypt/live/demo.fiscalismia.com/privkey.pem:/etc/nginx/certs/privkey.pem:ro,z \
+   -p 443:443 \
+   fiscalismia-frontend-demo:latest
+EOF
+
 
    ------
 
