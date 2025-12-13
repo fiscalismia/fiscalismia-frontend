@@ -73,20 +73,37 @@ jobs:
       uses: actions/checkout@v5
       # https://github.com/actions/checkout
 
+    - name: AutoIncrement Version
+      run: |
+        echo "BUILD_VERSION=0.9.1" >> $GITHUB_ENV
+
+    - name: Set Buildah Build Timestamp
+      shell: bash
+      run: |
+        # Store the current time in ISO 8601 format (required by OCI spec)
+        echo "BUILD_TIMESTAMP=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
     - name: Buildah Image Creation - Demo
       id: build-demo-image
       uses: redhat-actions/buildah-build@v2.13
       # https://github.com/redhat-actions/buildah-build/releases
       with:
         image: fiscalismia-frontend-demo
-        tags: latest ${{ github.sha }}
+        tags: latest ${{ env.BUILD_VERSION }}
         containerfiles: |
           ./Dockerfile
         build-args: |
-          FRONTEND_VERSION=0,9.1
+          FRONTEND_VERSION=${{ env.BUILD_VERSION }}
           BACKEND_PORT=80
           BACKEND_PROTOCOL=http
           BACKEND_DOMAIN=localhost
+        labels: |
+          org.opencontainers.image.version=${{ env.BUILD_VERSION }}
+          org.opencontainers.image.created=${{ env.BUILD_TIMESTAMP }}
+          org.opencontainers.image.source=${{ github.repositoryUrl }}
+          org.opencontainers.image.revision=${{ github.sha }}
+          org.opencontainers.image.description="Demo Dashboard and Reporting UI to play around with for Fiscalismia, a Web Service for visualizing, analyzing, aggregating, importing and exporting personal finance data."
+          org.opencontainers.image.licenses=MIT
 
     - name: Buildah Image Creation - Production
       id: build-production-image
@@ -94,14 +111,21 @@ jobs:
       # https://github.com/redhat-actions/buildah-build/releases
       with:
         image: fiscalismia-frontend
-        tags: latest ${{ github.sha }}
+        tags: latest ${{ env.BUILD_VERSION }}
         containerfiles: |
           ./Dockerfile
         build-args: |
-          FRONTEND_VERSION=0,9.1
+          FRONTEND_VERSION=${{ env.BUILD_VERSION }}
           BACKEND_PORT=443
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=backend.fiscalismia.com
+        labels: |
+          org.opencontainers.image.version=${{ env.BUILD_VERSION }}
+          org.opencontainers.image.created=${{ env.BUILD_TIMESTAMP }}
+          org.opencontainers.image.source=${{ github.repositoryUrl }}
+          org.opencontainers.image.revision=${{ github.sha }}
+          org.opencontainers.image.description="Production-ready Dashboard and Reporting UI for Fiscalismia, a Web Service for visualizing, analyzing, aggregating, importing and exporting personal finance data."
+          org.opencontainers.image.licenses=MIT
 
     - name: Log in to Github Container Registry
       if: github.event_name == 'push'
