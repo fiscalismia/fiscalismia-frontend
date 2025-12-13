@@ -9,6 +9,7 @@ export const resourceProperties = {
   FRONTEND: 'fiscalismia-frontend',
   BACKEND: 'fiscalismia-backend',
   INFRASTRUCTURE: 'fiscalismia-infrastructure',
+  DEMO: 'Demo',
   LOGIN: 'Login',
   LOGOUT: 'Logout',
   HOME: 'Home',

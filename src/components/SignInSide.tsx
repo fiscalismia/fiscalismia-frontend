@@ -25,10 +25,10 @@ import { ToastContainer } from 'react-toastify';
 import { toastOptions } from '../utils/sharedFunctions';
 
 /**
- * Footer with current year, App Name
+ * Footer with current year, App Name and Optional DEMO Header
  * @returns
  */
-function Header(): JSX.Element {
+function LoginHeader(): JSX.Element {
   return (
     <Box component="header" sx={{ p: 2, margin: '0 auto', mb: 2 }}>
       <Stack direction="row">
@@ -36,9 +36,22 @@ function Header(): JSX.Element {
           color="text.secondary"
           sx={{ fontWeight: 300, letterSpacing: 4, fontSize: 18, textTransform: 'uppercase' }}
         >
-          {res.APP_NAME}&nbsp;
+          {res.APP_NAME}
         </Typography>
-        <Typography color="text.secondary" sx={{ fontWeight: 300, letterSpacing: 4, fontSize: 18 }}>
+        <Typography
+          color="text.secondary"
+          sx={{
+            display: __ENVIRONMENT__ === 'demo' ? 'inline' : 'none',
+            marginLeft: 1,
+            fontWeight: 300,
+            letterSpacing: 4,
+            fontSize: 18,
+            textTransform: 'uppercase'
+          }}
+        >
+          {res.DEMO}
+        </Typography>
+        <Typography color="text.secondary" sx={{ marginLeft: 1, fontWeight: 300, letterSpacing: 4, fontSize: 18 }}>
           {new Date().getFullYear()}
         </Typography>
       </Stack>
@@ -186,7 +199,7 @@ export default function SignInSide(): JSX.Element {
               alignItems: 'center'
             }}
           >
-            <Header />
+            <LoginHeader />
             <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
               <LockOutlinedIcon />
             </Avatar>

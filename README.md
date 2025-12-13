@@ -154,7 +154,6 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    Create an `.env` file in the root directory with the following contents
 
    ```bash
-   FRONTEND_PORT=3001
    SNYK_TOKEN=
    ```
 
@@ -217,7 +216,6 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       -t fiscalismia-frontend:latest "."
    podman run \
       --name fiscalismia-frontend \
-      --env-file .env \
       --rm \
       -it \
       -v $PWD/src:/fiscalismia-frontend/src \
@@ -240,6 +238,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    podman build \
       -f "Dockerfile" \
       --build-arg FRONTEND_VERSION=0,9.0 \
+      --build-arg ENVIRONMENT=production \
       --build-arg BACKEND_PORT=80 \
       --build-arg BACKEND_PROTOCOL=http \
       --build-arg BACKEND_DOMAIN=localhost \
@@ -247,7 +246,6 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       -t fiscalismia-frontend:latest "."
    podman run \
       --name fiscalismia-frontend \
-      --env-file .env \
       --rm \
       --net fiscalismia-network \
       --sysctl net.ipv4.ip_unprivileged_port_start=0 \
@@ -259,22 +257,22 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
 5. **Option 5: Deploy Demo Container on Hetzner Instance**
 
 ```bash
+# INSECURE CONFIG WITH ROOT USER FOR ACCESSING SSL CERTS
 cd ~/git/fiscalismia-frontend/
-REMOTE_DIR=/usr/local/etc/fiscalismia-frontend
+export REMOTE_DIR="/usr/local/etc/fiscalismia-frontend"
 ssh demo "mkdir -p $REMOTE_DIR"
-scp .env demo:$REMOTE_DIR/
 ssh demo << EOF
 cd $REMOTE_DIR
 podman run \
    --name fiscalismia-frontend \
-   --env-file .env \
    --rm \
    --net host \
    --cap-add=NET_BIND_SERVICE \
    -v /etc/letsencrypt/live/demo.fiscalismia.com/fullchain.pem:/etc/nginx/certs/fullchain.pem:ro,z \
    -v /etc/letsencrypt/live/demo.fiscalismia.com/privkey.pem:/etc/nginx/certs/privkey.pem:ro,z \
+   -u 0:0 \
    -p 443:443 \
-   fiscalismia-frontend-demo:latest
+   ghcr.io/fiscalismia/fiscalismia-frontend-demo:latest
 EOF
 
 

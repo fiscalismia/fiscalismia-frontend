@@ -94,6 +94,7 @@ jobs:
           ./Dockerfile
         build-args: |
           FRONTEND_VERSION=${{ env.BUILD_VERSION }}
+          ENVIRONMENT=demo
           BACKEND_PORT=8443
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=demo.backend.fiscalismia.com
@@ -117,6 +118,7 @@ jobs:
           ./Dockerfile
         build-args: |
           FRONTEND_VERSION=${{ env.BUILD_VERSION }}
+          ENVIRONMENT=production
           BACKEND_PORT=443
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=backend.fiscalismia.com

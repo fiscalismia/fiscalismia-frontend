@@ -6,7 +6,7 @@ dotenv.config();
 // timezone for HMR logging
 process.env.TZ = 'Europe/Berlin';
 
-const FRONTEND_PORT = Number(process.env.FRONTEND_PORT) || 3003;
+const FRONTEND_PORT = 3001;
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -14,6 +14,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(
       process.env.VITE_BUILD_VERSION ? `${process.env.VITE_BUILD_VERSION}` : 'local-development'
     ),
+    __ENVIRONMENT__: JSON.stringify(process.env.VITE_ENVIRONMENT ? `${process.env.VITE_ENVIRONMENT}` : 'development'),
     __BACKEND_PORT__: JSON.stringify(process.env.VITE_BACKEND_PORT ? `${process.env.VITE_BACKEND_PORT}` : 3002),
     __BACKEND_PROTOCOL__: JSON.stringify(
       process.env.VITE_BACKEND_PROTOCOL ? `${process.env.VITE_BACKEND_PROTOCOL}` : 'http'
