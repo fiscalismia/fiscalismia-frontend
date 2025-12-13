@@ -43,6 +43,8 @@ WORKDIR /etc/nginx
 ENV ANSIBLE_BUILD_VERSION=$FRONTEND_VERSION
 # construct minimum viable final container from build stage
 COPY --from=build /build-dir/dist /usr/share/nginx/html
+# redeclare arg to expose in stage
+ARG NGINX_CONF
 COPY $NGINX_CONF /etc/nginx/nginx.conf
 
 # HTTP/S Ingress
