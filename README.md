@@ -263,6 +263,7 @@ export REMOTE_DIR="/usr/local/etc/fiscalismia-frontend"
 ssh demo "mkdir -p $REMOTE_DIR"
 ssh demo << EOF
 cd $REMOTE_DIR
+podman stop fiscalismia-frontend || true
 podman run \
    --name fiscalismia-frontend \
    --rm \
@@ -274,7 +275,7 @@ podman run \
    -u 0:0 \
    ghcr.io/fiscalismia/fiscalismia-frontend-demo:latest
 EOF
-
+```
 
    ------
 
