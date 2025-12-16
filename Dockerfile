@@ -42,8 +42,6 @@ RUN npm run build
 FROM docker.io/nginxinc/nginx-unprivileged:1.29.3-alpine
 WORKDIR /etc/nginx
 
-# Set the environment variable in the final image so Ansible can inspect it
-ENV ANSIBLE_BUILD_VERSION=$FRONTEND_VERSION
 # construct minimum viable final container from build stage
 COPY --from=build /build-dir/dist /usr/share/nginx/html
 # redeclare arg to expose in stage
