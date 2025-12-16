@@ -48,6 +48,9 @@ COPY --from=build /build-dir/dist /usr/share/nginx/html
 ARG NGINX_CONF
 COPY $NGINX_CONF /etc/nginx/nginx.conf
 
+# Remove default config that listens on 8080
+RUN rm -f /etc/nginx/conf.d/default.conf
+
 # HTTP/S Ingress
 EXPOSE 443
 
