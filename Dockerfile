@@ -48,6 +48,10 @@ COPY --from=build /build-dir/dist /usr/share/nginx/html
 ARG NGINX_CONF
 COPY $NGINX_CONF /etc/nginx/nginx.conf
 
+# Change Ownership of directories to unpriviledged user
+RUN mkdir -p /run/nginx /var/log/nginx /etc/nginx/certs/
+RUN chown -R nginx:nginx /run/nginx /var/log/nginx /etc/nginx/certs/
+
 # HTTP/S Ingress
 EXPOSE 443
 
