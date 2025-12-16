@@ -49,8 +49,10 @@ ARG NGINX_CONF
 COPY $NGINX_CONF /etc/nginx/nginx.conf
 
 # Change Ownership of directories to unpriviledged user
+USER root
 RUN mkdir -p /run/nginx /var/log/nginx /etc/nginx/certs/
 RUN chown -R nginx:nginx /run/nginx /var/log/nginx /etc/nginx/certs/
+USER nginx
 
 # HTTP/S Ingress
 EXPOSE 443
