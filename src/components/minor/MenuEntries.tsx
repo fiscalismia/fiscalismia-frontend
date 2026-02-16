@@ -55,8 +55,8 @@ export const menuEntries = [
   {
     id: locales().MENU_ADMIN_PANEL,
     children: [
-      { id: locales().MENU_UPLOAD_AREA, path: paths.ADMIN_UPLOAD_AREA, icon: <FileUploadIcon /> }
-      // { id: 'TEST 1', path: 'admin/test1', icon: <FileUploadIcon /> }
+      { id: locales().MENU_UPLOAD_MANUAL, path: paths.MENU_UPLOAD_MANUAL, icon: <FileUploadIcon /> },
+      { id: locales().MENU_ETL_RAW_DATA, path: paths.MENU_ETL_RAW_DATA, icon: <FileUploadIcon /> }
     ]
   }
 ];

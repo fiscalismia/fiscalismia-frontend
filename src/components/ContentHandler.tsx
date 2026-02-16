@@ -16,6 +16,7 @@ import Income_Overview from './content/income_Overview';
 import Income_Monthly_Budget from './content/income_MonthlyBudget';
 import Income_Investments from './content/income_Investments';
 import Income_Sales from './content/income_Sales';
+import Admin_RawDataDbInit from './content/admin_RawDataDbInit';
 import VariableExpenses_Overview from './content/variableExpenses_Overview';
 import { RouteInfo } from '../types/custom/customTypes';
 
@@ -59,8 +60,10 @@ export default function Content(_props: ContentProps) {
         return <Deals_FoodPrices routeInfo={routeInfo} />;
       case paths.DEALS_GROCERY_DEALS:
         return <Deals_GroceryDeals routeInfo={routeInfo} />;
-      case paths.ADMIN_UPLOAD_AREA:
+      case paths.MENU_UPLOAD_MANUAL:
         return <TestData routeInfo={routeInfo} />;
+      case paths.MENU_ETL_RAW_DATA:
+        return <Admin_RawDataDbInit routeInfo={routeInfo} />;
       default:
         <React.Fragment></React.Fragment>;
         break;

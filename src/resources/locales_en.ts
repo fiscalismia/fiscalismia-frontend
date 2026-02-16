@@ -4,7 +4,8 @@ export const locales_en = {
   MENU_OVERVIEW: 'Overview',
   MENU_DEALS: 'Deals',
   MENU_ADMIN_PANEL: 'Admin Panel',
-  MENU_UPLOAD_AREA: 'Database Upload',
+  MENU_ETL_RAW_DATA: 'Automated DB Init',
+  MENU_UPLOAD_MANUAL: 'Manual DB Upload',
   MENU_FOOD_PRICES: 'Food Prices',
   MENU_GROCERY_DEALS: 'Grocery Deals',
   MENU_STORES: 'Stores',
@@ -118,6 +119,8 @@ export const locales_en = {
   DEALS_GROCERY_DEALS_CONTENT_CARD_ENDS_IN_DAYS_STR_2: 'more day(s)',
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_1: 'starts in',
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_2: 'day(s)',
+
+  ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN: 'Invoke ETL Process',
 
   CONTENT_CARD_DISCOOUNT_NOTIFICATION_MESSAGE_FILE_MISSING: 'No file provided in image upload',
   CONTENT_CARD_DISCOOUNT_NOTIFICATION_MESSAGE_FILE_SIZE_EXCEEDED: 'File size is limited to 1MB.',

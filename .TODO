@@ -11,6 +11,7 @@
 
 ## Additional Development
 
+<!-- - check HTTP Security Headers and verify against best practices by running "curl -I https://demo.fiscalismia.com" -->
 - Add Version String to Frontend in Footer by adding __APP_VERSION__
 - Persist new added var expenses in db and refresh overview of variable expenses and continue work on MODAL with input validation and so forth
 

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { serverConfig, localStorageKeys } from '../resources/resource_properties';
+import { localStorageKeys } from '../resources/resource_properties';
 import {
   DividendsRelatedInvestmentsAndTaxes,
   FoodItem,
@@ -13,7 +13,6 @@ import { toast } from 'react-toastify';
 import { axiosErrorToastOptions, toastOptions } from '../utils/sharedFunctions';
 import { axiosClient } from './axiosErrorHandler';
 import { locales } from '../utils/localeConfiguration';
-const baseUrl = serverConfig.API_BASE_URL;
 /**
  *
  */
@@ -731,6 +730,19 @@ export const postAllFoodItemTsv = async (foodItemTsvInput: string) => {
   }
 };
 
+export const postRawDataEtlInvocation = async (): Promise<any> => {
+  setToken();
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    };
+    const response = await axiosClient.post('admin/raw_data_etl', { asd: 'asd' }, config);
+    return response.data;
+  } catch (_error) {
+    // error handling logic is defined in src/services/axiosErrorHandler.ts
+  }
+};
+
 /***
  *     _____ _____ _____ _____
  *    |_   _|  ___/  ___|_   _|
@@ -746,7 +758,7 @@ export const getTest = async (): Promise<any> => {
     const config = {
       headers: { Authorization: `Bearer ${token}` }
     };
-    const response = await axiosClient.get(baseUrl, config);
+    const response = await axiosClient.get('/', config);
     return response.data;
   } catch (_error) {
     // error handling logic is defined in src/services/axiosErrorHandler.ts
@@ -759,7 +771,7 @@ export const postTest = async (newObject: any): Promise<any> => {
     const config = {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     };
-    const response = await axiosClient.post(baseUrl, newObject, config);
+    const response = await axiosClient.post('/', newObject, config);
     return response.data;
   } catch (_error) {
     // error handling logic is defined in src/services/axiosErrorHandler.ts

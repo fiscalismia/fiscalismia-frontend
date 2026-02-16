@@ -15,5 +15,6 @@ export const paths = {
   DEALS_OVERVIEW: 'deals/overview',
   DEALS_FOOD_PRICES: 'deals/food_prices',
   DEALS_GROCERY_DEALS: 'deals/grocery_deals',
-  ADMIN_UPLOAD_AREA: 'admin/upload'
+  MENU_UPLOAD_MANUAL: 'admin/upload_manual',
+  MENU_ETL_RAW_DATA: 'admin/etl_raw_data'
 };
