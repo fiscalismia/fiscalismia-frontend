@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
-import { postRawDataEtlInvocation } from '../../services/pgConnections';
-import { Button } from '@mui/material';
+import { getRawDataEtlInvocation } from '../../services/pgConnections';
+import { Button, Paper, Typography, useTheme } from '@mui/material';
 import { RouteInfo } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
 
@@ -16,13 +16,63 @@ interface Income_SalesProps {
  * @returns Several Content Cards with sales ordered by amount desc. Also contains all sales in a very basic data table.
  */
 export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
+  const { palette } = useTheme();
+  const [logMessages, setLogMessages] = useState<string[]>([]);
+
+  const handleEtlInvocation = async () => {
+    setLogMessages([]);
+    await getRawDataEtlInvocation((message: string) => {
+      setLogMessages((prev) => [...prev, message]);
+    });
+  };
   return (
     <React.Fragment>
       <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="center"></Grid>
-      <Button sx={{ width: 1 }} variant="contained" size="large" color="primary" onClick={postRawDataEtlInvocation}>
+      <Button
+        sx={{
+          width: 1,
+          borderRadius: 0,
+          border: `2px solid ${palette.border.dark}`,
+          fontFamily: 'Hack',
+          fontSize: '16px',
+          letterSpacing: 3,
+          textTransform: 'uppercase',
+          fontWeight: 'bold'
+        }}
+        variant="contained"
+        size="large"
+        color="primary"
+        onClick={handleEtlInvocation}
+      >
         {locales().ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN}
       </Button>
-      <Grid xs={12} lg={7} xl={6}></Grid>
+      <Grid xs={12} lg={7} xl={6}>
+        <Paper
+          elevation={6}
+          sx={{
+            borderRadius: 0,
+            border: `1px solid ${palette.border.dark}`,
+            padding: 1,
+            backgroundColor: palette.background.default,
+            height: 500
+          }}
+        >
+          {logMessages.map((e, i) => (
+            <Typography
+              key={i}
+              sx={{
+                fontFamily: 'Hack',
+                fontSize: '16px',
+                letterSpacing: 3,
+                color: palette.success.light,
+                whiteSpace: 'pre-wrap'
+              }}
+            >
+              {e}
+            </Typography>
+          ))}
+        </Paper>
+      </Grid>
     </React.Fragment>
   );
 }

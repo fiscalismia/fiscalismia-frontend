@@ -13,6 +13,8 @@ import { toast } from 'react-toastify';
 import { axiosErrorToastOptions, toastOptions } from '../utils/sharedFunctions';
 import { axiosClient } from './axiosErrorHandler';
 import { locales } from '../utils/localeConfiguration';
+import { serverConfig } from '../resources/resource_properties';
+
 /**
  *
  */
@@ -730,14 +732,25 @@ export const postAllFoodItemTsv = async (foodItemTsvInput: string) => {
   }
 };
 
-export const postRawDataEtlInvocation = async (): Promise<any> => {
+export const getRawDataEtlInvocation = async (onMessage: (message: string) => void) => {
   setToken();
   try {
-    const config = {
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
-    };
-    const response = await axiosClient.post('admin/raw_data_etl', { asd: 'asd' }, config);
-    return response.data;
+    const response = await fetch(`${serverConfig.API_BASE_URL}/admin/raw_data_etl`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader();
+
+    while (true && reader) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const parsed = JSON.parse(value.split('data: ')[1]);
+      console.log(parsed.message);
+      onMessage(parsed.message);
+    }
   } catch (_error) {
     // error handling logic is defined in src/services/axiosErrorHandler.ts
   }
