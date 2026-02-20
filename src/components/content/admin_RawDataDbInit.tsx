@@ -4,6 +4,11 @@ import { getRawDataEtlInvocation } from '../../services/pgConnections';
 import { Button, Paper, Typography, useTheme } from '@mui/material';
 import { RouteInfo } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
+const levelColors: Record<string, string> = {
+  info: '#cac3c3',
+  success: '#97eb63'
+};
+const timestampColor = '#258d98';
 
 interface Income_SalesProps {
   routeInfo: RouteInfo;
@@ -17,12 +22,12 @@ interface Income_SalesProps {
  */
 export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
   const { palette } = useTheme();
-  const [logMessages, setLogMessages] = useState<string[]>([]);
+  const [logMessages, setLogMessages] = useState<{ message: string; level: string }[]>([]);
 
   const handleEtlInvocation = async () => {
     setLogMessages([]);
-    await getRawDataEtlInvocation((message: string) => {
-      setLogMessages((prev) => [...prev, message]);
+    await getRawDataEtlInvocation((data: { message: string; level: string }) => {
+      setLogMessages((prev) => [...prev, data]);
     });
   };
   return (
@@ -51,9 +56,9 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
           elevation={6}
           sx={{
             borderRadius: 0,
-            border: `1px solid ${palette.border.dark}`,
+            border: `3px solid ${palette.border.dark}`,
             padding: 1,
-            backgroundColor: palette.background.default,
+            backgroundColor: palette.common.black,
             height: 500
           }}
         >
@@ -63,13 +68,20 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
               sx={{
                 fontFamily: 'Hack',
                 fontSize: '15px',
-                letterSpacing: 3,
                 color: palette.success.light,
                 whiteSpace: 'pre-wrap'
               }}
             >
-              <span style={{ fontWeight: 'bold' }}>{data.substring(0, 20)}</span>
-              {data.substring(20)}
+              <span style={{ letterSpacing: 1, color: timestampColor }}>{data.message.substring(0, 20)}</span>
+              <span
+                style={{
+                  letterSpacing: 3,
+                  fontWeight: data.level === 'success' ? '600' : '200',
+                  color: levelColors[data.level]
+                }}
+              >
+                {data.message.substring(20)}
+              </span>
             </Typography>
           ))}
         </Paper>

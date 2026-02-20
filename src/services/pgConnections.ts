@@ -732,7 +732,7 @@ export const postAllFoodItemTsv = async (foodItemTsvInput: string) => {
   }
 };
 
-export const getRawDataEtlInvocation = async (onMessage: (message: string) => void) => {
+export const getRawDataEtlInvocation = async (onMessage: (data: { message: string; level: string }) => void) => {
   setToken();
   try {
     const response = await fetch(`${serverConfig.API_BASE_URL}/admin/raw_data_etl`, {
@@ -758,7 +758,7 @@ export const getRawDataEtlInvocation = async (onMessage: (message: string) => vo
             console.log(parsed.result);
           } else {
             // progress message
-            onMessage(parsed.message);
+            onMessage({ message: parsed.message, level: parsed.level || 'info' });
           }
         }
       }
