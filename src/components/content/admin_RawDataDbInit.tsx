@@ -57,18 +57,19 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
             height: 500
           }}
         >
-          {logMessages.map((e, i) => (
+          {logMessages.map((data, i) => (
             <Typography
               key={i}
               sx={{
                 fontFamily: 'Hack',
-                fontSize: '16px',
+                fontSize: '15px',
                 letterSpacing: 3,
                 color: palette.success.light,
                 whiteSpace: 'pre-wrap'
               }}
             >
-              {e}
+              <span style={{ fontWeight: 'bold' }}>{data.substring(0, 20)}</span>
+              {data.substring(20)}
             </Typography>
           ))}
         </Paper>

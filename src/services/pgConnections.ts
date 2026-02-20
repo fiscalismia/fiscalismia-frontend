@@ -747,9 +747,21 @@ export const getRawDataEtlInvocation = async (onMessage: (message: string) => vo
     while (true && reader) {
       const { value, done } = await reader.read();
       if (done) break;
-      const parsed = JSON.parse(value.split('data: ')[1]);
-      console.log(parsed.message);
-      onMessage(parsed.message);
+      // expects data strictly in the format "data : { "message" "Text Content"}"
+      const events = value.split('\n\n');
+      for (const event of events) {
+        const jsonStr = event.replace('data: ', '');
+        if (jsonStr) {
+          const parsed = JSON.parse(jsonStr);
+          if (parsed.result) {
+            // final payload with all PSQL statements
+            console.log(parsed.result);
+          } else {
+            // progress message
+            onMessage(parsed.message);
+          }
+        }
+      }
     }
   } catch (_error) {
     // error handling logic is defined in src/services/axiosErrorHandler.ts

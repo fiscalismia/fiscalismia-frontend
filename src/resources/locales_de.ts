@@ -121,6 +121,7 @@ export const locales_de = {
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_2: 'Tag(en)',
 
   ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN: 'ETL Prozess initiieren',
+  ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_ERROR_MSG: (pos1: string) => `API Gateway Request Error: ${pos1}`,
 
   CONTENT_CARD_DISCOOUNT_NOTIFICATION_MESSAGE_FILE_MISSING: 'Es wurde keine Datei für den Bild-Upload bereitgestellt.',
   CONTENT_CARD_DISCOOUNT_NOTIFICATION_MESSAGE_FILE_SIZE_EXCEEDED: 'Die Dateigröße ist auf 1 MB begrenzt.',
