@@ -6,7 +6,8 @@ import { RouteInfo } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
 const levelColors: Record<string, string> = {
   info: '#cac3c3',
-  success: '#97eb63'
+  success: '#97eb63',
+  magenta: '#f585fc'
 };
 const timestampColor = '#258d98';
 
