@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
-import { getRawDataEtlInvocation } from '../../services/pgConnections';
+import { getRawDataEtlInvocation, truncateAllUserSchemaTables } from '../../services/pgConnections';
 import { Button, Paper, Typography, useTheme } from '@mui/material';
 import { RouteInfo } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
@@ -31,6 +31,29 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
       setLogMessages((prev) => [...prev, data]);
     });
   };
+
+  const handleDatabaseTruncate = async () => {
+    setLogMessages([]);
+    const truncateResponse = await truncateAllUserSchemaTables();
+    if (truncateResponse && truncateResponse.status === 200) {
+      console.log(truncateResponse.data);
+      const data = truncateResponse.data;
+      const timestamp = data.timestamp;
+      const messages: { message: string; level: string }[] = [
+        { message: `${timestamp} Truncate of entire user schema resulted in:`, level: 'magenta' },
+        ...Object.entries(data)
+          .filter(([key]) => key !== 'timestamp')
+          .map(([table, rowCount]) => ({
+            message: `${timestamp} ${String(rowCount).padStart(4, ' ')} row(s) deleted in Table ${String(table).toUpperCase()}`,
+            level: 'info'
+          })),
+        { message: `${timestamp} All tables truncated successfully.`, level: 'success' }
+      ];
+
+      setLogMessages(messages);
+    }
+  };
+
   return (
     <React.Fragment>
       <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="center"></Grid>
@@ -38,9 +61,28 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
         sx={{
           width: 1,
           borderRadius: 0,
-          border: `2px solid ${palette.border.dark}`,
           fontFamily: 'Hack',
           fontSize: '16px',
+          letterSpacing: 3,
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
+          mb: 1
+        }}
+        variant="contained"
+        size="large"
+        color="error"
+        onClick={handleDatabaseTruncate}
+      >
+        {locales().ADMIN_AREA_AUTOMATED_DB_TRUNCATE_BTN}
+      </Button>
+      <Button
+        sx={{
+          width: 1,
+          borderRadius: 0,
+          border: `3px solid ${palette.border.dark}`,
+          fontFamily: 'Hack',
+          fontSize: '16px',
+          mb: '-2px',
           letterSpacing: 3,
           textTransform: 'uppercase',
           fontWeight: 'bold'
@@ -77,7 +119,7 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
               <span
                 style={{
                   letterSpacing: 3,
-                  fontWeight: data.level === 'success' ? '600' : '200',
+                  fontWeight: data.level === 'success' ? 'bold' : '200',
                   color: levelColors[data.level]
                 }}
               >

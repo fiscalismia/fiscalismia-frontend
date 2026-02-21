@@ -120,6 +120,7 @@ export const locales_de = {
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_1: 'startet in',
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_2: 'Tag(en)',
 
+  ADMIN_AREA_AUTOMATED_DB_TRUNCATE_BTN: 'Datenbank vollständig zurücksetzen',
   ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN: 'ETL Prozess initiieren',
   ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_ERROR_MSG: (pos1: string) => `API Gateway Request Error: ${pos1}`,
 

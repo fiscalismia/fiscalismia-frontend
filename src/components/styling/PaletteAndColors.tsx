@@ -86,7 +86,7 @@ palette.set('defaultdark', {
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   error: {
-    main: '#BF3F33',
+    main: '#ab4238dc',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   text: {
@@ -96,9 +96,9 @@ palette.set('defaultdark', {
     hint: 'rgba(0,212,212,0.8)'
   },
   border: {
-    light: 'rgba(128,128,128,0.5)',
-    main: 'rgba(128,128,128,0.7)',
-    dark: 'rgba(128,128,128,0.9)'
+    light: 'rgba(158, 158, 158,0.5)',
+    main: 'rgba(158, 158, 158,0.7)',
+    dark: 'rgba(158, 158, 158, 0.9)'
   },
   background: {
     paper: '#1c1c1c',

@@ -732,6 +732,27 @@ export const postAllFoodItemTsv = async (foodItemTsvInput: string) => {
   }
 };
 
+/**   ___ _________  ________ _   _    ___  ______ _____  ___
+ *   / _ \|  _  \  \/  |_   _| \ | |  / _ \ | ___ \  ___|/ _ \
+ *  / /_\ \ | | | .  . | | | |  \| | / /_\ \| |_/ / |__ / /_\ \
+ *  |  _  | | | | |\/| | | | | . ` | |  _  ||    /|  __||  _  |
+ *  | | | | |/ /| |  | |_| |_| |\  | | | | || |\ \| |___| | | |
+ *  \_| |_/___/ \_|  |_/\___/\_| \_/ \_| |_/\_| \_\____/\_| |_/
+ */
+
+export const truncateAllUserSchemaTables = async (): Promise<any> => {
+  setToken();
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const response = await axiosClient.delete('/admin/user_schema/truncate_all', config);
+    return response;
+  } catch (_error) {
+    // error handling logic is defined in src/services/axiosErrorHandler.ts
+  }
+};
+
 export const getRawDataEtlInvocation = async (onMessage: (data: { message: string; level: string }) => void) => {
   setToken();
   try {
