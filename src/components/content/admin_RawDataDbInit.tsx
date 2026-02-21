@@ -7,7 +7,8 @@ import { locales } from '../../utils/localeConfiguration';
 const levelColors: Record<string, string> = {
   info: '#cac3c3',
   success: '#97eb63',
-  magenta: '#f585fc'
+  magenta: '#f585fc',
+  error: '#ab4238dc'
 };
 const timestampColor = '#258d98';
 
@@ -36,7 +37,6 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
     setLogMessages([]);
     const truncateResponse = await truncateAllUserSchemaTables();
     if (truncateResponse && truncateResponse.status === 200) {
-      console.log(truncateResponse.data);
       const data = truncateResponse.data;
       const timestamp = data.timestamp;
       const messages: { message: string; level: string }[] = [
