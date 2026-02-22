@@ -25,9 +25,11 @@ interface Income_SalesProps {
 export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
   const { palette } = useTheme();
   const [logMessages, setLogMessages] = useState<{ message: string; level: string }[]>([]);
+  const [consoleHeight, setConsoleHeight] = useState<number>(500);
 
   const handleEtlInvocation = async () => {
     setLogMessages([]);
+    setConsoleHeight(950);
     await getRawDataEtlInvocation((data: { message: string; level: string }) => {
       setLogMessages((prev) => [...prev, data]);
     });
@@ -35,6 +37,7 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
 
   const handleDatabaseTruncate = async () => {
     setLogMessages([]);
+    setConsoleHeight(500);
     const truncateResponse = await truncateAllUserSchemaTables();
     if (truncateResponse && truncateResponse.status === 200) {
       const data = truncateResponse.data;
@@ -101,8 +104,9 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
             borderRadius: 0,
             border: `3px solid ${palette.border.dark}`,
             padding: 1,
+            paddingLeft: 1.5,
             backgroundColor: palette.common.black,
-            height: 500
+            height: consoleHeight
           }}
         >
           {logMessages.map((data, i) => (

@@ -33,7 +33,7 @@ export class FileSizeError extends Error {
  *      ___  _   _ _____ _   _  _____ _   _ _____ _____ _____   ___ _____ _____ _____ _   _
  *     / _ \| | | |_   _| | | ||  ___| \ | |_   _|_   _/  __ \ / _ \_   _|_   _|  _  | \ | |
  *    / /_\ \ | | | | | | |_| || |__ |  \| | | |   | | | /  \// /_\ \| |   | | | | | |  \| |
- *    |  _  | | | | | | |  _  ||  __|| . ` | | |   | | | |    |  _  || |   | | | | | | . ` |
+ *    |  _  | | | | | | |  _  __|| . ` | | |   | | | |    |  _ |   | | | | | | . ` |
  *    | | | | |_| | | | | | | || |___| |\  | | |  _| |_| \__/\| | | || |  _| |_\ \_/ / |\  |
  *    \_| |_/\___/  \_/ \_| |_/\____/\_| \_/ \_/  \___/ \____/\_| |_/\_/  \___/ \___/\_| \_/
  */
@@ -90,7 +90,7 @@ export const createUserCredentials = async (credentials: UserCredentials) => {
  *     _____  _____ _____      ___   _      _
  *    |  __ \|  ___|_   _|    / _ \ | |    | |
  *    | |  \/| |__   | |     / /_\ \| |    | |
- *    | | __ |  __|  | |     |  _  || |    | |
+ *    | | __ |  __|  | |     |  _ |    | |
  *    | |_\ \| |___  | |     | | | || |____| |____
  *     \____/\____/  \_/     \_| |_/\_____/\_____/
  */
@@ -604,7 +604,7 @@ export const deleteDividend = async (id: number) => {
  *     _   _____________  ___ _____ _____
  *    | | | | ___ \  _  \/ _ \_   _|  ___|
  *    | | | | |_/ / | | / /_\ \| | | |__
- *    | | | |  __/| | | |  _  || | |  __|
+ *    | | | |  __/| | | |  _ | |  __|
  *    | |_| | |   | |/ /| | | || | | |___
  *     \___/\_|   |___/ \_| |_/\_/ \____/
  */
@@ -735,7 +735,7 @@ export const postAllFoodItemTsv = async (foodItemTsvInput: string) => {
 /**   ___ _________  ________ _   _    ___  ______ _____  ___
  *   / _ \|  _  \  \/  |_   _| \ | |  / _ \ | ___ \  ___|/ _ \
  *  / /_\ \ | | | .  . | | | |  \| | / /_\ \| |_/ / |__ / /_\ \
- *  |  _  | | | | |\/| | | | | . ` | |  _  ||    /|  __||  _  |
+ *  |  _  | | | | |\/| | | | | . ` | |  _    /|  __||  _  |
  *  | | | | |/ /| |  | |_| |_| |\  | | | | || |\ \| |___| | | |
  *  \_| |_/___/ \_|  |_/\___/\_| \_/ \_| |_/\_| \_\____/\_| |_/
  */
@@ -773,13 +773,35 @@ export const getRawDataEtlInvocation = async (onMessage: (data: { message: strin
       for (const event of events) {
         const jsonStr = event.replace('data: ', '');
         if (jsonStr) {
-          const parsed = JSON.parse(jsonStr);
-          if (parsed.result) {
-            // final payload with all PSQL statements
-            console.log(parsed.result);
+          const data = JSON.parse(jsonStr);
+          if (data.result) {
+            const result = JSON.parse(data.result);
+            const asciiMessage = `
+                     +===========================================+
+                  |           DATABASE INSERTION SUMMARY      |
+                  +===========================================+
+                  +-------------------------------------------+
+                  | category                        |  ${String(result.variable_expenses.category).padStart(6)} |
+                  | store                           |  ${String(result.variable_expenses.store).padStart(6)} |
+                  | sensitivity                     |  ${String(result.variable_expenses.sensitivity).padStart(6)} |
+                  | variable_expenses               |  ${String(result.variable_expenses.variable_expenses).padStart(6)} |
+                  | bridge_var_exp_sensitivity      |  ${String(result.variable_expenses.bridge_var_exp_sensitivity).padStart(6)} |
+                  +-------------------------------------------+
+                  +-------------------------------------------+
+                  | investments                     |  ${String(result.investments.investments).padStart(6)} |
+                  | investment_taxes                |  ${String(result.investments.investment_taxes).padStart(6)} |
+                  | investment_dividends            |  ${String(result.investments.investment_dividends).padStart(6)} |
+                  | bridge_investment_dividends     |  ${String(result.investments.bridge_investment_dividends).padStart(6)} |
+                  +-------------------------------------------+
+                  +-------------------------------------------+
+                  | table_food_prices               |  ${String(result.table_food_prices).padStart(6)} |
+                  | fixed_costs                     |  ${String(result.fixed_costs).padStart(6)} |
+                  | fixed_income                    |  ${String(result.fixed_income).padStart(6)} |
+                  +-------------------------------------------+`;
+            onMessage({ message: asciiMessage, level: 'info' });
           } else {
             // progress message
-            onMessage({ message: parsed.message, level: parsed.level || 'info' });
+            onMessage({ message: data.message, level: data.level || 'info' });
           }
         }
       }
