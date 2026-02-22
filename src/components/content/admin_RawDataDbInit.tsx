@@ -29,7 +29,7 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
 
   const handleEtlInvocation = async () => {
     setLogMessages([]);
-    setConsoleHeight(950);
+    setConsoleHeight(800);
     await getRawDataEtlInvocation((data: { message: string; level: string }) => {
       setLogMessages((prev) => [...prev, data]);
     });
@@ -37,7 +37,7 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
 
   const handleDatabaseTruncate = async () => {
     setLogMessages([]);
-    setConsoleHeight(500);
+    setConsoleHeight(450);
     const truncateResponse = await truncateAllUserSchemaTables();
     if (truncateResponse && truncateResponse.status === 200) {
       const data = truncateResponse.data;
@@ -59,79 +59,80 @@ export default function Income_Sales(_props: Income_SalesProps): JSX.Element {
 
   return (
     <React.Fragment>
-      <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="center"></Grid>
-      <Button
-        sx={{
-          width: 1,
-          borderRadius: 0,
-          fontFamily: 'Hack',
-          fontSize: '16px',
-          letterSpacing: 3,
-          textTransform: 'uppercase',
-          fontWeight: 'bold',
-          mb: 1
-        }}
-        variant="contained"
-        size="large"
-        color="error"
-        onClick={handleDatabaseTruncate}
-      >
-        {locales().ADMIN_AREA_AUTOMATED_DB_TRUNCATE_BTN}
-      </Button>
-      <Button
-        sx={{
-          width: 1,
-          borderRadius: 0,
-          border: `3px solid ${palette.border.dark}`,
-          fontFamily: 'Hack',
-          fontSize: '16px',
-          mb: '-2px',
-          letterSpacing: 3,
-          textTransform: 'uppercase',
-          fontWeight: 'bold'
-        }}
-        variant="contained"
-        size="large"
-        color="primary"
-        onClick={handleEtlInvocation}
-      >
-        {locales().ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN}
-      </Button>
-      <Grid xs={12} lg={7} xl={6}>
-        <Paper
-          elevation={6}
-          sx={{
-            borderRadius: 0,
-            border: `3px solid ${palette.border.dark}`,
-            padding: 1,
-            paddingLeft: 1.5,
-            backgroundColor: palette.common.black,
-            height: consoleHeight
-          }}
-        >
-          {logMessages.map((data, i) => (
-            <Typography
-              key={i}
-              sx={{
-                fontFamily: 'Hack',
-                fontSize: '15px',
-                color: palette.success.light,
-                whiteSpace: 'pre-wrap'
-              }}
-            >
-              <span style={{ letterSpacing: 1, color: timestampColor }}>{data.message.substring(0, 20)}</span>
-              <span
-                style={{
-                  letterSpacing: 3,
-                  fontWeight: data.level === 'success' ? 'bold' : '200',
-                  color: levelColors[data.level]
+      <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="flex-start">
+        <Grid xs={12} sm={12} md={12} lg={12} xl={8}>
+          <Button
+            sx={{
+              width: 1,
+              borderRadius: 0,
+              fontFamily: 'Hack',
+              fontSize: '16px',
+              letterSpacing: 3,
+              textTransform: 'uppercase',
+              fontWeight: 'bold',
+              mb: 1
+            }}
+            variant="contained"
+            size="large"
+            color="error"
+            onClick={handleDatabaseTruncate}
+          >
+            {locales().ADMIN_AREA_AUTOMATED_DB_TRUNCATE_BTN}
+          </Button>
+          <Button
+            sx={{
+              width: 1,
+              borderRadius: 0,
+              border: `3px solid ${palette.border.dark}`,
+              fontFamily: 'Hack',
+              fontSize: '16px',
+              mb: '-2px',
+              letterSpacing: 3,
+              textTransform: 'uppercase',
+              fontWeight: 'bold'
+            }}
+            variant="contained"
+            size="large"
+            color="primary"
+            onClick={handleEtlInvocation}
+          >
+            {locales().ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN}
+          </Button>
+          <Paper
+            elevation={6}
+            sx={{
+              borderRadius: 0,
+              border: `3px solid ${palette.border.dark}`,
+              padding: 1,
+              paddingLeft: 1.5,
+              backgroundColor: palette.common.black,
+              height: consoleHeight
+            }}
+          >
+            {logMessages.map((data, i) => (
+              <Typography
+                key={i}
+                sx={{
+                  fontFamily: 'Hack',
+                  fontSize: '14px',
+                  color: palette.success.light,
+                  whiteSpace: 'pre-wrap'
                 }}
               >
-                {data.message.substring(20)}
-              </span>
-            </Typography>
-          ))}
-        </Paper>
+                <span style={{ letterSpacing: 1, color: timestampColor }}>{data.message.substring(0, 20)}</span>
+                <span
+                  style={{
+                    letterSpacing: 3,
+                    fontWeight: data.level === 'success' ? 'bold' : '200',
+                    color: levelColors[data.level]
+                  }}
+                >
+                  {data.message.substring(20)}
+                </span>
+              </Typography>
+            ))}
+          </Paper>
+        </Grid>
       </Grid>
     </React.Fragment>
   );

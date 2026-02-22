@@ -775,30 +775,61 @@ export const getRawDataEtlInvocation = async (onMessage: (data: { message: strin
         if (jsonStr) {
           const data = JSON.parse(jsonStr);
           if (data.result) {
-            const result = JSON.parse(data.result);
-            const asciiMessage = `
-                     +===========================================+
-                  |           DATABASE INSERTION SUMMARY      |
-                  +===========================================+
-                  +-------------------------------------------+
-                  | category                        |  ${String(result.variable_expenses.category).padStart(6)} |
-                  | store                           |  ${String(result.variable_expenses.store).padStart(6)} |
-                  | sensitivity                     |  ${String(result.variable_expenses.sensitivity).padStart(6)} |
-                  | variable_expenses               |  ${String(result.variable_expenses.variable_expenses).padStart(6)} |
-                  | bridge_var_exp_sensitivity      |  ${String(result.variable_expenses.bridge_var_exp_sensitivity).padStart(6)} |
-                  +-------------------------------------------+
-                  +-------------------------------------------+
-                  | investments                     |  ${String(result.investments.investments).padStart(6)} |
-                  | investment_taxes                |  ${String(result.investments.investment_taxes).padStart(6)} |
-                  | investment_dividends            |  ${String(result.investments.investment_dividends).padStart(6)} |
-                  | bridge_investment_dividends     |  ${String(result.investments.bridge_investment_dividends).padStart(6)} |
-                  +-------------------------------------------+
-                  +-------------------------------------------+
-                  | table_food_prices               |  ${String(result.table_food_prices).padStart(6)} |
-                  | fixed_costs                     |  ${String(result.fixed_costs).padStart(6)} |
-                  | fixed_income                    |  ${String(result.fixed_income).padStart(6)} |
-                  +-------------------------------------------+`;
-            onMessage({ message: asciiMessage, level: 'info' });
+            const result = data.result;
+            const timestamp: string = data.timestamp;
+            onMessage({ message: `${timestamp}:             DATABASE INSERTION SUMMARY          `, level: 'info' });
+            onMessage({ message: `${timestamp}: +==============================================+`, level: 'info' });
+            onMessage({
+              message: `${timestamp}: ║  category                          ║  ${String(result.variable_expenses.category).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  store                             ║  ${String(result.variable_expenses.store).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  sensitivity                       ║  ${String(result.variable_expenses.sensitivity).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  variable_expenses                 ║  ${String(result.variable_expenses.variable_expenses).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  bridge_var_exp_sensitivity        ║  ${String(result.variable_expenses.bridge_var_exp_sensitivity).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({ message: `${timestamp}: +==============================================+`, level: 'info' });
+            onMessage({
+              message: `${timestamp}: ║  investments                       ║  ${String(result.investments.investments).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  investment_taxes                  ║  ${String(result.investments.investment_taxes).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  investment_dividends              ║  ${String(result.investments.investment_dividends).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  bridge_investment_dividends       ║  ${String(result.investments.bridge_investment_dividends).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({ message: `${timestamp}: +==============================================+`, level: 'info' });
+            onMessage({
+              message: `${timestamp}: ║  table_food_prices                 ║  ${String(result.table_food_prices).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  fixed_costs                       ║  ${String(result.fixed_costs).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({
+              message: `${timestamp}: ║  fixed_income                      ║  ${String(result.fixed_income).padStart(6)} ║`,
+              level: 'info'
+            });
+            onMessage({ message: `${timestamp}: +==============================================+`, level: 'info' });
           } else {
             // progress message
             onMessage({ message: data.message, level: data.level || 'info' });
