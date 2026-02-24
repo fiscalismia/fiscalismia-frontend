@@ -559,9 +559,10 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
 
   const handleYearSelection = (_event: React.MouseEvent<HTMLElement> | null, newValue: string) => {
     setSelectedYear(newValue);
-    const filteredYearVarExpenses = allVariableExpenses.filter(
-      (e: any) => e.purchasing_date.substring(0, 4) === newValue
-    );
+    // filter all expenses by preselected year and remove negative values (Sales)
+    const filteredYearVarExpenses = allVariableExpenses
+      .filter((e: any) => e.purchasing_date.substring(0, 4) === newValue)
+      .filter((e: any) => parseFloat(e.cost) > 0);
     setSelectedVariableExpenses(filteredYearVarExpenses);
     // Month Selection - Initialize with Aggregate All
     setMonthsWithPurchasesInSelectedYear(getUniquePurchasingDateMonths(filteredYearVarExpenses));
@@ -586,7 +587,8 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
 
   const handleSelectMonth = (selected: string): void => {
     setSelectedMonth(selected);
-    let filteredMonthVarExpenses;
+    // remove negative values (Sales)
+    let filteredMonthVarExpenses = allVariableExpenses.filter((e: any) => parseFloat(e.cost) > 0);
     const selectedMonthArr: string[] = monthsWithPurchasesInSelectedYear
       ? (monthsWithPurchasesInSelectedYear.filter((e) => e[0] === selected)[0] as string[])
       : (locales().ARRAY_MONTH_ALL.filter((e) => e[0] === selected)[0] as string[]);
