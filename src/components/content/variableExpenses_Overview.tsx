@@ -251,7 +251,8 @@ function extractVerticalBarChartData(allVariableExpenses: any) {
     color1: '',
     color2: '',
     color3: '',
-    color4: ''
+    color4: '',
+    color5: ''
   };
   const allVariableExpensesFiltered = allVariableExpenses.filter((row: any) => row.category.toLowerCase() !== 'sale');
   // unique purchasing date substrings in the format yyyy-mm as string array
@@ -262,6 +263,7 @@ function extractVerticalBarChartData(allVariableExpenses: any) {
   const varExpensesVerticalBarChartDs2: number[] = [];
   const varExpensesVerticalBarChartDs3: number[] = [];
   const varExpensesVerticalBarChartDs4: number[] = [];
+  const varExpensesVerticalBarChartDs5: number[] = [];
   // for each unique date create an xAxis array with summed up expense values per filtered category
   varExpensesVerticalBarChartXaxis.forEach((xAxisEntry) => {
     varExpensesVerticalBarChartDs1.push(
@@ -288,12 +290,24 @@ function extractVerticalBarChartData(allVariableExpenses: any) {
       allVariableExpensesFiltered
         .filter((row: any) => row.purchasing_date.substring(0, 7) === xAxisEntry)
         .filter(
-          (row: any) => row.category.toLowerCase() === locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_GIFT.toLowerCase()
+          (row: any) =>
+            row.category.toLowerCase() === locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_HOME_OFFICE.toLowerCase() ||
+            row.category.toLowerCase() === locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_HOUSEHOLD.toLowerCase()
         )
         .map((row: any) => parseFloat(row.cost))
         .reduce((partialSum: number, add: number) => partialSum + add, 0)
     );
     varExpensesVerticalBarChartDs4.push(
+      allVariableExpensesFiltered
+        .filter((row: any) => row.purchasing_date.substring(0, 7) === xAxisEntry)
+        .filter(
+          (row: any) =>
+            row.category.toLowerCase() === locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_VACATION.toLowerCase()
+        )
+        .map((row: any) => parseFloat(row.cost))
+        .reduce((partialSum: number, add: number) => partialSum + add, 0)
+    );
+    varExpensesVerticalBarChartDs5.push(
       allVariableExpensesFiltered
         .filter((row: any) => row.purchasing_date.substring(0, 7) === xAxisEntry)
         .filter(
@@ -312,11 +326,13 @@ function extractVerticalBarChartData(allVariableExpenses: any) {
     dataSet1: varExpensesVerticalBarChartDs1,
     dataSet2: varExpensesVerticalBarChartDs2,
     dataSet3: varExpensesVerticalBarChartDs3,
-    dataSet4: varExpensesVerticalBarChartDs3,
+    dataSet4: varExpensesVerticalBarChartDs4,
+    dataSet5: varExpensesVerticalBarChartDs5,
     dataSet1Name: locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_GROCERIES,
     dataSet2Name: locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_LEISURE,
-    dataSet3Name: locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_GIFT,
-    dataSet4Name: locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_COMBINED_HEALTH_AND_BODY
+    dataSet3Name: locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_COMBINED_HOME_AND_HOUSEHOLD,
+    dataSet4Name: locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_VACATION,
+    dataSet5Name: locales().VARIABLE_EXPENSES_OVERVIEW_CATEGORY_COMBINED_HEALTH_AND_BODY
   };
   const varExpensesBarChart = constructContentVerticalBarChartObject(
     locales().VARIABLE_EXPENSES_OVERVIEW_BAR_CHART_HEADER,
@@ -841,7 +857,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
                   >
                     <ContentVerticalBarChart
                       {...expenseVerticalBarChartData}
-                      dataSetCount={4}
+                      dataSetCount={5}
                       selectedLabel={selectedChartLabel}
                       legendPos="top"
                     />

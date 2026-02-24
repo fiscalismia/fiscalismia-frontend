@@ -120,15 +120,18 @@ export function constructContentLineChartObject(
  * @param dataSets.dataSet2
  * @param dataSets.dataSet3
  * @param dataSets.dataSet4
+ * @param dataSets.dataSet5
  * @param dataSets.dataSet1Name
  * @param dataSets.dataSet2Name
  * @param dataSets.dataSet3Name
  * @param dataSets.dataSet4Name
+ * @param dataSets.dataSet5Name
  * @param colors color overrides for bar colors
  * @param colors.color1
  * @param colors.color2
  * @param colors.color3
  * @param colors.color4
+ * @param colors.color5
  * @returns {ContentChartVerticalBarObject} a ContentChartVerticalBarObject
  */
 export function constructContentVerticalBarChartObject(
@@ -139,12 +142,14 @@ export function constructContentVerticalBarChartObject(
     dataSet2: any;
     dataSet3: any;
     dataSet4?: any;
+    dataSet5?: any;
     dataSet1Name: string;
     dataSet2Name: string;
     dataSet3Name: string;
     dataSet4Name?: string;
+    dataSet5Name?: string;
   },
-  colors: { color1: string; color2: string; color3: string; color4?: string }
+  colors: { color1: string; color2: string; color3: string; color4?: string; color5?: string }
 ): ContentChartVerticalBarObject {
   const contentChartObj = {
     chartTitle: title,
@@ -153,14 +158,17 @@ export function constructContentVerticalBarChartObject(
     dataSet2: dataSets?.dataSet2,
     dataSet3: dataSets?.dataSet3,
     dataSet4: dataSets?.dataSet4,
+    dataSet5: dataSets?.dataSet5,
     dataSet1Name: dataSets?.dataSet1Name,
     dataSet2Name: dataSets?.dataSet2Name,
     dataSet3Name: dataSets?.dataSet3Name,
     dataSet4Name: dataSets?.dataSet4Name,
+    dataSet5Name: dataSets?.dataSet5Name,
     color1: colors?.color1,
     color2: colors?.color2,
     color3: colors?.color3,
-    color4: colors?.color4
+    color4: colors?.color4,
+    color5: colors?.color5
   };
   return contentChartObj;
 }

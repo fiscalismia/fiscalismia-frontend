@@ -27,14 +27,17 @@ interface ContentVerticalBarChartProps {
   dataSet2?: any;
   dataSet3?: any;
   dataSet4?: any;
+  dataSet5?: any;
   dataSet1Name: string;
   dataSet2Name?: string;
   dataSet3Name?: string;
   dataSet4Name?: string;
+  dataSet5Name?: string;
   color1?: string;
   color2?: string;
   color3?: string;
   color4?: string;
+  color5?: string;
   chartOptions?: ChartOptions<'bar'>;
   chartData?: ChartData<'bar'>;
 }
@@ -56,14 +59,17 @@ export default function ContentVerticalBarChart(props: ContentVerticalBarChartPr
     dataSet2,
     dataSet3,
     dataSet4,
+    dataSet5,
     dataSet1Name,
     dataSet2Name,
     dataSet3Name,
     dataSet4Name,
+    dataSet5Name,
     color1,
     color2,
     color3,
     color4,
+    color5,
     legendPos
   } = props;
   const labels = props.labels
@@ -91,6 +97,10 @@ export default function ContentVerticalBarChart(props: ContentVerticalBarChartPr
     }
     if (dataSet4) {
       const currentMax = Math.max(...dataSet4);
+      maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
+    }
+    if (dataSet5) {
+      const currentMax = Math.max(...dataSet5);
       maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
     }
   }
@@ -163,19 +173,30 @@ export default function ContentVerticalBarChart(props: ContentVerticalBarChartPr
         data: dataSet4 ? dataSet4 : labels.map(() => getRandomInt(0, 100)),
         backgroundColor: color4 ? color4 : palette.success.dark,
         elements: barConfig
+      },
+      {
+        label: dataSet5Name ? dataSet5Name : 'Dataset 5',
+        data: dataSet5 ? dataSet5 : labels.map(() => getRandomInt(0, 100)),
+        backgroundColor: color5 ? color5 : palette.warning.dark,
+        elements: barConfig
       }
     ]
   };
 
   /**
-   * Removes elements from the data array if amount of bars is lower than 4
+   * Removes elements from the data array if amount of bars is lower than 5
    */
-  if (dataSetCount === 3) {
+  if (dataSetCount === 4) {
+    data.datasets.pop();
+  } else if (dataSetCount === 3) {
+    data.datasets.pop();
     data.datasets.pop();
   } else if (dataSetCount === 2) {
     data.datasets.pop();
     data.datasets.pop();
+    data.datasets.pop();
   } else if (dataSetCount === 1) {
+    data.datasets.pop();
     data.datasets.pop();
     data.datasets.pop();
     data.datasets.pop();
