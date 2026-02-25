@@ -8,7 +8,6 @@ fiscalismia-frontend is a REACT service rendered with Material UI, utilizes axio
 The REACT elements are designed with full CRUD operations in mind, to seed, manipulate and analyze the data within the backend's cloud hosted production db.
 The frontend is built in a continuous integration pipeline, tested, scanned for vulnerabilities and published as a docker image to a public docker registry for later deployment in your environment of choice.
 
-
 ## Table of Contents
 
 - [Technologies](#technologies)
@@ -17,7 +16,6 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
 - [Running](#running)
 - [Usage](#usage)
 - [License](#license)
-
 
 ## Technologies
 
@@ -34,29 +32,6 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
 - **Jest and React Testing Library:** Used for unit testing to ensure the reliability of individual components.
 - **Playwright:** Employed for post-deployment integration testing, specifically Smoketesting, ensuring that the server isn't crashing and burning.
 - **ESLint and Prettier:** Linter and Formatter for ensuring code quality and enforcing coding standards.
-
-## Pipeline
-
-1. **Triggers:**
-   - The pipeline runs on every push and pull request to the `main` branch.
-
-2. **Job: `test`**:
-   - **Steps:**
-     - Set up Node.js (v20.12.2), install dependencies and Snyk.
-     - Run type checks and ESLint analysis.
-     - Perform Snyk dependency security analysis.
-     - Perform Snyk Static Code security analysis.
-     - Publish type check, ESLint, and Snyk reports as artifacts.
-     - TODO: Playwright Integration Test covering basic UI interactions.
-
-3. **Job: `build`**:
-   - **Steps:**
-     - Build Frontend Docker image.
-     - Publish Docker image to GHCR (TODO: Switch to AWS ECR)
-
-4. **Job: `deploy`**:
-   - **Steps:**
-     - TODO: Deploy on Hetzner Self Managed Kubernetes via ArgoCD (K3s)
 
 ## Setup
 
