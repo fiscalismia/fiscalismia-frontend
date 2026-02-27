@@ -95,7 +95,8 @@ jobs:
         build-args: |
           FRONTEND_VERSION=${{ env.BUILD_VERSION }}
           ENVIRONMENT=demo
-          BACKEND_PORT=443
+          BACKEND_PORT=8443
+          FASTAPI_PORT=8444
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=backend.demo.fiscalismia.com
           NGINX_CONF=nginx.demo.conf
@@ -120,6 +121,7 @@ jobs:
           FRONTEND_VERSION=${{ env.BUILD_VERSION }}
           ENVIRONMENT=production
           BACKEND_PORT=443
+          FASTAPI_PORT=444
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=backend.fiscalismia.com
           NGINX_CONF=nginx.conf

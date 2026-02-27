@@ -8,6 +8,7 @@ export const locales_en = {
   MENU_UPLOAD_MANUAL: 'Manual DB Upload',
   MENU_FOOD_PRICES: 'Food Prices',
   MENU_GROCERY_DEALS: 'Grocery Deals',
+  MENU_MARKET_WEBSCRAPING: 'Market Webscraping',
   MENU_STORES: 'Stores',
   MENU_INDULGENCES: 'Indulgences',
   MENU_MONTHLY_BUDGET: 'Monthly Budget',
@@ -119,6 +120,8 @@ export const locales_en = {
   DEALS_GROCERY_DEALS_CONTENT_CARD_ENDS_IN_DAYS_STR_2: 'more day(s)',
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_1: 'starts in',
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_2: 'day(s)',
+
+  DEALS_MARKET_WEBSCRAPING_START_CDP_SESSION_BTN: 'Start CDP Session',
 
   ADMIN_AREA_AUTOMATED_DB_TRUNCATE_BTN: 'Truncate entire Database',
   ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN: 'Invoke ETL Process',

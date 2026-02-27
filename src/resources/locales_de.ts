@@ -8,6 +8,7 @@ export const locales_de = {
   MENU_ETL_RAW_DATA: 'Automatisierter DB Init',
   MENU_FOOD_PRICES: 'Lebensmittelpreise',
   MENU_GROCERY_DEALS: 'Supermarkt Angebote',
+  MENU_MARKET_WEBSCRAPING: 'Supermarkt Webscraping',
   MENU_STORES: 'Verkaufsplattformen',
   MENU_INDULGENCES: 'Genussmittel',
   MENU_MONTHLY_BUDGET: 'Monatliches Budget',
@@ -119,6 +120,8 @@ export const locales_de = {
   DEALS_GROCERY_DEALS_CONTENT_CARD_ENDS_IN_DAYS_STR_2: 'Tag(e) gültig',
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_1: 'startet in',
   DEALS_GROCERY_DEALS_CONTENT_CARD_STARTS_IN_DAYS_STR_2: 'Tag(en)',
+
+  DEALS_MARKET_WEBSCRAPING_START_CDP_SESSION_BTN: 'CDP Session initiieren',
 
   ADMIN_AREA_AUTOMATED_DB_TRUNCATE_BTN: 'Datenbank vollständig zurücksetzen',
   ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN: 'ETL Prozess initiieren',

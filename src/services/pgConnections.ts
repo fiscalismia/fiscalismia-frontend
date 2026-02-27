@@ -837,11 +837,31 @@ export const getRawDataEtlInvocation = async (onMessage: (data: { message: strin
         }
       }
     }
-  } catch (_error) {
-    // error handling logic is defined in src/services/axiosErrorHandler.ts
+  } catch (error) {
+    if (error instanceof Error) {
+      toast.error(`Raw Data ETL Error received Error - ${error.name}: ${error.message}`, axiosErrorToastOptions);
+    } else {
+      toast.error(`Undefined Raw Data ETL Error  ${error}`, axiosErrorToastOptions);
+    }
   }
 };
 
+export const startChromiumDeveloperProtocolSession = async (targetUrl: string) => {
+  setToken();
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    };
+    const response = await axios.post(`${serverConfig.FASTAPI_BASE_URL}/stream/start`, { url: targetUrl }, config);
+    return response.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      toast.error(`Start CDP Session Route received Error - ${error.name}: ${error.message}`, axiosErrorToastOptions);
+    } else {
+      toast.error(`Undefined CDP Session Route Error  ${error}`, axiosErrorToastOptions);
+    }
+  }
+};
 /***
  *     _____ _____ _____ _____
  *    |_   _|  ___/  ___|_   _|

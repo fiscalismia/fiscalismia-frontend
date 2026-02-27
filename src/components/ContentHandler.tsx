@@ -19,6 +19,7 @@ import Income_Sales from './content/income_Sales';
 import Admin_RawDataDbInit from './content/admin_RawDataDbInit';
 import VariableExpenses_Overview from './content/variableExpenses_Overview';
 import { RouteInfo } from '../types/custom/customTypes';
+import Deals_MarketWebscraping from './content/deals_MarketWebscraping';
 
 interface ContentProps {}
 /**
@@ -60,6 +61,8 @@ export default function Content(_props: ContentProps) {
         return <Deals_FoodPrices routeInfo={routeInfo} />;
       case paths.DEALS_GROCERY_DEALS:
         return <Deals_GroceryDeals routeInfo={routeInfo} />;
+      case paths.DEALS_MARKET_WEBSCRAPING:
+        return <Deals_MarketWebscraping routeInfo={routeInfo} />;
       case paths.MENU_UPLOAD_MANUAL:
         return <TestData routeInfo={routeInfo} />;
       case paths.MENU_ETL_RAW_DATA:

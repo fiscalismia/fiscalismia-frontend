@@ -215,8 +215,9 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       --build-arg FRONTEND_VERSION=0,9.0 \
       --build-arg ENVIRONMENT=production \
       --build-arg BACKEND_PORT=80 \
+      --build-arg FASTAPI_PORT=3003 \
       --build-arg BACKEND_PROTOCOL=http \
-      --build-arg BACKEND_DOMAIN=localhost \
+      --build-arg BACKEND_DOMAIN=127.0.0.1 \
       --build-arg NGINX_CONF=nginx.conf \
       -t fiscalismia-frontend:latest "."
    podman run \
@@ -256,7 +257,7 @@ EOF
 
 ## Usage
 
-Once the frontend, database and backend are up and running, the website will be ready at http://localhost:3001
+Once the frontend, database and backend are up and running, the website will be ready at http://127.0.0.1:3001
 
 ## Testing
 

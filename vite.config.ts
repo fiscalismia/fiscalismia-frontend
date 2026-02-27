@@ -20,14 +20,15 @@ export default defineConfig({
       process.env.VITE_BACKEND_PROTOCOL ? `${process.env.VITE_BACKEND_PROTOCOL}` : 'http'
     ),
     __BACKEND_DOMAIN__: JSON.stringify(
-      process.env.VITE_BACKEND_DOMAIN ? `${process.env.VITE_BACKEND_DOMAIN}` : 'localhost'
-    )
+      process.env.VITE_BACKEND_DOMAIN ? `${process.env.VITE_BACKEND_DOMAIN}` : '127.0.0.1'
+    ),
+    __FASTAPI_PORT__: JSON.stringify(process.env.VITE_FASTAPI_PORT ? `${process.env.VITE_FASTAPI_PORT}` : 3003)
   },
   server: {
     watch: {
       usePolling: true // Add this line if you're running on a network filesystem or Docker and Hot Module Replace is not working
     },
-    host: true,
+    host: '127.0.0.1',
     port: FRONTEND_PORT
   },
   optimizeDeps: {
