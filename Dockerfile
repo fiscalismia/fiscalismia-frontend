@@ -50,12 +50,16 @@ WORKDIR /etc/nginx
 
 # construct minimum viable final container from build stage
 COPY --from=build /build-dir/dist /usr/share/nginx/html
-# redeclare arg to expose in stage
-ARG NGINX_CONF
-COPY $NGINX_CONF /etc/nginx/nginx.conf
+
+# Remove default Nginx site configuration
+RUN rm /etc/nginx/sites-enabled/default
 
 # Remove default config that listens on 8080
 RUN rm -f /etc/nginx/conf.d/default.conf
+
+# redeclare arg to expose in stage
+ARG NGINX_CONF
+COPY $NGINX_CONF /etc/nginx/nginx.conf
 
 # HTTP/S Ingress
 EXPOSE 443
