@@ -6,4 +6,5 @@ declare const __ENVIRONMENT__: string;
 declare const __BACKEND_PORT__: number;
 declare const __BACKEND_PROTOCOL__: string;
 declare const __BACKEND_DOMAIN__: string;
+declare const __FASTAPI_DOMAIN__: string;
 declare const __FASTAPI_PORT__: number;

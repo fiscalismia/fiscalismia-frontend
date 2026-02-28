@@ -22,6 +22,9 @@ export default defineConfig({
     __BACKEND_DOMAIN__: JSON.stringify(
       process.env.VITE_BACKEND_DOMAIN ? `${process.env.VITE_BACKEND_DOMAIN}` : '127.0.0.1'
     ),
+    __FASTAPI_DOMAIN__: JSON.stringify(
+      process.env.VITE_FASTAPI_DOMAIN ? `${process.env.VITE_FASTAPI_DOMAIN}` : '127.0.0.1'
+    ),
     __FASTAPI_PORT__: JSON.stringify(process.env.VITE_FASTAPI_PORT ? `${process.env.VITE_FASTAPI_PORT}` : 3003)
   },
   server: {

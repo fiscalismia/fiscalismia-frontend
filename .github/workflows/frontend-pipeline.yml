@@ -99,6 +99,7 @@ jobs:
           FASTAPI_PORT=8444
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=backend.demo.fiscalismia.com
+          FASTAPI_DOMAIN=fastapi.demo.fiscalismia.com
           NGINX_CONF=nginx.demo.conf
         labels: |
           org.opencontainers.image.version=${{ env.BUILD_VERSION }}
@@ -124,6 +125,7 @@ jobs:
           FASTAPI_PORT=444
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=backend.fiscalismia.com
+          FASTAPI_DOMAIN=fastapi.fiscalismia.com
           NGINX_CONF=nginx.conf
         labels: |
           org.opencontainers.image.version=${{ env.BUILD_VERSION }}

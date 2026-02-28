@@ -218,6 +218,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       --build-arg FASTAPI_PORT=3003 \
       --build-arg BACKEND_PROTOCOL=http \
       --build-arg BACKEND_DOMAIN=127.0.0.1 \
+      --build-arg FASTAPI_DOMAIN=127.0.0.1 \
       --build-arg NGINX_CONF=nginx.conf \
       -t fiscalismia-frontend:latest "."
    podman run \
