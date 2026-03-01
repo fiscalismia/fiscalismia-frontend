@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import ContentCardFoodPrices, { ContentCardFoodPrice } from '../minor/ContentCard_FoodPrices';
-import { resourceProperties as res, serverConfig } from '../../resources/resource_properties';
+import { resourceProperties as res } from '../../resources/resource_properties';
+import { serverConfig } from '../../resources/serverConfig';
 import { getAllFoodPricesAndDiscounts } from '../../services/pgConnections';
 import FilterFoodPriceData from '../minor/FilterFoodPriceData';
 import useMediaQuery from '@mui/material/useMediaQuery';

@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import { axiosErrorToastOptions, toastOptions } from '../utils/sharedFunctions';
 import { axiosClient } from './axiosErrorHandler';
 import { locales } from '../utils/localeConfiguration';
-import { serverConfig } from '../resources/resource_properties';
+import { serverConfig } from '../resources/serverConfig';
 
 /**
  *

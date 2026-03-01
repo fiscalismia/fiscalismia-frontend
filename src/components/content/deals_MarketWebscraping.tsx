@@ -4,7 +4,8 @@ import { startChromiumDeveloperProtocolSession } from '../../services/pgConnecti
 import { Button, Paper, useTheme } from '@mui/material';
 import { RouteInfo } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
-import { localStorageKeys, serverConfig } from '../../resources/resource_properties';
+import { localStorageKeys } from '../../resources/resource_properties';
+import { serverConfig } from '../../resources/serverConfig';
 
 interface Deals_MarketWebscraping {
   routeInfo: RouteInfo;

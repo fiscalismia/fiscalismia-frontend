@@ -214,7 +214,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       -f "Dockerfile" \
       --build-arg FRONTEND_VERSION=0,9.0 \
       --build-arg ENVIRONMENT=production \
-      --build-arg BACKEND_PORT=80 \
+      --build-arg BACKEND_PORT=3002 \
       --build-arg FASTAPI_PORT=3003 \
       --build-arg BACKEND_PROTOCOL=http \
       --build-arg BACKEND_DOMAIN=127.0.0.1 \

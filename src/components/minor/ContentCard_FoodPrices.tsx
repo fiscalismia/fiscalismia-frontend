@@ -30,9 +30,9 @@ import online from '/imgs/supermarkets/online1.png';
 // import online2 from '/imgs/supermarkets/online2.png';
 import all from '/imgs/supermarkets/alle1.png';
 import { styled } from '@mui/material/styles';
+import { serverConfig } from '../../resources/serverConfig';
 import {
   resourceProperties as res,
-  serverConfig,
   foodItemInputCategories as foodCategories
 } from '../../resources/resource_properties';
 import { postFoodItemImg, FileSizeError, deleteFoodItemImg } from '../../services/pgConnections';

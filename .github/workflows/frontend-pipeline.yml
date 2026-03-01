@@ -92,11 +92,12 @@ jobs:
         tags: latest ${{ env.BUILD_VERSION }}
         containerfiles: |
           ./Dockerfile
+        # keep in mind that backend requests go through HAProxy at port 443 always
         build-args: |
           FRONTEND_VERSION=${{ env.BUILD_VERSION }}
           ENVIRONMENT=demo
-          BACKEND_PORT=8443
-          FASTAPI_PORT=8444
+          BACKEND_PORT=443
+          FASTAPI_PORT=443
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=backend.demo.fiscalismia.com
           FASTAPI_DOMAIN=fastapi.demo.fiscalismia.com
@@ -118,11 +119,12 @@ jobs:
         tags: latest ${{ env.BUILD_VERSION }}
         containerfiles: |
           ./Dockerfile
+        # keep in mind that backend requests go through HAProxy at port 443 always
         build-args: |
           FRONTEND_VERSION=${{ env.BUILD_VERSION }}
           ENVIRONMENT=production
           BACKEND_PORT=443
-          FASTAPI_PORT=444
+          FASTAPI_PORT=443
           BACKEND_PROTOCOL=https
           BACKEND_DOMAIN=backend.fiscalismia.com
           FASTAPI_DOMAIN=fastapi.fiscalismia.com

@@ -18,7 +18,8 @@ import CancelIcon from '@mui/icons-material/CancelSharp';
 import Stack from '@mui/system/Stack';
 import { Paper, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { serverConfig, foodItemInputCategories as foodCategories } from '../../resources/resource_properties';
+import { foodItemInputCategories as foodCategories } from '../../resources/resource_properties';
+import { serverConfig } from '../../resources/serverConfig';
 import {
   postFoodItemImg,
   FileSizeError,

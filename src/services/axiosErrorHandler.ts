@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { serverConfig } from '../resources/resource_properties';
+import { serverConfig } from '../resources/serverConfig';
 import { toast } from 'react-toastify';
 import { axiosErrorToastOptions } from '../utils/sharedFunctions';
 
