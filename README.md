@@ -188,7 +188,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       -f "Dockerfile.dev" \
       --pull \
       --no-cache \
-      -t fiscalismia-frontend:latest "."
+      -t fiscalismia-frontend-dev:latest "."
    podman run \
       --name fiscalismia-frontend \
       --rm \
@@ -196,7 +196,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       -v $PWD/src:/fiscalismia-frontend/src \
       --net fiscalismia-network \
       -p 3001:3001 \
-      fiscalismia-frontend:latest
+      fiscalismia-frontend-dev:latest
    ```
 
    **PROD Frontend & DEV Backend & local DB**
@@ -212,13 +212,8 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    cd ~/git/fiscalismia-frontend
    podman build \
       -f "Dockerfile" \
-      --build-arg FRONTEND_VERSION=0,9.0 \
+      --build-arg BUILD_VERSION=0,9.0 \
       --build-arg ENVIRONMENT=production \
-      --build-arg BACKEND_PORT=3002 \
-      --build-arg FASTAPI_PORT=3003 \
-      --build-arg BACKEND_PROTOCOL=http \
-      --build-arg BACKEND_DOMAIN=127.0.0.1 \
-      --build-arg FASTAPI_DOMAIN=127.0.0.1 \
       --build-arg NGINX_CONF=nginx.conf \
       -t fiscalismia-frontend:latest "."
    podman run \
@@ -227,7 +222,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
       --net fiscalismia-network \
       --sysctl net.ipv4.ip_unprivileged_port_start=0 \
       --cap-add=NET_BIND_SERVICE \
-      -p 443:443 \
+      -p 3001:5000 \
       fiscalismia-frontend:latest
    ```
 

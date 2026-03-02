@@ -28,7 +28,7 @@ export default function Footer(): JSX.Element {
             color="text.secondary"
             sx={{ fontSize: '85%', fontWeight: 300, letterSpacing: 1, color: palette.common.white }}
           >
-            {res.FOOTER_TEXT}
+            {res.FOOTER_TEXT}&nbsp;v{__APP_VERSION__}
           </Typography>
         </Stack>
       </Box>

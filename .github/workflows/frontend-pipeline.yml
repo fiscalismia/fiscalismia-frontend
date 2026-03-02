@@ -91,13 +91,8 @@ jobs:
           ./Dockerfile
         # keep in mind that backend requests go through HAProxy at port 443 always
         build-args: |
-          FRONTEND_VERSION=${{ env.BUILD_VERSION }}
+          BUILD_VERSION=${{ env.BUILD_VERSION }}
           ENVIRONMENT=demo
-          BACKEND_PORT=443
-          FASTAPI_PORT=443
-          BACKEND_PROTOCOL=https
-          BACKEND_DOMAIN=backend.demo.fiscalismia.com
-          FASTAPI_DOMAIN=fastapi.demo.fiscalismia.com
           NGINX_CONF=nginx.demo.conf
         labels: |
           org.opencontainers.image.version=${{ env.BUILD_VERSION }}
@@ -116,15 +111,9 @@ jobs:
         tags: latest ${{ env.BUILD_VERSION }}
         containerfiles: |
           ./Dockerfile
-        # keep in mind that backend requests go through HAProxy at port 443 always
         build-args: |
-          FRONTEND_VERSION=${{ env.BUILD_VERSION }}
+          BUILD_VERSION=${{ env.BUILD_VERSION }}
           ENVIRONMENT=production
-          BACKEND_PORT=443
-          FASTAPI_PORT=443
-          BACKEND_PROTOCOL=https
-          BACKEND_DOMAIN=backend.fiscalismia.com
-          FASTAPI_DOMAIN=fastapi.fiscalismia.com
           NGINX_CONF=nginx.conf
         labels: |
           org.opencontainers.image.version=${{ env.BUILD_VERSION }}

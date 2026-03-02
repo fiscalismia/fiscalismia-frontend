@@ -11,21 +11,8 @@ const FRONTEND_PORT = 3001;
 export default defineConfig({
   plugins: [react()],
   define: {
-    __APP_VERSION__: JSON.stringify(
-      process.env.VITE_BUILD_VERSION ? `${process.env.VITE_BUILD_VERSION}` : 'local-development'
-    ),
-    __ENVIRONMENT__: JSON.stringify(process.env.VITE_ENVIRONMENT ? `${process.env.VITE_ENVIRONMENT}` : 'development'),
-    __BACKEND_PORT__: JSON.stringify(process.env.VITE_BACKEND_PORT ? `${process.env.VITE_BACKEND_PORT}` : 3002),
-    __FASTAPI_PORT__: JSON.stringify(process.env.VITE_FASTAPI_PORT ? `${process.env.VITE_FASTAPI_PORT}` : 3003),
-    __BACKEND_PROTOCOL__: JSON.stringify(
-      process.env.VITE_BACKEND_PROTOCOL ? `${process.env.VITE_BACKEND_PROTOCOL}` : 'http'
-    ),
-    __BACKEND_DOMAIN__: JSON.stringify(
-      process.env.VITE_BACKEND_DOMAIN ? `${process.env.VITE_BACKEND_DOMAIN}` : '127.0.0.1'
-    ),
-    __FASTAPI_DOMAIN__: JSON.stringify(
-      process.env.VITE_FASTAPI_DOMAIN ? `${process.env.VITE_FASTAPI_DOMAIN}` : '127.0.0.1'
-    )
+    __APP_VERSION__: JSON.stringify(process.env.VITE_BUILD_VERSION ? `${process.env.VITE_BUILD_VERSION}` : '0.9.local'),
+    __ENVIRONMENT__: JSON.stringify(process.env.VITE_ENVIRONMENT ? `${process.env.VITE_ENVIRONMENT}` : 'development')
   },
   server: {
     watch: {
