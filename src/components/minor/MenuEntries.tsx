@@ -56,9 +56,9 @@ export const menuEntries = [
   {
     id: locales().MENU_ADMIN_PANEL,
     children: [
-      { id: locales().MENU_UPLOAD_MANUAL, path: paths.MENU_UPLOAD_MANUAL, icon: <FileUploadIcon /> },
-      { id: locales().MENU_ETL_RAW_DATA, path: paths.MENU_ETL_RAW_DATA, icon: <FileUploadIcon /> },
-      { id: locales().MENU_MARKET_WEBSCRAPING, path: paths.DEALS_MARKET_WEBSCRAPING, icon: <BrowserUpdatedIcon /> }
+      { id: locales().MENU_UPLOAD_MANUAL, path: paths.ADMIN_UPLOAD_MANUAL, icon: <FileUploadIcon /> },
+      { id: locales().MENU_ETL_RAW_DATA, path: paths.ADMIN_ETL_RAW_DATA, icon: <FileUploadIcon /> },
+      { id: locales().MENU_CDP_PERFORMANCE_TEST, path: paths.ADMIN_CDP_PERFORMANCE_TEST, icon: <BrowserUpdatedIcon /> }
     ]
   }
 ];

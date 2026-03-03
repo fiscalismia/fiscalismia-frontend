@@ -19,7 +19,7 @@ import Income_Sales from './content/income_Sales';
 import Admin_RawDataDbInit from './content/admin_RawDataDbInit';
 import VariableExpenses_Overview from './content/variableExpenses_Overview';
 import { RouteInfo } from '../types/custom/customTypes';
-import Deals_MarketWebscraping from './content/deals_MarketWebscraping';
+import Admin_CDP_PerformanceTest from './content/admin_CDP_PerformanceTest';
 
 interface ContentProps {}
 /**
@@ -61,11 +61,11 @@ export default function Content(_props: ContentProps) {
         return <Deals_FoodPrices routeInfo={routeInfo} />;
       case paths.DEALS_GROCERY_DEALS:
         return <Deals_GroceryDeals routeInfo={routeInfo} />;
-      case paths.DEALS_MARKET_WEBSCRAPING:
-        return <Deals_MarketWebscraping routeInfo={routeInfo} />;
-      case paths.MENU_UPLOAD_MANUAL:
+      case paths.ADMIN_CDP_PERFORMANCE_TEST:
+        return <Admin_CDP_PerformanceTest routeInfo={routeInfo} />;
+      case paths.ADMIN_UPLOAD_MANUAL:
         return <TestData routeInfo={routeInfo} />;
-      case paths.MENU_ETL_RAW_DATA:
+      case paths.ADMIN_ETL_RAW_DATA:
         return <Admin_RawDataDbInit routeInfo={routeInfo} />;
       default:
         <React.Fragment></React.Fragment>;
