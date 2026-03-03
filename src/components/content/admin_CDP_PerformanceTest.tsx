@@ -33,8 +33,8 @@ const CUSTOM_URL_VALUE = '__custom__';
 const PRESET_URLS: { label: string; value: string }[] = [
   { label: 'WebGL Blob', value: 'https://webglsamples.org/blob/blob.html' },
   { label: 'TestUFO', value: 'https://testufo.com/' },
-  { label: 'Three.js — Unreal Bloom', value: 'https://threejs.org/examples/#webgl_postprocessing_unreal_bloom' },
-  { label: 'Three.js — WebGPU Camera', value: 'https://threejs.org/examples/#webgpu_camera' },
+  { label: 'JPEG payload size stress', value: 'https://www.shadertoy.com/view/Xds3zN' },
+  { label: 'Interactive Game', value: 'https://hexgl.bkcore.com/play/' },
   { label: 'Custom URL…', value: CUSTOM_URL_VALUE }
 ];
 
