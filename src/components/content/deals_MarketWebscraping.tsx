@@ -60,7 +60,7 @@ export default function Deals_MarketWebscraping(_props: Deals_MarketWebscraping)
       return;
     }
 
-    const wsUrl = `${WS_BASE}/stream/${result.session_id}/ws?token=${token}`;
+    const wsUrl = `${WS_BASE}/ws/session/${result.session_id}?token=${token}`;
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 

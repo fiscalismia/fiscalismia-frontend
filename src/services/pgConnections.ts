@@ -852,7 +852,7 @@ export const startChromiumDeveloperProtocolSession = async (targetUrl: string) =
     const config = {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
     };
-    const response = await axios.post(`${serverConfig.FASTAPI_BASE_URL}/stream/start`, { url: targetUrl }, config);
+    const response = await axios.post(`${serverConfig.FASTAPI_BASE_URL}/rest/cdp/start`, { url: targetUrl }, config);
     return response.data;
   } catch (error) {
     if (error instanceof Error) {
