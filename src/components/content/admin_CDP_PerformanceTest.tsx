@@ -1,7 +1,18 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import { startChromiumDeveloperProtocolSession } from '../../services/pgConnections';
-import { Box, Button, FilledInput, FormControl, InputLabel, Paper, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  FilledInput,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  SelectChangeEvent,
+  useTheme
+} from '@mui/material';
 import { RouteInfo } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
 import { localStorageKeys } from '../../resources/resource_properties';
@@ -17,6 +28,16 @@ const CDP_WIDTH = 1280;
 const CDP_HEIGHT = 720;
 const WS_BASE = serverConfig.FASTAPI_BASE_URL.replace(/^http/, 'ws');
 
+const CUSTOM_URL_VALUE = '__custom__';
+
+const PRESET_URLS: { label: string; value: string }[] = [
+  { label: 'WebGL Blob', value: 'https://webglsamples.org/blob/blob.html' },
+  { label: 'TestUFO', value: 'https://testufo.com/' },
+  { label: 'Three.js — Unreal Bloom', value: 'https://threejs.org/examples/#webgl_postprocessing_unreal_bloom' },
+  { label: 'Three.js — WebGPU Camera', value: 'https://threejs.org/examples/#webgpu_camera' },
+  { label: 'Custom URL…', value: CUSTOM_URL_VALUE }
+];
+
 /**
  * Starts a remote CDP session on the FastAPI Python Backend and then uses Websockets to receive jpegs as binary packets
  * that can be displayed in a Canvas, which records mouse and keyboard input and sends it back via a bi-directional websocket
@@ -30,19 +51,18 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const [status, setStatus] = useState<StreamStatus>('idle');
-  // https://testufo.com/
-  // https://threejs.org/examples/#webgl_postprocessing_pixel
-  // https://threejs.org/examples/#webgl_postprocessing_unreal_bloom
-  // https://threejs.org/examples/#webgpu_camera
-  const [targetUrl, setTargetUrl] = useState<string>('https://webglsamples.org/blob/blob.html');
+  const [selectedPreset, setSelectedPreset] = useState<string>(PRESET_URLS[0].value);
+  const [customUrl, setCustomUrl] = useState<string>('');
 
-  const inputChangeListener = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    e.preventDefault();
-    switch (e.target.id) {
-      case 'targetUrlInput':
-        setTargetUrl(e.target.value);
-        break;
-    }
+  const isCustom = selectedPreset === CUSTOM_URL_VALUE;
+  const targetUrl = isCustom ? customUrl : selectedPreset;
+
+  const handlePresetChange = (e: SelectChangeEvent<string>): void => {
+    setSelectedPreset(e.target.value);
+  };
+
+  const handleCustomUrlChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setCustomUrl(e.target.value);
   };
 
   // useCallback with [] deps: handleFrame is assigned to ws.onmessage once during connection setup.
@@ -99,52 +119,76 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
     };
   }, []);
 
+  const isDisabled = status === 'connecting' || status === 'streaming';
+
   return (
     <React.Fragment>
       <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="flex-start">
         <Grid xs={12} sm={12} md={12} lg={12} xl={8}>
           <Box component="form" noValidate onSubmit={handleWebsocketSessionInitialization}>
+            {/* FormControl 1: Select only — Select internally renders an InputBase */}
             <FormControl sx={{ width: 1 }}>
-              <InputLabel
-                variant="outlined"
-                htmlFor="targetUrlInput"
-                sx={{
-                  marginTop: -1,
-                  marginLeft: -1.5,
-                  fontFamily: 'Hack, Roboto'
-                }}
-              >
+              <InputLabel id="targetUrlSelect-label" variant="filled" sx={{ fontFamily: 'Hack, Roboto' }}>
                 {locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_INPUT_LABEL_TARGETURL}
               </InputLabel>
-              <FilledInput
-                sx={{ borderRadius: 0, fontFamily: 'Hack, Roboto' }}
-                id="targetUrlInput"
-                disableUnderline={true}
-                hiddenLabel={true}
-                value={targetUrl}
-                onChange={inputChangeListener}
-              />
-              <Button
-                type="submit"
+              <Select
+                labelId="targetUrlSelect-label"
+                id="targetUrlSelect"
+                value={selectedPreset}
+                onChange={handlePresetChange}
+                variant="filled"
+                disableUnderline
+                disabled={isDisabled}
                 sx={{
-                  width: 1,
                   borderRadius: 0,
-                  border: `3px solid ${palette.border.dark}`,
                   fontFamily: 'Hack, Roboto',
-                  fontSize: '16px',
-                  mb: '-2px',
-                  letterSpacing: 3,
-                  textTransform: 'uppercase',
-                  fontWeight: 'bold'
+                  '& .MuiSelect-select': { fontFamily: 'Hack, Roboto' }
                 }}
-                variant="contained"
-                size="large"
-                color="primary"
-                disabled={status === 'connecting' || status === 'streaming'}
               >
-                {locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_START_CDP_SESSION_BTN}
-              </Button>
+                {PRESET_URLS.map(({ label, value }) => (
+                  <MenuItem key={value} value={value} sx={{ fontFamily: 'Hack, Roboto' }}>
+                    {label}
+                  </MenuItem>
+                ))}
+              </Select>
             </FormControl>
+
+            {/* FormControl 2: custom URL input — isolated so only one InputBase per FormControl */}
+            {isCustom && (
+              <FormControl sx={{ width: 1, mt: '2px' }}>
+                <FilledInput
+                  sx={{ borderRadius: 0, fontFamily: 'Hack, Roboto' }}
+                  id="customUrlInput"
+                  disableUnderline
+                  hiddenLabel
+                  placeholder="https://…"
+                  value={customUrl}
+                  onChange={handleCustomUrlChange}
+                  disabled={isDisabled}
+                />
+              </FormControl>
+            )}
+
+            <Button
+              type="submit"
+              sx={{
+                width: 1,
+                borderRadius: 0,
+                border: `3px solid ${palette.border.dark}`,
+                fontFamily: 'Hack, Roboto',
+                fontSize: '16px',
+                mb: '-2px',
+                letterSpacing: 3,
+                textTransform: 'uppercase',
+                fontWeight: 'bold'
+              }}
+              variant="contained"
+              size="large"
+              color="primary"
+              disabled={isDisabled || (isCustom && !customUrl.trim())}
+            >
+              {locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_START_CDP_SESSION_BTN}
+            </Button>
           </Box>
           <Paper
             elevation={6}
