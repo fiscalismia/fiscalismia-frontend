@@ -7,16 +7,20 @@ import {
   FilledInput,
   FormControl,
   InputLabel,
+  Link,
   MenuItem,
   Paper,
   Select,
   SelectChangeEvent,
+  Stack,
   useTheme
 } from '@mui/material';
 import { RouteInfo } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
 import { localStorageKeys } from '../../resources/resource_properties';
 import { serverConfig } from '../../resources/serverConfig';
+import { toastOptions } from '../../utils/sharedFunctions';
+import { toast } from 'react-toastify';
 
 interface Admin_CDP_PerformanceTest {
   routeInfo: RouteInfo;
@@ -68,14 +72,15 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   // useCallback with [] deps: handleFrame is assigned to ws.onmessage once during connection setup.
   // Without memoization, a re-render would create a new closure, but the WebSocket still holds
   // the old reference — so the callback identity must be stable.
-  const handleFrame = useCallback((base64: string) => {
+  const handleFrameBlob = useCallback((blob: Blob) => {
+    const blobUrl = URL.createObjectURL(blob);
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const img = new Image();
     img.onload = () => ctx.drawImage(img, 0, 0, CDP_WIDTH, CDP_HEIGHT);
-    img.src = `data:image/jpeg;base64,${base64}`;
+    img.src = `${blobUrl}`;
   }, []);
 
   const handleWebsocketSessionInitialization = useCallback(
@@ -97,17 +102,57 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
       wsRef.current = ws;
 
       ws.onopen = () => setStatus('streaming');
-      ws.onmessage = (event) => {
-        const msg = JSON.parse(event.data);
-        if (msg.type === 'frame') handleFrame(msg.data);
+      ws.onmessage = (message: MessageEvent<Blob>) => {
+        if (message.data) {
+          try {
+            const blob: Blob = message.data;
+            // debugBlob(blob);
+
+            // ##### BLOB SET IMG URL TO CANVAS
+            handleFrameBlob(blob);
+
+            // const blobImageBitmap: ImageBitmap = createImageBitmap(blobUrl);
+          } catch (error: unknown) {
+            if (error instanceof Error) {
+              toast.error(
+                `Error: ${error}: ` +
+                  locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_BLOB_ERROR_MSG(
+                    message.data.size?.toFixed(),
+                    typeof message.data
+                  ),
+                toastOptions
+              );
+            } else {
+              toast.error(
+                locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_BLOB_ERROR_MSG(
+                  message.data.size?.toFixed(),
+                  typeof message.data
+                ),
+                toastOptions
+              );
+            }
+            ws.close();
+            setStatus('error');
+            return;
+          }
+        } else {
+          ws.close();
+          toast.error(locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_MESSAGE_DATA_NOT_DEFINED, toastOptions);
+          setStatus('error');
+          return;
+        }
       };
-      ws.onerror = () => setStatus('error');
+      ws.onerror = () => {
+        toast.error(locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_ERROR, toastOptions);
+        setStatus('error');
+      };
       ws.onclose = () => {
+        toast.info(locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_CLOSED_MSG, toastOptions);
         wsRef.current = null;
         setStatus('idle');
       };
     },
-    [status, handleFrame, targetUrl]
+    [status, handleFrameBlob, targetUrl]
   );
 
   useEffect(() => {
@@ -124,6 +169,20 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   return (
     <React.Fragment>
       <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="flex-start">
+        <Stack>
+          <Link id="blob-test">Download Blob</Link>
+          <Box
+            id="blob-img"
+            component="img"
+            sx={{
+              width: 320,
+              height: 180,
+              maxWidth: { xs: 640 },
+              maxHeight: { xs: 360 }
+            }}
+          />
+        </Stack>
+
         <Grid xs={12} sm={12} md={12} lg={12} xl={8}>
           <Box component="form" noValidate onSubmit={handleWebsocketSessionInitialization}>
             {/* FormControl 1: Select only — Select internally renders an InputBase */}
@@ -209,4 +268,41 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
       </Grid>
     </React.Fragment>
   );
+
+  // /**
+  //  *
+  //  * @param blob
+  //  */
+  // function debugBlob(blob: Blob) {
+  //   // Add this to the DOM before debugging
+  //   <Stack>
+  //     <Link id="blob-test">Download Blob</Link>
+  //     <Box
+  //       id="blob-img"
+  //       component="img"
+  //       sx={{
+  //         width: 320,
+  //         height: 180,
+  //         maxWidth: { xs: 640 },
+  //         maxHeight: { xs: 360 }
+  //       }}
+  //     />
+  //   </Stack>;
+  //   // ##### BLOB DOWNLOAD LINK
+  //   const blobUrl = URL.createObjectURL(blob);
+  //   const link: HTMLElement = document.getElementById('blob-test')!;
+  //   link.setAttribute('href', blobUrl);
+  //   link.setAttribute('download', 'blob.jpeg');
+  //   link.setAttribute('innertext', 'download blob');
+
+  //   // ##### BLOB DISPLAY OBJECT URL AS IMG
+  //   const imgBox: HTMLElement = document.getElementById('blob-img')!;
+  //   imgBox.setAttribute('src', blobUrl);
+
+  //   // #### DEBUG BLOB
+  //   // console.log(blob);
+  //   // console.log(blobUrl);
+  //   // console.log(link);
+  //   // console.log(imgBox);
+  // }
 }

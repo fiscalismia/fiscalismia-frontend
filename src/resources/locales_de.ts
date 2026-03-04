@@ -123,6 +123,11 @@ export const locales_de = {
 
   ADMIN_AREA_CDP_PERFORMANCE_TEST_START_CDP_SESSION_BTN: 'CDP Session initiieren',
   ADMIN_AREA_CDP_PERFORMANCE_TEST_INPUT_LABEL_TARGETURL: 'Remote URL',
+  ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_CLOSED_MSG: 'Websocket Verbindung geschlossen.',
+  ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_ERROR: 'Unbekannter Websocket Error.',
+  ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_MESSAGE_DATA_NOT_DEFINED: 'Websocket enthält keine Message data.',
+  ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_BLOB_ERROR_MSG: (pos1: string, pos2: string) =>
+    `Blob konnte nicht verarbeitet werden. msg.data size ${pos1} msg.data type ${pos2}`,
 
   ADMIN_AREA_AUTOMATED_DB_TRUNCATE_BTN: 'Datenbank vollständig zurücksetzen',
   ADMIN_AREA_AUTOMATED_DB_INVOKE_API_GW_LAMBDA_BTN: 'ETL Prozess initiieren',
