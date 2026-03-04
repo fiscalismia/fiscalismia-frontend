@@ -7,12 +7,10 @@ import {
   FilledInput,
   FormControl,
   InputLabel,
-  Link,
   MenuItem,
   Paper,
   Select,
   SelectChangeEvent,
-  Stack,
   useTheme
 } from '@mui/material';
 import { RouteInfo } from '../../types/custom/customTypes';
@@ -169,20 +167,6 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   return (
     <React.Fragment>
       <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="flex-start">
-        <Stack>
-          <Link id="blob-test">Download Blob</Link>
-          <Box
-            id="blob-img"
-            component="img"
-            sx={{
-              width: 320,
-              height: 180,
-              maxWidth: { xs: 640 },
-              maxHeight: { xs: 360 }
-            }}
-          />
-        </Stack>
-
         <Grid xs={12} sm={12} md={12} lg={12} xl={8}>
           <Box component="form" noValidate onSubmit={handleWebsocketSessionInitialization}>
             {/* FormControl 1: Select only — Select internally renders an InputBase */}
