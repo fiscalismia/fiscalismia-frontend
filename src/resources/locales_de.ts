@@ -125,6 +125,7 @@ export const locales_de = {
   ADMIN_AREA_CDP_PERFORMANCE_TEST_INPUT_LABEL_TARGETURL: 'Remote URL',
   ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_CLOSED_MSG: 'Websocket Verbindung geschlossen.',
   ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_ERROR: 'Unbekannter Websocket Error.',
+  ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_BITMAP_ERROR: 'Bitmap Konversion fehlgeschlagen.',
   ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_MESSAGE_DATA_NOT_DEFINED: 'Websocket enthält keine Message data.',
   ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_BLOB_ERROR_MSG: (pos1: string, pos2: string) =>
     `Blob konnte nicht verarbeitet werden. msg.data size ${pos1} msg.data type ${pos2}`,

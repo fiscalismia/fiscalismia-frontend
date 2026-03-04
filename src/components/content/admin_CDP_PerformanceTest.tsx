@@ -70,15 +70,32 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   // useCallback with [] deps: handleFrame is assigned to ws.onmessage once during connection setup.
   // Without memoization, a re-render would create a new closure, but the WebSocket still holds
   // the old reference — so the callback identity must be stable.
-  const handleFrameBlob = useCallback((blob: Blob) => {
-    const blobUrl = URL.createObjectURL(blob);
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const img = new Image();
-    img.onload = () => ctx.drawImage(img, 0, 0, CDP_WIDTH, CDP_HEIGHT);
-    img.src = `${blobUrl}`;
+  const handleFrameBlob = useCallback((blob: Blob, ctx: CanvasRenderingContext2D, isBitmap: boolean = false) => {
+    if (isBitmap) {
+      // more performant bitmap Promises
+      createImageBitmap(blob).then(
+        (bitmap: ImageBitmap) => {
+          ctx.drawImage(bitmap, 0, 0, CDP_WIDTH, CDP_HEIGHT);
+          bitmap.close();
+        },
+        (onReject: any) => {
+          toast.error(locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_BITMAP_ERROR + ` rejected: ${onReject}`);
+        }
+      );
+    } else {
+      const img = new Image();
+      // default and trivial object url decoding
+      const blobUrl = URL.createObjectURL(blob);
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, CDP_WIDTH, CDP_HEIGHT);
+        URL.revokeObjectURL(blobUrl);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(blobUrl);
+      };
+      img.src = blobUrl;
+      // cleans up memory to prevent a memory leak
+    }
   }, []);
 
   const handleWebsocketSessionInitialization = useCallback(
@@ -88,6 +105,12 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
       const token = window.localStorage.getItem(localStorageKeys.token);
       if (!token) return;
 
+      // Check for existing canvas context
+      const canvas: HTMLCanvasElement | null = canvasRef.current;
+      if (!canvas) return;
+      const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
+      if (!ctx) return;
+
       setStatus('connecting');
       const result = await startChromiumDeveloperProtocolSession(targetUrl);
       if (!result?.session_id) {
@@ -95,21 +118,17 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
         return;
       }
 
+      // handle websocket session streaming
       const wsUrl = `${WS_BASE}/ws/session/${result.session_id}?token=${token}`;
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
-
       ws.onopen = () => setStatus('streaming');
       ws.onmessage = (message: MessageEvent<Blob>) => {
         if (message.data) {
           try {
             const blob: Blob = message.data;
             // debugBlob(blob);
-
-            // ##### BLOB SET IMG URL TO CANVAS
-            handleFrameBlob(blob);
-
-            // const blobImageBitmap: ImageBitmap = createImageBitmap(blobUrl);
+            handleFrameBlob(blob, ctx, true);
           } catch (error: unknown) {
             if (error instanceof Error) {
               toast.error(
