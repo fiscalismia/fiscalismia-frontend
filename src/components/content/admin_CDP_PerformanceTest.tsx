@@ -52,6 +52,8 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   // useRef for WebSocket: the WS instance must persist across renders and be accessible without a state dependency
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const frameCounter = useRef<number>(0);
+  const lastRenderedFrame = useRef<number>(0);
   const [status, setStatus] = useState<StreamStatus>('idle');
   const [selectedPreset, setSelectedPreset] = useState<string>(PRESET_URLS[0].value);
   const [customUrl, setCustomUrl] = useState<string>('');
@@ -71,11 +73,17 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   // Without memoization, a re-render would create a new closure, but the WebSocket still holds
   // the old reference — so the callback identity must be stable.
   const handleFrameBlob = useCallback((blob: Blob, ctx: CanvasRenderingContext2D, isBitmap: boolean = false) => {
+    // ensures old frames are never painted above newer frames
+    const frameToRender = (frameCounter.current += 1);
     if (isBitmap) {
       // more performant bitmap Promises
       createImageBitmap(blob).then(
         (bitmap: ImageBitmap) => {
-          ctx.drawImage(bitmap, 0, 0, CDP_WIDTH, CDP_HEIGHT);
+          if (frameToRender >= lastRenderedFrame.current) {
+            ctx.drawImage(bitmap, 0, 0, CDP_WIDTH, CDP_HEIGHT);
+            lastRenderedFrame.current = frameToRender;
+            console.log('Rendered frame ' + lastRenderedFrame.current);
+          }
           bitmap.close();
         },
         (onReject: any) => {
