@@ -82,7 +82,6 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
           if (frameToRender >= lastRenderedFrame.current) {
             ctx.drawImage(bitmap, 0, 0, CDP_WIDTH, CDP_HEIGHT);
             lastRenderedFrame.current = frameToRender;
-            console.log('Rendered frame ' + lastRenderedFrame.current);
           }
           bitmap.close();
         },
