@@ -450,3 +450,22 @@ export const axiosErrorToastOptions: ToastOptions = {
   theme: 'colored',
   transition: Zoom
 };
+
+/**
+ * Converts canvas x and y coordinates to backend CDP coordinates
+ * @param e MouseEvent
+ * @param logicalWidth Canvas width
+ * @param logicalHeight Canvas height
+ * @returns converted coordinates
+ */
+export function canvasToCDP(
+  e: React.MouseEvent<HTMLCanvasElement>,
+  logicalWidth: number,
+  logicalHeight: number
+): { x: number; y: number } {
+  const rect = e.currentTarget.getBoundingClientRect();
+  return {
+    x: ((e.clientX - rect.left) / rect.width) * logicalWidth,
+    y: ((e.clientY - rect.top) / rect.height) * logicalHeight
+  };
+}

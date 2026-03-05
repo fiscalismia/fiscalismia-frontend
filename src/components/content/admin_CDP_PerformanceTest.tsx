@@ -13,11 +13,11 @@ import {
   SelectChangeEvent,
   useTheme
 } from '@mui/material';
-import { RouteInfo } from '../../types/custom/customTypes';
+import { CDPUserInput, MouseClickInput, RouteInfo } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
 import { localStorageKeys } from '../../resources/resource_properties';
 import { serverConfig } from '../../resources/serverConfig';
-import { toastOptions } from '../../utils/sharedFunctions';
+import { canvasToCDP, toastOptions } from '../../utils/sharedFunctions';
 import { toast } from 'react-toastify';
 
 interface Admin_CDP_PerformanceTest {
@@ -39,6 +39,12 @@ const PRESET_URLS: { label: string; value: string }[] = [
   { label: 'Interactive Game', value: 'https://hexgl.bkcore.com/play/' },
   { label: 'Custom URL…', value: CUSTOM_URL_VALUE }
 ];
+
+const BUTTON_MAP: Record<number, MouseClickInput['button']> = {
+  0: 'left',
+  1: 'middle',
+  2: 'right'
+};
 
 /**
  * Starts a remote CDP session on the FastAPI Python Backend and then uses Websockets to receive jpegs as binary packets
@@ -69,6 +75,17 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
     setCustomUrl(e.target.value);
   };
 
+  /**
+   * Sends user input in the rendered canvas back to the backend via websockets
+   * @param ws websocket
+   * @param userInput varying and extensible user input such as mouseclicks
+   */
+  const sendInput = (ws: WebSocket | null, userInput: CDPUserInput): void => {
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(userInput));
+    }
+  };
+
   // useCallback with [] deps: handleFrame is assigned to ws.onmessage once during connection setup.
   // Without memoization, a re-render would create a new closure, but the WebSocket still holds
   // the old reference — so the callback identity must be stable.
@@ -94,17 +111,39 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
       // default and trivial object url decoding
       const blobUrl = URL.createObjectURL(blob);
       img.onload = () => {
-        ctx.drawImage(img, 0, 0, CDP_WIDTH, CDP_HEIGHT);
+        if (frameToRender >= lastRenderedFrame.current) {
+          ctx.drawImage(img, 0, 0, CDP_WIDTH, CDP_HEIGHT);
+          lastRenderedFrame.current = frameToRender;
+        }
+        // cleans up memory to prevent a memory leak
         URL.revokeObjectURL(blobUrl);
       };
       img.onerror = () => {
         URL.revokeObjectURL(blobUrl);
       };
       img.src = blobUrl;
-      // cleans up memory to prevent a memory leak
     }
   }, []);
 
+  const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const { x, y } = canvasToCDP(e, CDP_WIDTH, CDP_HEIGHT);
+    const mouseClick: MouseClickInput = {
+      type: 'mouseclick',
+      x: Math.round(x),
+      y: Math.round(y),
+      button: BUTTON_MAP[e.button] ?? 'left'
+    };
+    if (e.button === 0) toast.info(JSON.stringify(mouseClick));
+    if (e.button === 1) toast.success(JSON.stringify(mouseClick));
+    if (e.button === 2) toast.dark(JSON.stringify(mouseClick));
+    sendInput(wsRef.current, mouseClick);
+  }, []);
+
+  /**
+   * Opens a Websocket Connection to the FastAPI backend in order to stream a Playwright CDP session.
+   * Calls a framehandler with binary jpeg data to transform into a performant ImageBitmap Promise pipeline.
+   * The pipeline tracks rendered frames and discards stale frames not rendered fast enough in the async loop.
+   */
   const handleWebsocketSessionInitialization = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -271,6 +310,8 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
               ref={canvasRef}
               width={CDP_WIDTH}
               height={CDP_HEIGHT}
+              onMouseDown={handleCanvasClick}
+              onContextMenu={(e) => e.preventDefault()}
               style={{ display: 'block', width: '100%', height: 'auto' }}
             />
           </Paper>

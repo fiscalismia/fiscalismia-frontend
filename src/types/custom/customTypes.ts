@@ -271,3 +271,21 @@ export type ContentCardObject = {
   img: string | null;
   icon: React.ReactNode;
 };
+
+/**
+ * @description Tracks simple mouseclicks from the user for sending canvas browser window inputs to backends
+ * @property {mouseclick} type string of a food item
+ * @property {number} x Brand of the food item
+ * @property {string} y Store where the food item is purchased
+ * @property {'left' | 'middle' | 'right'} button Main macronutrient of the food item
+ */
+export interface MouseClickInput {
+  type: 'mouseclick';
+  x: number;
+  y: number;
+  button: 'left' | 'middle' | 'right';
+}
+
+// interface MouseMoveInput extends BaseInput { type: 'mousemove'; x: number; y: number }
+// interface KeyDownInput extends BaseInput { type: 'keydown'; key: string; modifiers: number }
+export type CDPUserInput = MouseClickInput /* | MouseMoveInput | KeyDownInput */;
