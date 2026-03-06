@@ -280,7 +280,7 @@ export type ContentCardObject = {
  * @property {'left' | 'middle' | 'right'} button Main macronutrient of the food item
  */
 export interface MouseClickInput {
-  type: 'mouseclick';
+  type: 'mouse_click';
   x: number;
   y: number;
   button: 'left' | 'middle' | 'right';

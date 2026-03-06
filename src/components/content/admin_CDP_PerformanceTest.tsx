@@ -128,7 +128,7 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const { x, y } = canvasToCDP(e, CDP_WIDTH, CDP_HEIGHT);
     const mouseClick: MouseClickInput = {
-      type: 'mouseclick',
+      type: 'mouse_click',
       x: Math.round(x),
       y: Math.round(y),
       button: BUTTON_MAP[e.button] ?? 'left'
