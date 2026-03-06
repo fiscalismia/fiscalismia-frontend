@@ -274,18 +274,51 @@ export type ContentCardObject = {
 
 /**
  * @description Tracks simple mouseclicks from the user for sending canvas browser window inputs to backends
- * @property {mouseclick} type string of a food item
- * @property {number} x Brand of the food item
- * @property {string} y Store where the food item is purchased
- * @property {'left' | 'middle' | 'right'} button Main macronutrient of the food item
+ * @property {custom_mouse_click} type
+ * @property {number} x
+ * @property {number} y
+ * @property {'left' | 'middle' | 'right'} button
  */
 export interface MouseClickInput {
-  type: 'mouse_click';
+  type: 'custom_mouse_click';
   x: number;
   y: number;
   button: 'left' | 'middle' | 'right';
 }
 
+/**
+ * @description Tracks simple mouseWHeel events from the user for sending canvas browser window inputs to backends
+ * @property {mouseWheel} type
+ * @property {number} deltaX
+ * @property {number} deltaY
+ * @property {number} x
+ * @property {number} y
+ * @property {'none'} button
+ */
+export interface MouseWheelInput {
+  type: 'mouseWheel';
+  deltaX: number;
+  deltaY: number;
+  x: number;
+  y: number;
+  button: 'none';
+}
+
+/**
+ * Real-time mouse move forwarded from canvas.
+ * Throttled client-side before sending.
+ * @property {mouseMoved} type
+ * @property {number} x
+ * @property {number} y
+ * @property {'none'} button
+ */
+export interface MouseMoveInput {
+  type: 'mouseMoved';
+  x: number;
+  y: number;
+  button: 'none';
+}
+
 // interface MouseMoveInput extends BaseInput { type: 'mousemove'; x: number; y: number }
 // interface KeyDownInput extends BaseInput { type: 'keydown'; key: string; modifiers: number }
-export type CDPUserInput = MouseClickInput /* | MouseMoveInput | KeyDownInput */;
+export type CDPUserInput = MouseClickInput | MouseWheelInput | MouseMoveInput;

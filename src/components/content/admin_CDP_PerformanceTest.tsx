@@ -13,7 +13,13 @@ import {
   SelectChangeEvent,
   useTheme
 } from '@mui/material';
-import { CDPUserInput, MouseClickInput, RouteInfo } from '../../types/custom/customTypes';
+import {
+  CDPUserInput,
+  MouseClickInput,
+  MouseMoveInput,
+  MouseWheelInput,
+  RouteInfo
+} from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
 import { localStorageKeys } from '../../resources/resource_properties';
 import { serverConfig } from '../../resources/serverConfig';
@@ -28,12 +34,15 @@ type StreamStatus = 'idle' | 'connecting' | 'streaming' | 'error';
 
 const CDP_WIDTH = 1280;
 const CDP_HEIGHT = 720;
+const MOUSE_THROTTLE_MS = 64;
 const WS_BASE = serverConfig.FASTAPI_BASE_URL.replace(/^http/, 'ws');
 
 const CUSTOM_URL_VALUE = '__custom__';
 
 const PRESET_URLS: { label: string; value: string }[] = [
   { label: 'WebGL Blob', value: 'https://webglsamples.org/blob/blob.html' },
+  { label: 'Test Mouse Inputs', value: 'https://testmouse.com/' },
+  { label: 'Test Mouse Movements', value: 'https://www.xbitlabs.com/mouse-speed-acceleration-test/' },
   { label: 'TestUFO', value: 'https://testufo.com/' },
   { label: 'JPEG payload size stress', value: 'https://www.shadertoy.com/view/Xds3zN' },
   { label: 'Interactive Game', value: 'https://hexgl.bkcore.com/play/' },
@@ -60,6 +69,7 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   const wsRef = useRef<WebSocket | null>(null);
   const frameCounter = useRef<number>(0);
   const lastRenderedFrame = useRef<number>(0);
+  const lastMouseSendTime = useRef<number>(0);
   const [status, setStatus] = useState<StreamStatus>('idle');
   const [selectedPreset, setSelectedPreset] = useState<string>(PRESET_URLS[0].value);
   const [customUrl, setCustomUrl] = useState<string>('');
@@ -128,7 +138,7 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const { x, y } = canvasToCDP(e, CDP_WIDTH, CDP_HEIGHT);
     const mouseClick: MouseClickInput = {
-      type: 'mouse_click',
+      type: 'custom_mouse_click',
       x: Math.round(x),
       y: Math.round(y),
       button: BUTTON_MAP[e.button] ?? 'left'
@@ -138,6 +148,35 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
     // if (e.button === 1) toast.success(JSON.stringify(mouseClick));
     // if (e.button === 2) toast.dark(JSON.stringify(mouseClick));
     sendInput(wsRef.current, mouseClick);
+  }, []);
+
+  const handleMouseWheel = useCallback((e: React.WheelEvent<HTMLCanvasElement>) => {
+    const { x, y } = canvasToCDP(e, CDP_WIDTH, CDP_HEIGHT);
+    const mouseWheel: MouseWheelInput = {
+      type: 'mouseWheel',
+      deltaX: e.deltaX,
+      deltaY: e.deltaY,
+      x: Math.round(x),
+      y: Math.round(y),
+      button: 'none'
+    };
+    sendInput(wsRef.current, mouseWheel);
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const now = performance.now();
+    // Throttle mouse input to avoid overloading the backend event loop
+    if (now - lastMouseSendTime.current < MOUSE_THROTTLE_MS) return;
+    lastMouseSendTime.current = now;
+
+    const { x, y } = canvasToCDP(e, CDP_WIDTH, CDP_HEIGHT);
+    const mouseMove: MouseMoveInput = {
+      type: 'mouseMoved',
+      x: Math.round(x),
+      y: Math.round(y),
+      button: 'none'
+    };
+    sendInput(wsRef.current, mouseMove);
   }, []);
 
   /**
@@ -312,6 +351,8 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
               width={CDP_WIDTH}
               height={CDP_HEIGHT}
               onMouseDown={handleCanvasClick}
+              onWheel={handleMouseWheel}
+              onMouseMove={handleMouseMove}
               onContextMenu={(e) => e.preventDefault()}
               style={{ display: 'block', width: '100%', height: 'auto' }}
             />
