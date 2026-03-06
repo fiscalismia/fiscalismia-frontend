@@ -133,9 +133,10 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
       y: Math.round(y),
       button: BUTTON_MAP[e.button] ?? 'left'
     };
-    if (e.button === 0) toast.info(JSON.stringify(mouseClick));
-    if (e.button === 1) toast.success(JSON.stringify(mouseClick));
-    if (e.button === 2) toast.dark(JSON.stringify(mouseClick));
+    // DEBUG MOUSE CLICKS
+    // if (e.button === 0) toast.info(JSON.stringify(mouseClick));
+    // if (e.button === 1) toast.success(JSON.stringify(mouseClick));
+    // if (e.button === 2) toast.dark(JSON.stringify(mouseClick));
     sendInput(wsRef.current, mouseClick);
   }, []);
 
