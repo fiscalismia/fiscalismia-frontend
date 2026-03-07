@@ -95,6 +95,16 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
       ws.send(JSON.stringify(userInput));
     }
   };
+  /**
+   * Sends an initial text encoded jwt token to authenticate against the websocket route
+   * @param ws websocket
+   * @param token jwt token
+   */
+  const authenticateWebsocket = async (ws: WebSocket | null, token: string): Promise<void> => {
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(token);
+    }
+  };
 
   // useCallback with [] deps: handleFrame is assigned to ws.onmessage once during connection setup.
   // Without memoization, a re-render would create a new closure, but the WebSocket still holds
@@ -205,10 +215,13 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
       }
 
       // handle websocket session streaming
-      const wsUrl = `${WS_BASE}/ws/session/${result.session_id}?token=${token}`;
+      const wsUrl = `${WS_BASE}/ws/session/${result.session_id}`;
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
-      ws.onopen = () => setStatus('streaming');
+      ws.onopen = () => {
+        setStatus('streaming');
+        authenticateWebsocket(wsRef.current, token);
+      };
       ws.onmessage = (message: MessageEvent<Blob>) => {
         if (message.data) {
           try {
