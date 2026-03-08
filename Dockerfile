@@ -1,4 +1,4 @@
-FROM node:20.20.0-alpine3.23 as build
+FROM node:24.14.0-alpine3.23 as build
 
 # initialize/override global scope build args by supplying --build-arg flag in podman build
 ARG BUILD_VERSION

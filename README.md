@@ -42,8 +42,8 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    See https://docs.volta.sh/guide/getting-started
 
    ```bash
-   volta install node@20.19.5
-   volta pin node@20.19.5
+   volta install node@24.14.0
+   volta pin node@24.14.0
    ```
 
 2. **Podman & Docker Compose** Ensure that Podman is installed in your local development environment. Get Podman [here](https://podman.io/docs/installation) and Docker Compose
