@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { paths } from '../resources/router_navigation_paths';
 import { localStorageKeys } from '../resources/resource_properties';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { AuthInfo, CustomJwtToken, User } from '../types/custom/customTypes';
 /**
  * React Router context receiving token, authenticated loginUserName and respective setters as values
@@ -54,7 +54,7 @@ export const isJwtToken = (token: string) => {
   if (!token) {
     return false;
   }
-  const { user }: { user: User } = jwt_decode<CustomJwtToken>(token);
+  const { user }: { user: User } = jwtDecode<CustomJwtToken>(token);
   return user.userName ? true : false;
 };
 
@@ -81,7 +81,7 @@ export const isUserTokenValid = (token: string, loginUserName: string | null = n
     console.error('Token undefined.');
     return false;
   }
-  const decodedToken: CustomJwtToken = jwt_decode<CustomJwtToken>(token);
+  const decodedToken: CustomJwtToken = jwtDecode<CustomJwtToken>(token);
   if (decodedToken?.user?.userName === loginUserName) {
     const secondsSinceEpoch = Math.floor(new Date().getTime() / 1000);
     const tokenExpiresAt = decodedToken.exp;
