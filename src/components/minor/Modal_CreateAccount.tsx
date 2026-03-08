@@ -70,7 +70,7 @@ export default function CreateAccountModal() {
       await new Promise((resolve) => {
         setTimeout(() => {
           navigate(0);
-          resolve;
+          resolve('reload page');
         }, 2500);
       });
     } else {

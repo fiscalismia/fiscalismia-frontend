@@ -89,19 +89,19 @@ export default function ContentVerticalBarChart(props: ContentVerticalBarChartPr
     }
     if (dataSet2) {
       const currentMax = Math.max(...dataSet2);
-      maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
+      maxValueYaxis = maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
     }
     if (dataSet3) {
       const currentMax = Math.max(...dataSet3);
-      maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
+      maxValueYaxis = maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
     }
     if (dataSet4) {
       const currentMax = Math.max(...dataSet4);
-      maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
+      maxValueYaxis = maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
     }
     if (dataSet5) {
       const currentMax = Math.max(...dataSet5);
-      maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
+      maxValueYaxis = maxValueYaxis < currentMax ? currentMax : maxValueYaxis;
     }
   }
 

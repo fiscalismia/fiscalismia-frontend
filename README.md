@@ -108,7 +108,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
    ```
 
 4. **The Backend and Database must be running:**
-   See https://github.com/hangrybear666/fiscalismia-backend
+   See https://github.com/fiscalismia/fiscalismia-backend
 
 **Installation**
 

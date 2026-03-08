@@ -21,13 +21,11 @@ import VariableExpenses_Overview from './content/variableExpenses_Overview';
 import { RouteInfo } from '../types/custom/customTypes';
 import Admin_CDP_PerformanceTest from './content/admin_CDP_PerformanceTest';
 
-interface ContentProps {}
 /**
- * Changes content body depending on selected route in based on MenuEntries and router_navigation_paths in resources.
- * @param _props
- * @returns
+ * Main Route Handler determining which content sites to serve based on the browser path
+ * @returns TSX files mapped to router_navigation_paths
  */
-export default function Content(_props: ContentProps) {
+export default function Content() {
   const renderedElement = (parentId: string, childId: string, path: string) => {
     const routeInfo: RouteInfo = {
       header: parentId,
