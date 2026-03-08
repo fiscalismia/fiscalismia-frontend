@@ -765,7 +765,7 @@ export const getRawDataEtlInvocation = async (onMessage: (data: { message: strin
     });
     const reader = response.body?.pipeThrough(new TextDecoderStream()).getReader();
 
-    while (true && reader) {
+    while (reader) {
       const { value, done } = await reader.read();
       if (done) break;
       // expects data strictly in the format "data : { "message" "Text Content"}"

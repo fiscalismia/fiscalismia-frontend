@@ -7,7 +7,6 @@ import { AuthProvider, ProtectedRoute } from './services/userAuthentication';
 import ErrorPage from './components/ErrorPage';
 import './index.css';
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, Navigate } from 'react-router-dom';
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <React.Fragment>
