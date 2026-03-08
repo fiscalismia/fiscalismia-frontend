@@ -12,7 +12,6 @@ COPY tsconfig.json ./
 COPY vite.config.ts ./
 COPY public/ ./public/
 COPY index.html ./
-COPY eslint.config.js ./
 COPY src/ ./src
 
 ### NPM INSTALL & BUILD ###
