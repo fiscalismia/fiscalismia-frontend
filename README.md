@@ -251,9 +251,18 @@ EOF
 
    ------
 
-## Usage
+## Updating
 
-Once the frontend, database and backend are up and running, the website will be ready at http://127.0.0.1:3001
+```bash
+# list issues
+npm audit
+npm outdated
+# update transitive dependencies to latest allowable range
+npm audit fix
+# force updating transitive dependencies beyond their safe range
+npm audit fix --force
+npm i && npm run typeCheck && npm run eslintAnalysis
+```
 
 ## Testing
 

@@ -1,4 +1,3 @@
-/* eslint-disable */ // TODO
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -93,7 +92,7 @@ interface InputVariableExpenseModalProps {
 export default function InputVariableExpenseModal(props: InputVariableExpenseModalProps) {
   const { palette }: { palette: Palette } = useTheme();
   const {
-    setAddedItemId,
+    // setAddedItemId,
     storeAutoCompleteItemArray,
     categoryAutoCompleteItemArray,
     indulgencesAutoCompleteItemArray
@@ -151,16 +150,16 @@ export default function InputVariableExpenseModal(props: InputVariableExpenseMod
    * queries DB for food item insertion via REST API
    */
   const saveUserInput = async () => {
-    const variableExpObj = {
-      description: description.trim(),
-      category: categoryAutoComplete,
-      store: storeAutoComplete,
-      cost: Number(price).toFixed(2),
-      purchasing_date: new Date(purchasingDate),
-      is_planned: isPlanned,
-      contains_indulgence: containsIndulgence,
-      sensitivities: sensitivitiesString
-    };
+    // const variableExpObj = {
+    //   description: description.trim(),
+    //   category: categoryAutoComplete,
+    //   store: storeAutoComplete,
+    //   cost: Number(price).toFixed(2),
+    //   purchasing_date: new Date(purchasingDate),
+    //   is_planned: isPlanned,
+    //   contains_indulgence: containsIndulgence,
+    //   sensitivities: sensitivitiesString
+    // };
     // const response = await postNewFoodItem(variableExpObj); //TODO
     // if (response?.results[0]?.dimension_key) {
     //   // this setter is called to force the frontend to update and refetch the data from db

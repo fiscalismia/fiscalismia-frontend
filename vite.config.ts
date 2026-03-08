@@ -1,7 +1,5 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 // timezone for HMR logging
 process.env.TZ = 'Europe/Berlin';
@@ -59,7 +57,7 @@ export default defineConfig({
 
           // 5. Utilities (Axios, jwt-decode, etc.)
           // Grouping small utils prevents having 100 tiny HTTP requests.
-          if (id.includes('axios') || id.includes('jwt-decode') || id.includes('cors') || id.includes('dotenv')) {
+          if (id.includes('axios') || id.includes('jwt-decode') || id.includes('cors')) {
             return 'utils-vendor';
           }
         },
