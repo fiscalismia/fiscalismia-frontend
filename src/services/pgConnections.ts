@@ -616,7 +616,11 @@ export const updateFoodItemPrice = async (id: number, updatedFoodPriceObj: FoodI
       headers: { Authorization: `Bearer ${token}` }
     };
     const response = await axiosClient.put(`/food_item/price/${id}`, updatedFoodPriceObj, config);
-    return response.data;
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      return { status: 400 };
+    }
   } catch (_error) {
     // error handling logic is defined in src/services/axiosErrorHandler.ts
   }
