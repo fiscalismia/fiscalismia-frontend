@@ -182,7 +182,7 @@ export default function ContentCardDiscounts(props: ContentCardDiscount) {
       return;
     }
     if (response?.status == 200) {
-      const filepath = response.data;
+      const filepath = response.data.filepath;
       setImgFilePath(serverConfig.API_BASE_URL.concat('/').concat(filepath));
       setNotificationMessage(locales().CONTENT_CARD_DISCOOUNT_NOTIFICATION_MESSAGE_IMG_PERSIST_SUCCESS(filepath));
       setNotificationSeverity('success');

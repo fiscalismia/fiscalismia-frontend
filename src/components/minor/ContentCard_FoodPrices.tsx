@@ -167,7 +167,7 @@ export default function ContentCardFoodPrices(props: ContentCardFoodPrice) {
       return;
     }
     if (response?.status == 200) {
-      const filepath = response.data;
+      const filepath = response.data.filepath;
       setImgFilePath(serverConfig.API_BASE_URL.concat('/').concat(filepath));
       setNotificationMessage(`File persisted in path: ${filepath}`);
       setNotificationSeverity('success');

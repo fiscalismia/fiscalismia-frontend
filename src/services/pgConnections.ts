@@ -65,7 +65,7 @@ const setToken = () => {
 export const login = async (credentials: UserCredentials) => {
   try {
     const response = await axiosClient.post('/um/login', credentials);
-    return response.data;
+    return response.data.token;
   } catch (_error) {
     // error handling logic is defined in src/services/axiosErrorHandler.ts
   }
