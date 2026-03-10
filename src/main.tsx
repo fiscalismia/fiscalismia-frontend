@@ -26,17 +26,24 @@ const router = createBrowserRouter(
         // action={rootAction}
         errorElement={<ErrorPage />}
       />
-      <Route element={<ProtectedRoute />} errorElement={<ErrorPage />}>
-        {/* Level 1 */}
+      <Route element={<ProtectedRoute isAdmin={false} />} errorElement={<ErrorPage />}>
         <Route
           path={`${paths.APP_ROOT_PATH}/*`}
           element={<Fiscalismia />}
           // loader={rootLoader}
           // action={rootAction}
           errorElement={<ErrorPage />}
-        >
-          {/* Level 2 */}
-        </Route>
+        ></Route>
+      </Route>
+      {/* React Router v6 ranks /admin/* (more specific) higher than /* (less specific) */}
+      <Route element={<ProtectedRoute isAdmin={true} />} errorElement={<ErrorPage />}>
+        <Route
+          path={`${paths.APP_ROOT_PATH}/admin/*`}
+          element={<Fiscalismia />}
+          // loader={rootLoader}
+          // action={rootAction}
+          errorElement={<ErrorPage />}
+        ></Route>
       </Route>
       <Route
         path="*"

@@ -128,7 +128,7 @@ export default function SignInSide(): JSX.Element {
       window.localStorage.setItem(localStorageKeys.loginUserName, username);
       setLoginUserName(username);
       setToken(response);
-      if (isUserTokenValid(response, username)) {
+      if (isUserTokenValid(response, username, null)) {
         window.localStorage.setItem(localStorageKeys.authenticated, 'true');
         setAuthenticated(true);
       }

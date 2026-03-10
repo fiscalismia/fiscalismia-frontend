@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { useState, useContext, createContext } from 'react';
+import { useState, useContext, createContext, useEffect } from 'react';
 import axios from 'axios';
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { paths } from '../resources/router_navigation_paths';
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoginUserName: setLoginUserName
   };
 
-  return <AuthContext.Provider value={loggedInAs as any}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={loggedInAs as AuthInfo}>{children}</AuthContext.Provider>;
 };
 
 /**
@@ -74,9 +74,14 @@ export const invalidateSession = (setToken: AuthInfo['setToken'], setLoginUserNa
  * decodes a provided token and compares the contained user objects userName field with the loginUserName parameter
  * @param {*} token jwt-token
  * @param {*} loginUserName username supplied during login process
+ * @param isAdmin
  * @returns true if loginUserName === token.user.userName
  */
-export const isUserTokenValid = (token: string, loginUserName: string | null = null) => {
+export const isUserTokenValid = (
+  token: string | null,
+  loginUserName: string | null = null,
+  isAdmin: boolean | null
+) => {
   if (!token) {
     console.error('Token undefined.');
     return false;
@@ -89,6 +94,11 @@ export const isUserTokenValid = (token: string, loginUserName: string | null = n
       console.error(`Token expired [${secondsSinceEpoch - tokenExpiresAt}] seconds ago.`);
       return false;
     }
+    // Additional check for admin user
+    if (isAdmin && decodedToken?.user?.userName !== 'admin') {
+      console.error('Admin Route Access denied.');
+      return false;
+    }
     console.debug(`Token of user [${loginUserName}] is valid.`);
     return true;
   } else {
@@ -97,30 +107,46 @@ export const isUserTokenValid = (token: string, loginUserName: string | null = n
   }
 };
 
+interface ProtectedRouteProps {
+  isAdmin: boolean;
+}
 /**
  * 1) calls the helper function isUserTokenValid to guarantee that the token's user's userName and loginUserName match
  * 2) Intercepts HTTP API RESPONSES to check for status 401 = UNAUTHORIZED which gets thrown by authentication.js in backend
+ * @param {ProtectedRouteProps} props isAdmin signifies if the route should be strictly accessible by the admin only
  * @returns all children Routes being Protected if true; Navigates to redirectPath if false
  */
-export const ProtectedRoute = () => {
+export const ProtectedRoute = (props: ProtectedRouteProps) => {
+  const { isAdmin } = props;
   const redirectPath = paths.LOGIN;
   const location = useLocation();
-  const { token, loginUserName, setToken, setLoginUserName } = useAuth() as unknown as AuthInfo; // TODO fix as unknown
+  const { token, loginUserName, setToken, setLoginUserName } = useAuth();
   // intercepts each axios response and in case of error and status code 401 = UNAUTHORIZED, invalidates session
   // this guarantees that backend responses from expired or revoked session tokens do not succeed.
-  axios.interceptors.response.use(
-    (response) => {
-      return response;
-    },
-    (error) => {
-      if (error.response.status === 401) {
-        console.error('USER NOT AUTHENTICATED WITH DB');
-        window.localStorage.setItem(localStorageKeys.authenticated, 'false');
+  useEffect(() => {
+    const responseId = axios.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        if (error.response.status === 401) {
+          console.error('USER NOT AUTHENTICATED WITH BACKEND');
+          window.localStorage.setItem(localStorageKeys.authenticated, 'false');
+        }
+        return Promise.reject(error);
       }
-      return error;
+    );
+    return () => axios.interceptors.response.eject(responseId);
+  }, []);
+  const isAccessDenied = !isUserTokenValid(token, loginUserName, false);
+  if (!isAccessDenied && isAdmin) {
+    const isAdminAccessDenied = !isUserTokenValid(token, loginUserName, true);
+    if (isAdminAccessDenied) {
+      // Authenticated but not admin -- redirect to app home, don't destroy session
+      return <Navigate to={paths.APP_ROOT_PATH} replace state={{ from: location }} />;
     }
-  );
-  if (token && !isUserTokenValid(token, loginUserName)) {
+  }
+  if (isAccessDenied) {
     console.error('PROTECTED ROUTE ACCESS [DENIED]');
     window.localStorage.setItem(localStorageKeys.authenticated, 'false');
   }
