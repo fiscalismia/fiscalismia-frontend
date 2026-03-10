@@ -2,6 +2,7 @@ import axios from 'axios';
 import { serverConfig } from '../resources/serverConfig';
 import { toast } from 'react-toastify';
 import { axiosErrorToastOptions } from '../utils/sharedFunctions';
+import { localStorageKeys } from '../resources/resource_properties';
 
 const baseUrl = serverConfig.API_BASE_URL;
 
@@ -15,6 +16,10 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (error.response?.status === 401) {
+      toast.error('USER NOT AUTHENTICATED WITH BACKEND', axiosErrorToastOptions);
+      window.localStorage.setItem(localStorageKeys.authenticated, 'false');
+    }
     if (error instanceof Error) {
       toast.error(`Axios Interceptor - ${error.name}: ${error.message}`, axiosErrorToastOptions);
     } else {

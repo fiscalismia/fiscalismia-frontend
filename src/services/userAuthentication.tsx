@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-import { useState, useContext, createContext, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useContext, createContext } from 'react';
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { paths } from '../resources/router_navigation_paths';
 import { localStorageKeys } from '../resources/resource_properties';
@@ -121,23 +120,6 @@ export const ProtectedRoute = (props: ProtectedRouteProps) => {
   const redirectPath = paths.LOGIN;
   const location = useLocation();
   const { token, loginUserName, setToken, setLoginUserName } = useAuth();
-  // intercepts each axios response and in case of error and status code 401 = UNAUTHORIZED, invalidates session
-  // this guarantees that backend responses from expired or revoked session tokens do not succeed.
-  useEffect(() => {
-    const responseId = axios.interceptors.response.use(
-      (response) => {
-        return response;
-      },
-      (error) => {
-        if (error.response.status === 401) {
-          console.error('USER NOT AUTHENTICATED WITH BACKEND');
-          window.localStorage.setItem(localStorageKeys.authenticated, 'false');
-        }
-        return Promise.reject(error);
-      }
-    );
-    return () => axios.interceptors.response.eject(responseId);
-  }, []);
   const isAccessDenied = !isUserTokenValid(token, loginUserName, false);
   if (!isAccessDenied && isAdmin) {
     const isAdminAccessDenied = !isUserTokenValid(token, loginUserName, true);
