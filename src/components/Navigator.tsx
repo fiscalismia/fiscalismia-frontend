@@ -65,11 +65,11 @@ export default function Navigator(props: NavigatorProps): JSX.Element {
     };
     props.setContentHeader(contentHeader);
     setSelectedRelativePath(path);
-    navigate(path);
+    navigate(`${paths.APP_ROOT_PATH}${path}`);
   };
 
   const isMenuEntrySelected = (path: string) => {
-    const localLocation = location.pathname.split(`${paths.APP_ROOT_PATH}/`);
+    const localLocation = location.pathname.split(`${paths.APP_ROOT_PATH}`);
     return path === selectedRelativePath ? true : path === localLocation[1] ? true : false;
   };
 

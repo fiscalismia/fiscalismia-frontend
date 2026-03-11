@@ -106,19 +106,15 @@ export const isUserTokenValid = (
   }
 };
 
-interface ProtectedRouteProps {
-  isAdmin: boolean;
-}
 /**
  * 1) calls the helper function isUserTokenValid to guarantee that the token's user's userName and loginUserName match
  * 2) Intercepts HTTP API RESPONSES to check for status 401 = UNAUTHORIZED which gets thrown by authentication.js in backend
- * @param {ProtectedRouteProps} props isAdmin signifies if the route should be strictly accessible by the admin only
  * @returns all children Routes being Protected if true; Navigates to redirectPath if false
  */
-export const ProtectedRoute = (props: ProtectedRouteProps) => {
-  const { isAdmin } = props;
+export const ProtectedRoute = () => {
   const redirectPath = paths.LOGIN;
   const location = useLocation();
+  const isAdmin = location.pathname.includes('/admin/') ? true : false;
   const { token, loginUserName, setToken, setLoginUserName } = useAuth();
   const isAccessDenied = !isUserTokenValid(token, loginUserName, false);
   if (!isAccessDenied && isAdmin) {

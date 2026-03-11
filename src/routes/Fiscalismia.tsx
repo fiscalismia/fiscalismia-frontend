@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +12,9 @@ import { paths } from '../resources/router_navigation_paths';
 import { ToastContainer } from 'react-toastify';
 import Footer from '../components/Footer';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'; // AG-Grid component initialization
+import { RouteInfo } from '../types/custom/customTypes';
+import { useLocation } from 'react-router-dom';
+import { menuEntries } from '../components/minor/MenuEntries';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const drawerWidth = 256;
@@ -27,7 +30,29 @@ const drawerWidth = 256;
  */
 export default function Fiscalismia() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [contentHeader, setContentHeader] = useState({ header: res.HOME, subHeader: '', path: paths.APP_ROOT_PATH });
+  const [contentHeader, setContentHeader] = useState<RouteInfo>({
+    header: res.HOME,
+    subHeader: '',
+    path: paths.APP_ROOT_PATH
+  });
+  const location = useLocation();
+  // Compares the current pathname with the menu entries and dynamically re-renders the header on navigation (location change)
+  useEffect(() => {
+    const reinitializeContentHeader = () => {
+      menuEntries.forEach((topLevelMenu) => {
+        topLevelMenu.children.forEach((menuEntry) => {
+          if (`${paths.APP_ROOT_PATH}${menuEntry.path}` === location.pathname) {
+            setContentHeader({
+              header: topLevelMenu.id,
+              subHeader: menuEntry.id,
+              path: location.pathname
+            });
+          }
+        });
+      });
+    };
+    reinitializeContentHeader();
+  }, [location.pathname]);
   const theme = useTheme();
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 

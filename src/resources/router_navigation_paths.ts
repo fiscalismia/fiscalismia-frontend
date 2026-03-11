@@ -1,5 +1,5 @@
 export const paths = {
-  APP_ROOT_PATH: '/fiscalismia',
+  APP_ROOT_PATH: '/fiscalismia/',
   LOGIN: '/login',
   VARIABLE_EXPENSES_OVERVIEW: 'variable_expenses/overview',
   VARIABLE_EXPENSES_STORES: 'variable_expenses/stores',

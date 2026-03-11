@@ -5,13 +5,11 @@ import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import { Divider } from '@mui/material';
 import SettingsAndProfileAppBar from './minor/SettingsAndProfileAppBar';
+import { RouteInfo } from '../types/custom/customTypes';
 
 interface HeaderProps {
   onDrawerToggle: () => void;
-  contentHeader: {
-    header: string;
-    subHeader: string;
-  };
+  contentHeader: RouteInfo;
 }
 /**
  * Top of the page, dynamic dependent on react-router navigation

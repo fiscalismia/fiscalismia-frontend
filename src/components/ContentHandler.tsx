@@ -23,7 +23,8 @@ import Admin_CDP_PerformanceTest from './content/admin_CDP_PerformanceTest';
 
 /**
  * Main Route Handler determining which content sites to serve based on the browser path
- * @returns TSX files mapped to router_navigation_paths
+ * Renders all routes in the DOM based on menuEntries 2-Level structure
+ * @returns TSX files mapped between MenuEntries.tsx and  router_navigation_paths.ts
  */
 export default function Content() {
   const renderedElement = (parentId: string, childId: string, path: string) => {
