@@ -48,7 +48,7 @@ interface Deals_OverviewProps {
 export default function Deals_Overview(_props: Deals_OverviewProps) {
   const { palette } = useTheme();
   const [foodPricesAndDiscounts, setFoodPricesAndDiscounts] = useState<any>(null);
-  const [foodPricesForExport, setFoodPricesForExport] = useState<FoodItem[] | null>(null);
+  const [, setFoodPricesForExport] = useState<FoodItem[] | null>(null);
   const [foodPricesRowData, setFoodPriceRowData] = useState([]);
   const [foodPricesColumnDefinitions, setFoodPriceColumnDefinitions] = useState<any>();
   // to refresh table based on added food item after DB insertion
@@ -65,8 +65,8 @@ export default function Deals_Overview(_props: Deals_OverviewProps) {
       const foodPrices = await getFoodPricesForExport();
       setFoodPricesForExport(foodPrices.results);
       const headers = [...FoodItemKeys];
-      const rows = foodPricesForExport
-        ? foodPricesForExport.map((item: FoodItem) => {
+      const rows = foodPrices?.results
+        ? foodPrices.results.map((item: FoodItem) => {
             const date = new Date(item.last_update);
             const formattedDate = `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
             return [
