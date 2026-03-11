@@ -32,8 +32,8 @@ interface Admin_CDP_PerformanceTest {
 
 type StreamStatus = 'idle' | 'connecting' | 'streaming' | 'error';
 
-const CDP_WIDTH = 1280;
-const CDP_HEIGHT = 720;
+const CDP_WIDTH = 1680;
+const CDP_HEIGHT = 1040;
 const MOUSE_THROTTLE_MS = 64;
 const WS_BASE = serverConfig.FASTAPI_BASE_URL.replace(/^http/, 'ws');
 
@@ -288,7 +288,7 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
   return (
     <React.Fragment>
       <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="flex-start">
-        <Grid xs={12} sm={12} md={12} lg={12} xl={8}>
+        <Grid xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box component="form" noValidate onSubmit={handleWebsocketSessionInitialization}>
             {/* FormControl 1: Select only — Select internally renders an InputBase */}
             <FormControl sx={{ width: 1 }}>
