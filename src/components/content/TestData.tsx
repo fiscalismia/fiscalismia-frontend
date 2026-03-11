@@ -25,6 +25,7 @@ import InputTsvForDbInsertionModal from '../minor/Modal_InputTsvForDbInsertion';
 import { resourceProperties as res } from '../../resources/resource_properties';
 import { RouteInfo } from '../../types/custom/customTypes';
 import { toast } from 'react-toastify';
+import { toastOptions } from '../../utils/sharedFunctions';
 
 interface ContentProps {
   show?: boolean;
@@ -82,7 +83,7 @@ const Content: React.FC<ContentProps> = ({ show = true, routeInfo }) => {
     const updatedEntry = { description: putInput };
     const putResult = await putTest(Number(putId), updatedEntry);
     if (putResult.results) {
-      toast.success(`Update Result: ${JSON.stringify(putResult.results[0].description)}`);
+      toast.success(`Update Result: ${JSON.stringify(putResult.results[0].description)}`, toastOptions);
     }
     const response = await getDbTest();
     setResult(response);

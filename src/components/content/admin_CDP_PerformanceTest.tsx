@@ -123,7 +123,10 @@ export default function Deals_MarketWebscraping(_props: Admin_CDP_PerformanceTes
           bitmap.close();
         },
         (onReject: any) => {
-          toast.error(locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_BITMAP_ERROR + ` rejected: ${onReject}`);
+          toast.error(
+            locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_BITMAP_ERROR + ` rejected: ${onReject}`,
+            toastOptions
+          );
         }
       );
     } else {

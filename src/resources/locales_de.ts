@@ -96,8 +96,6 @@ export const locales_de = {
   DEALS_OVERVIEW_THEADER_NORMALIZED_PRICE_TOP: 'Gesamtverbrauch Hochrechnung',
   DEALS_OVERVIEW_UPDATE_FOOD_PRICE: 'Aktuellen Preis pflegen',
   DEALS_OVERVIEW_EXPORT_TSV_BTN: 'TSV exportieren',
-  DEALS_OVERVIEW_EXPORT_TSV_TOAST_SUCCESS_MSG: 'TSV Export erfolgreich',
-  DEALS_OVERVIEW_EXPORT_TSV_TOAST_ERROR_MSG: 'TSV Export fehlgeschlagen',
 
   DEALS_FOOD_PRICES_CARD_SUBTITLE: (pos1: string) => `Gewicht ${pos1}g`,
   DEALS_FOOD_PRICES_CARD_LAST_UPDATED: (pos1: string) => `zuletzt geprüft ${pos1}`,
@@ -326,6 +324,8 @@ export const locales_de = {
   NOTIFICATIONS_INVESTMENT_ADDED_INVESTMENT_TAXES_SUCCESSFULLY: (pos1: string) =>
     `Steuerdaten mit ID [${pos1}] wurden hinzugefügt.`,
   NOTIFICATIONS_INVESTMENT_ADDED_INVESTMENT_ERROR: 'Investment konnte nicht hinzugefügt werden.',
+  NOTIFICATIONS_DEALS_OVERVIEW_EXPORT_TSV_TOAST_SUCCESS_MSG: 'TSV Export erfolgreich',
+  NOTIFICATIONS_DEALS_OVERVIEW_EXPORT_TSV_TOAST_ERROR_MSG: 'TSV Export fehlgeschlagen',
 
   CONFIRMATION_DIALOG_TITLE_DELETE: 'Wirklich löschen?',
   SELECTED_MODE_STR: 'Farbmodus:',

@@ -48,7 +48,6 @@ interface Deals_OverviewProps {
 export default function Deals_Overview(_props: Deals_OverviewProps) {
   const { palette } = useTheme();
   const [foodPricesAndDiscounts, setFoodPricesAndDiscounts] = useState<any>(null);
-  const [, setFoodPricesForExport] = useState<FoodItem[] | null>(null);
   const [foodPricesRowData, setFoodPriceRowData] = useState([]);
   const [foodPricesColumnDefinitions, setFoodPriceColumnDefinitions] = useState<any>();
   // to refresh table based on added food item after DB insertion
@@ -59,11 +58,11 @@ export default function Deals_Overview(_props: Deals_OverviewProps) {
   const foodPricesGridRif = useRef<AgGridReact>(null);
   const quickFilterText = '';
 
+  // EXPORT TSV File of all food prices with a german formatted date of their last update
   const handleFoodPriceTsvExport = async () => {
     if (!foodPricesAndDiscounts || !Array.isArray(foodPricesAndDiscounts)) return;
     try {
       const foodPrices = await getFoodPricesForExport();
-      setFoodPricesForExport(foodPrices.results);
       const headers = [...FoodItemKeys];
       const rows = foodPrices?.results
         ? foodPrices.results.map((item: FoodItem) => {
@@ -96,12 +95,12 @@ export default function Deals_Overview(_props: Deals_OverviewProps) {
         a.download = `food_prices_${yyyy}-${mm}-${dd}-${hr}hr${min}min.tsv`;
         a.click();
         URL.revokeObjectURL(url);
-        toast.success(locales().DEALS_OVERVIEW_EXPORT_TSV_TOAST_SUCCESS_MSG);
+        toast.success(locales().NOTIFICATIONS_DEALS_OVERVIEW_EXPORT_TSV_TOAST_SUCCESS_MSG, toastOptions);
       } else {
-        toast.error(locales().DEALS_OVERVIEW_EXPORT_TSV_TOAST_ERROR_MSG);
+        toast.error(locales().NOTIFICATIONS_DEALS_OVERVIEW_EXPORT_TSV_TOAST_ERROR_MSG, toastOptions);
       }
     } catch (error: unknown) {
-      if (error instanceof Error) toast.error(`TSV export failed with ${error.name} - ${error.message}`);
+      if (error instanceof Error) toast.error(`TSV export failed with ${error.name} - ${error.message}`, toastOptions);
     }
   };
 

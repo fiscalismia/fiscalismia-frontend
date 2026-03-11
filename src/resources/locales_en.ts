@@ -96,8 +96,6 @@ export const locales_en = {
   DEALS_OVERVIEW_THEADER_NORMALIZED_PRICE_TOP: 'Normalized price',
   DEALS_OVERVIEW_UPDATE_FOOD_PRICE: 'Update current price',
   DEALS_OVERVIEW_EXPORT_TSV_BTN: 'Export TSV',
-  DEALS_OVERVIEW_EXPORT_TSV_TOAST_SUCCESS_MSG: 'TSV Export successful',
-  DEALS_OVERVIEW_EXPORT_TSV_TOAST_ERROR_MSG: 'TSV Export failed',
 
   DEALS_FOOD_PRICES_CARD_SUBTITLE: (pos1: string) => `weight ${pos1}g`,
   DEALS_FOOD_PRICES_CARD_LAST_UPDATED: (pos1: string) => `last checked ${pos1}`,
@@ -326,6 +324,8 @@ export const locales_en = {
   NOTIFICATIONS_INVESTMENT_ADDED_INVESTMENT_TAXES_SUCCESSFULLY: (pos1: string) =>
     `Tax data with ID [${pos1}] has been added.`,
   NOTIFICATIONS_INVESTMENT_ADDED_INVESTMENT_ERROR: 'Investment could not be added.',
+  NOTIFICATIONS_DEALS_OVERVIEW_EXPORT_TSV_TOAST_SUCCESS_MSG: 'TSV Export successful',
+  NOTIFICATIONS_DEALS_OVERVIEW_EXPORT_TSV_TOAST_ERROR_MSG: 'TSV Export failed',
 
   SELECTED_MODE_STR: 'Mode:',
   SELECTED_PALETTE_STR: 'Palette:',
