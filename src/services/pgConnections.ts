@@ -250,6 +250,24 @@ export const getAllFoodPricesAndDiscounts = async () => {
 };
 
 /**
+ * Returns food prices for creating a TSV file for further processing or backup
+ * @returns Object containing a results array with all food prices
+ * @route /api/fiscalismia/export/food_prices
+ */
+export const getFoodPricesForExport = async () => {
+  setToken();
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const response = await axiosClient.get('/export/food_prices', config);
+    return response.data;
+  } catch (_error) {
+    // error handling logic is defined in src/services/axiosErrorHandler.ts
+  }
+};
+
+/**
  * Returns discounted foods valid at the time of request (current_date)
  * @returns Object containing a results array with all active discounts from the db
  * @route /api/fiscalismia/discounted_foods_current

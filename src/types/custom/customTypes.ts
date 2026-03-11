@@ -105,6 +105,7 @@ export type FoodItemDiscount = {
  * @property {number} price Price of the food item
  * @property {Date} last_update DIFFERENT FROM BACKEND WHERE IT IS A STRING - Date of last price check
  */
+export const FoodItemKeys = ['food_item', 'brand', 'store', 'main_macro', 'kcal_amount', 'weight', 'price', 'last_update'] as const;
 export type FoodItem = {
   food_item: string;
   brand: string;

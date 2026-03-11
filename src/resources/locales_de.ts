@@ -95,6 +95,9 @@ export const locales_de = {
   DEALS_OVERVIEW_THEADER_LAST_UPDATE_TOP: 'zuletzt geprüft',
   DEALS_OVERVIEW_THEADER_NORMALIZED_PRICE_TOP: 'Gesamtverbrauch Hochrechnung',
   DEALS_OVERVIEW_UPDATE_FOOD_PRICE: 'Aktuellen Preis pflegen',
+  DEALS_OVERVIEW_EXPORT_TSV_BTN: 'TSV exportieren',
+  DEALS_OVERVIEW_EXPORT_TSV_TOAST_SUCCESS_MSG: 'TSV Export erfolgreich',
+  DEALS_OVERVIEW_EXPORT_TSV_TOAST_ERROR_MSG: 'TSV Export fehlgeschlagen',
 
   DEALS_FOOD_PRICES_CARD_SUBTITLE: (pos1: string) => `Gewicht ${pos1}g`,
   DEALS_FOOD_PRICES_CARD_LAST_UPDATED: (pos1: string) => `zuletzt geprüft ${pos1}`,

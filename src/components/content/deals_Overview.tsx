@@ -15,7 +15,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import ClearIcon from '@mui/icons-material/Clear';
 import InputFoodItemModal from '../minor/Modal_InputFoodItem';
 import { resourceProperties as res } from '../../resources/resource_properties';
-import { getAllFoodPricesAndDiscounts } from '../../services/pgConnections';
+import { getAllFoodPricesAndDiscounts, getFoodPricesForExport } from '../../services/pgConnections';
 import { Button, Stack } from '@mui/material';
 import { ColDef } from '@ag-grid-community/core';
 import { AgGridReact } from 'ag-grid-react'; // AG Grid Component
@@ -33,7 +33,7 @@ import {
   toastOptions
 } from '../../utils/sharedFunctions';
 import ConfirmationDialog from '../minor/Dialog_Confirmation';
-import { RouteInfo } from '../../types/custom/customTypes';
+import { RouteInfo, FoodItem, FoodItemKeys } from '../../types/custom/customTypes';
 import { locales } from '../../utils/localeConfiguration';
 
 interface Deals_OverviewProps {
@@ -47,7 +47,8 @@ interface Deals_OverviewProps {
  */
 export default function Deals_Overview(_props: Deals_OverviewProps) {
   const { palette } = useTheme();
-  const [foodPricesAndDiscounts, setFoodPricesAndDiscounts] = useState(null);
+  const [foodPricesAndDiscounts, setFoodPricesAndDiscounts] = useState<any>(null);
+  const [foodPricesForExport, setFoodPricesForExport] = useState<FoodItem[] | null>(null);
   const [foodPricesRowData, setFoodPriceRowData] = useState([]);
   const [foodPricesColumnDefinitions, setFoodPriceColumnDefinitions] = useState<any>();
   // to refresh table based on added food item after DB insertion
@@ -57,6 +58,52 @@ export default function Deals_Overview(_props: Deals_OverviewProps) {
   // Reference to grid API
   const foodPricesGridRif = useRef<AgGridReact>(null);
   const quickFilterText = '';
+
+  const handleFoodPriceTsvExport = async () => {
+    if (!foodPricesAndDiscounts || !Array.isArray(foodPricesAndDiscounts)) return;
+    try {
+      const foodPrices = await getFoodPricesForExport();
+      setFoodPricesForExport(foodPrices.results);
+      const headers = [...FoodItemKeys];
+      const rows = foodPricesForExport
+        ? foodPricesForExport.map((item: FoodItem) => {
+            const date = new Date(item.last_update);
+            const formattedDate = `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+            return [
+              item.food_item,
+              item.brand,
+              item.store,
+              item.main_macro,
+              item.kcal_amount,
+              item.weight,
+              item.price,
+              formattedDate
+            ].join('\t');
+          })
+        : null;
+      if (rows) {
+        const tsvContent = [headers.join('\t'), ...rows].join('\n');
+        const blob = new Blob([tsvContent], { type: 'text/tab-separated-values' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const hr = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+        a.href = url;
+        a.download = `food_prices_${yyyy}-${mm}-${dd}-${hr}hr${min}min.tsv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success(locales().DEALS_OVERVIEW_EXPORT_TSV_TOAST_SUCCESS_MSG);
+      } else {
+        toast.error(locales().DEALS_OVERVIEW_EXPORT_TSV_TOAST_ERROR_MSG);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) toast.error(`TSV export failed with ${error.name} - ${error.message}`);
+    }
+  };
 
   useEffect(() => {
     const getAllPricesAndDiscounts = async () => {
@@ -391,6 +438,24 @@ export default function Deals_Overview(_props: Deals_OverviewProps) {
           />
         ) : null}
       </div>
+      <Button
+        sx={{
+          width: 1,
+          borderRadius: 0,
+          fontFamily: 'Hack',
+          fontSize: '16px',
+          letterSpacing: 3,
+          textTransform: 'uppercase',
+          fontWeight: 'bold',
+          mb: 1
+        }}
+        variant="contained"
+        size="small"
+        color="info"
+        onClick={() => handleFoodPriceTsvExport()}
+      >
+        {locales().DEALS_OVERVIEW_EXPORT_TSV_BTN}
+      </Button>
     </>
   );
 }
