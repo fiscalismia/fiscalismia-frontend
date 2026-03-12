@@ -28,12 +28,13 @@ function Header(props: HeaderProps) {
       {/* Content Header Text */}
       <AppBar component="div" position="static" elevation={0} sx={{ zIndex: 0 }}>
         <Grid container alignItems="center" spacing={0}>
-          <Grid xs sx={{ mt: '25px', ml: 2 }}>
+          <Grid xs sx={{ mt: '10px', ml: 2 }}>
             <Divider />
             {/* HEADER */}
             <Typography
               color="inherit"
               variant="h4"
+              fontSize={26}
               fontWeight={300}
               sx={{ paddingTop: '1px', paddingBottom: '1px', ml: 2 }}
             >
@@ -54,7 +55,7 @@ function Header(props: HeaderProps) {
         <Typography
           variant="h5"
           letterSpacing={2}
-          fontSize={24}
+          fontSize={22}
           textTransform={'uppercase'}
           fontWeight={300}
           sx={{ ml: 4, paddingTop: 1.5, paddingBottom: 0.5 }}

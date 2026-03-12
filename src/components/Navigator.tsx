@@ -85,7 +85,7 @@ export default function Navigator(props: NavigatorProps): JSX.Element {
     <Drawer variant={variant} sx={sxProps} open={open} onClose={onClose} PaperProps={{ style: { width: drawerWidth } }}>
       <List disablePadding>
         {/* FISCALISMIA */}
-        <ListItem sx={{ paddingY: 2, color: '#fff' }}>
+        <ListItem sx={{ paddingY: 1, color: '#fff' }}>
           <ListItemIcon sx={{ fontSize: 20 }}>🔥</ListItemIcon>
           <ListItemText
             primary={res.APP_NAME}

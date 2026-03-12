@@ -31,8 +31,8 @@ interface Websocket_CDP_CanvasProps {
 
 type StreamStatus = 'idle' | 'connecting' | 'streaming' | 'error';
 
-const CDP_WIDTH = 1680;
-const CDP_HEIGHT = 1040;
+const CDP_WIDTH = 1600;
+const CDP_HEIGHT = 900;
 const MOUSE_THROTTLE_MS = 64;
 const WS_BASE = serverConfig.FASTAPI_BASE_URL.replace(/^http/, 'ws');
 
@@ -286,7 +286,7 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
 
   return (
     <React.Fragment>
-      <Grid container spacing={2} sx={{ marginTop: 2 }} justifyContent="flex-start">
+      <Grid container spacing={0} sx={{ marginTop: 0 }} justifyContent="flex-start">
         <Grid xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box component="form" noValidate onSubmit={handleWebsocketSessionInitialization}>
             {/* FormControl 1: Select only — Select internally renders an InputBase */}
@@ -318,7 +318,7 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
 
             {/* FormControl 2: custom URL input — isolated so only one InputBase per FormControl */}
             {isCustom && (
-              <FormControl sx={{ width: 1, mt: '2px' }}>
+              <FormControl sx={{ width: 1 }}>
                 <FilledInput
                   sx={{ borderRadius: 0, fontFamily: 'Hack, Roboto' }}
                   id="customUrlInput"
@@ -347,7 +347,7 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
                     fontWeight: 'bold'
                   }}
                   variant="contained"
-                  size="large"
+                  size="medium"
                   color="primary"
                   disabled={isDisabled || (isCustom && !customUrl.trim())}
                 >
@@ -371,7 +371,7 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
                     }}
                     variant="contained"
                     onClick={toggleUserInput}
-                    size="large"
+                    size="medium"
                     color={!userInputDisabled ? 'tertiary' : 'success'}
                     disabled={!isDisabled || (isCustom && !customUrl.trim())}
                   >
