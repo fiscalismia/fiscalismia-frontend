@@ -9,6 +9,7 @@ export const locales_de = {
   MENU_FOOD_PRICES: 'Lebensmittelpreise',
   MENU_GROCERY_DEALS: 'Supermarkt Angebote',
   MENU_CDP_PERFORMANCE_TEST: 'CDP Performance',
+  MENU_WEBSCRAPE_SUPERMARKETS: 'Supermarkt Webscraping',
   MENU_STORES: 'Verkaufsplattformen',
   MENU_INDULGENCES: 'Genussmittel',
   MENU_MONTHLY_BUDGET: 'Monatliches Budget',

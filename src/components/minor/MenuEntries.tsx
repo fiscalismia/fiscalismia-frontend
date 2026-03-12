@@ -13,6 +13,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
+import CastConnectedIcon from '@mui/icons-material/CastConnected';
 import { locales } from '../../utils/localeConfiguration';
 export const menuEntries = [
   {
@@ -58,7 +59,12 @@ export const menuEntries = [
     children: [
       { id: locales().MENU_UPLOAD_MANUAL, path: paths.ADMIN_UPLOAD_MANUAL, icon: <FileUploadIcon /> },
       { id: locales().MENU_ETL_RAW_DATA, path: paths.ADMIN_ETL_RAW_DATA, icon: <FileUploadIcon /> },
-      { id: locales().MENU_CDP_PERFORMANCE_TEST, path: paths.ADMIN_CDP_PERFORMANCE_TEST, icon: <BrowserUpdatedIcon /> }
+      { id: locales().MENU_CDP_PERFORMANCE_TEST, path: paths.ADMIN_CDP_PERFORMANCE_TEST, icon: <CastConnectedIcon /> },
+      {
+        id: locales().MENU_WEBSCRAPE_SUPERMARKETS,
+        path: paths.ADMIN_WEBSCRAPE_SUPERMARKETS,
+        icon: <BrowserUpdatedIcon />
+      }
     ]
   }
 ];

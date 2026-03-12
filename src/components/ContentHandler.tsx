@@ -20,6 +20,7 @@ import Admin_RawDataDbInit from './content/admin_RawDataDbInit';
 import VariableExpenses_Overview from './content/variableExpenses_Overview';
 import { RouteInfo } from '../types/custom/customTypes';
 import Admin_CDP_PerformanceTest from './content/admin_CDP_PerformanceTest';
+import Admin_WebscrapeSupermarkets from './content/admin_WebscrapeSupermarkets';
 
 /**
  * Main Route Handler determining which content sites to serve based on the browser path
@@ -62,6 +63,8 @@ export default function Content() {
         return <Deals_GroceryDeals routeInfo={routeInfo} />;
       case paths.ADMIN_CDP_PERFORMANCE_TEST:
         return <Admin_CDP_PerformanceTest routeInfo={routeInfo} />;
+      case paths.ADMIN_WEBSCRAPE_SUPERMARKETS:
+        return <Admin_WebscrapeSupermarkets routeInfo={routeInfo} />;
       case paths.ADMIN_UPLOAD_MANUAL:
         return <TestData routeInfo={routeInfo} />;
       case paths.ADMIN_ETL_RAW_DATA:
