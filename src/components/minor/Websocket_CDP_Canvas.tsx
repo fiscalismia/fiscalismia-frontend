@@ -26,6 +26,7 @@ interface Websocket_CDP_CanvasProps {
     value: string;
   }[];
   CUSTOM_URL_VALUE: string | null;
+  userInputToggle: boolean;
 }
 
 type StreamStatus = 'idle' | 'connecting' | 'streaming' | 'error';
@@ -49,7 +50,7 @@ const BUTTON_MAP: Record<number, MouseClickInput['button']> = {
  */
 export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): JSX.Element {
   const { palette } = useTheme();
-  const { PRESET_URLS, CUSTOM_URL_VALUE } = props;
+  const { PRESET_URLS, CUSTOM_URL_VALUE, userInputToggle } = props;
   // useRef for canvas: direct DOM access — drawImage() writes pixels without triggering re-renders
   // useRef for WebSocket: the WS instance must persist across renders and be accessible without a state dependency
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -58,6 +59,7 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
   const lastRenderedFrame = useRef<number>(0);
   const lastMouseSendTime = useRef<number>(0);
   const [status, setStatus] = useState<StreamStatus>('idle');
+  const [userInputDisabled, setUserInputDisabled] = useState<boolean>(false);
   const [selectedPreset, setSelectedPreset] = useState<string>(PRESET_URLS[0].value);
   const [customUrl, setCustomUrl] = useState<string>('');
 
@@ -66,6 +68,16 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
 
   const handlePresetChange = (e: SelectChangeEvent<string>): void => {
     setSelectedPreset(e.target.value);
+  };
+
+  const toggleUserInput = (): void => {
+    // stale-state in handler means value contains prior boolean, so logic is reversed
+    if (!userInputDisabled) {
+      toast.error(locales().NOTIFICATION_ADMIN_AREA_CDP_PERFORMANCE_USER_INPUT_DISABLED, toastOptions);
+    } else {
+      toast.success(locales().NOTIFICATION_ADMIN_AREA_CDP_PERFORMANCE_USER_INPUT_ENABLED, toastOptions);
+    }
+    setUserInputDisabled(!userInputDisabled);
   };
 
   const handleCustomUrlChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -319,27 +331,55 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
                 />
               </FormControl>
             )}
-
-            <Button
-              type="submit"
-              sx={{
-                width: 1,
-                borderRadius: 0,
-                border: `3px solid ${palette.border.dark}`,
-                fontFamily: 'Hack, Roboto',
-                fontSize: '16px',
-                mb: '-2px',
-                letterSpacing: 3,
-                textTransform: 'uppercase',
-                fontWeight: 'bold'
-              }}
-              variant="contained"
-              size="large"
-              color="primary"
-              disabled={isDisabled || (isCustom && !customUrl.trim())}
-            >
-              {locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_START_CDP_SESSION_BTN}
-            </Button>
+            <Grid container={true}>
+              <Grid xs={userInputToggle ? 9 : 12}>
+                <Button
+                  type="submit"
+                  sx={{
+                    width: 1,
+                    borderRadius: 0,
+                    border: `3px solid ${palette.border.dark}`,
+                    fontFamily: 'Hack, Roboto',
+                    fontSize: '16px',
+                    mb: '-2px',
+                    letterSpacing: 3,
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold'
+                  }}
+                  variant="contained"
+                  size="large"
+                  color="primary"
+                  disabled={isDisabled || (isCustom && !customUrl.trim())}
+                >
+                  {locales().ADMIN_AREA_CDP_PERFORMANCE_START_CDP_SESSION_BTN}
+                </Button>
+              </Grid>
+              {userInputToggle ? (
+                <Grid xs={3}>
+                  <Button
+                    sx={{
+                      width: 1,
+                      borderRadius: 0,
+                      border: `3px solid ${palette.border.dark}`,
+                      fontFamily: 'Hack, Roboto',
+                      fontSize: '16px',
+                      mb: '-2px',
+                      borderLeft: 0,
+                      letterSpacing: 3,
+                      textTransform: 'uppercase',
+                      fontWeight: 'bold'
+                    }}
+                    variant="contained"
+                    onClick={toggleUserInput}
+                    size="large"
+                    color={!userInputDisabled ? 'tertiary' : 'success'}
+                    disabled={!isDisabled || (isCustom && !customUrl.trim())}
+                  >
+                    {locales().ADMIN_AREA_CDP_PERFORMANCE_TOGGLE_USER_INPUT_BTN(!userInputDisabled)}
+                  </Button>
+                </Grid>
+              ) : null}
+            </Grid>
           </Box>
           <Paper
             elevation={6}
@@ -353,9 +393,9 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
               ref={canvasRef}
               width={CDP_WIDTH}
               height={CDP_HEIGHT}
-              onMouseDown={handleCanvasClick}
-              onWheel={handleMouseWheel}
-              onMouseMove={handleMouseMove}
+              onMouseDown={!userInputDisabled ? handleCanvasClick : undefined}
+              onWheel={!userInputDisabled ? handleMouseWheel : undefined}
+              onMouseMove={!userInputDisabled ? handleMouseMove : undefined}
               onContextMenu={(e) => e.preventDefault()}
               style={{ display: 'block', width: '100%', height: 'auto' }}
             />
