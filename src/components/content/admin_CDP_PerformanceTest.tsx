@@ -30,6 +30,7 @@ export default function Admin_CDP_PerformanceTest(_props: Admin_CDP_PerformanceT
         PRESET_URLS={PRESET_URLS}
         CUSTOM_URL_VALUE={CUSTOM_URL_VALUE}
         userInputToggle={false}
+        cdpEndpoint={'TEST'}
       ></Websocket_CDP_Canvas>
     </React.Fragment>
   );

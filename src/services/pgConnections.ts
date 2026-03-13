@@ -884,6 +884,30 @@ export const startChromiumDeveloperProtocolSession = async (targetUrl: string) =
     }
   }
 };
+
+export const startAldiSuedProspektWebscraping = async (targetUrl: string) => {
+  setToken();
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    };
+    const response = await axios.post(
+      `${serverConfig.FASTAPI_BASE_URL}/rest/cdp/scrape/supermarket/aldi_prospekt`,
+      { url: targetUrl },
+      config
+    );
+    return response.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      toast.error(
+        `Start CDP Aldi Webscraping Route received Error - ${error.name}: ${error.message}`,
+        axiosErrorToastOptions
+      );
+    } else {
+      toast.error(`Undefined CDP Aldi Webscraping Session Route Error  ${error}`, axiosErrorToastOptions);
+    }
+  }
+};
 /***
  *     _____ _____ _____ _____
  *    |_   _|  ___/  ___|_   _|

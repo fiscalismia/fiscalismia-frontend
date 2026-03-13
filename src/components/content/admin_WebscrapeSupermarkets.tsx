@@ -22,6 +22,7 @@ export default function admin_WebscrapeSupermarkets(_props: admin_WebscrapeSuper
         PRESET_URLS={PRESET_URLS}
         CUSTOM_URL_VALUE={null}
         userInputToggle={true}
+        cdpEndpoint={'ALDI_PROSPEKT'}
       ></Websocket_CDP_Canvas>
     </React.Fragment>
   );

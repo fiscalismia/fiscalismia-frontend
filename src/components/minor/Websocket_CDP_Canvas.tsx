@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
-import { startChromiumDeveloperProtocolSession } from '../../services/pgConnections';
+import { startAldiSuedProspektWebscraping, startChromiumDeveloperProtocolSession } from '../../services/pgConnections';
 import {
   Box,
   Button,
@@ -27,6 +27,7 @@ interface Websocket_CDP_CanvasProps {
   }[];
   CUSTOM_URL_VALUE: string | null;
   userInputToggle: boolean;
+  cdpEndpoint: 'TEST' | 'ALDI_PROSPEKT';
 }
 
 type StreamStatus = 'idle' | 'connecting' | 'streaming' | 'error';
@@ -50,7 +51,7 @@ const BUTTON_MAP: Record<number, MouseClickInput['button']> = {
  */
 export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): JSX.Element {
   const { palette } = useTheme();
-  const { PRESET_URLS, CUSTOM_URL_VALUE, userInputToggle } = props;
+  const { PRESET_URLS, CUSTOM_URL_VALUE, userInputToggle, cdpEndpoint } = props;
   // useRef for canvas: direct DOM access — drawImage() writes pixels without triggering re-renders
   // useRef for WebSocket: the WS instance must persist across renders and be accessible without a state dependency
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -210,7 +211,14 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
       if (!ctx) return;
 
       setStatus('connecting');
-      const result = await startChromiumDeveloperProtocolSession(targetUrl);
+      let result;
+      switch (cdpEndpoint) {
+        case 'TEST':
+          result = await startChromiumDeveloperProtocolSession(targetUrl);
+          break;
+        case 'ALDI_PROSPEKT':
+          result = await startAldiSuedProspektWebscraping(targetUrl);
+      }
       if (!result?.session_id) {
         setStatus('error');
         return;
