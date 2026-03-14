@@ -60,7 +60,7 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
   const lastRenderedFrame = useRef<number>(0);
   const lastMouseSendTime = useRef<number>(0);
   const [status, setStatus] = useState<StreamStatus>('idle');
-  const [userInputDisabled, setUserInputDisabled] = useState<boolean>(false);
+  const [userInputDisabled, setUserInputDisabled] = useState<boolean>(true);
   const [selectedPreset, setSelectedPreset] = useState<string>(PRESET_URLS[0].value);
   const [customUrl, setCustomUrl] = useState<string>('');
 
@@ -124,7 +124,8 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
         },
         (onReject: any) => {
           toast.error(
-            locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_BITMAP_ERROR + ` rejected: ${onReject}`,
+            locales().ADMIN_AREA_CDP_PERFORMANCE_TEST_WS_UNDEFINED_BITMAP_ERROR +
+              `blob bytes ${blob ? blob.bytes() : null}| typeof blob ${typeof blob} | rejected: ${onReject}`,
             toastOptions
           );
         }
@@ -235,6 +236,10 @@ export default function Websocket_CDP_Canvas(props: Websocket_CDP_CanvasProps): 
       ws.onmessage = (message: MessageEvent<Blob>) => {
         if (message.data) {
           try {
+            if (!(message.data instanceof Blob)) {
+              toast.info(locales().NOTIFICATION_ADMIN_AREA_CDP_NON_BLOB_MSG_RECEIVED, toastOptions);
+              return;
+            }
             const blob: Blob = message.data;
             // debugBlob(blob);
             handleFrameBlob(blob, ctx, true);
