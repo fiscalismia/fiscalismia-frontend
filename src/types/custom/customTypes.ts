@@ -105,7 +105,16 @@ export type FoodItemDiscount = {
  * @property {number} price Price of the food item
  * @property {Date} last_update DIFFERENT FROM BACKEND WHERE IT IS A STRING - Date of last price check
  */
-export const FoodItemKeys = ['food_item', 'brand', 'store', 'main_macro', 'kcal_amount', 'weight', 'price', 'last_update'] as const;
+export const FoodItemKeys = [
+  'food_item',
+  'brand',
+  'store',
+  'main_macro',
+  'kcal_amount',
+  'weight',
+  'price',
+  'last_update'
+] as const;
 export type FoodItem = {
   food_item: string;
   brand: string;
@@ -206,6 +215,43 @@ export type ContentChartBooleanPieObject = {
   dataSet2: number[];
   dataSet2Name: string;
   dataSet2Colors: BooleanPieColors;
+};
+
+export type ContentChartBubbleObject = {
+  chartTitle: string;
+  skipTitle?: boolean;
+  labels: string[];
+  dataSetCount: number;
+  dataSet1: any;
+  dataSet2: any;
+  dataSet3: any;
+  dataSet4: any;
+  dataSet5: any;
+  dataSet6: any;
+  dataSet7: any;
+  dataSet8: any;
+  dataSet9: any;
+  dataSet10: any;
+  dataSet1Name: string;
+  dataSet2Name: string;
+  dataSet3Name: string;
+  dataSet4Name: string;
+  dataSet5Name: string;
+  dataSet6Name: string;
+  dataSet7Name: string;
+  dataSet8Name: string;
+  dataSet9Name: string;
+  dataSet10Name: string;
+  color1?: any;
+  color2?: any;
+  color3?: any;
+  color4?: any;
+  color5?: any;
+  color6?: any;
+  color7?: any;
+  color8?: any;
+  color9?: any;
+  color10?: any;
 };
 
 export type ContentChartHorizontalBarObject = {

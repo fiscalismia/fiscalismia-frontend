@@ -28,7 +28,7 @@ interface ContentPieChartProps extends ContentChartBooleanPieObject {
  * @param props
  * @returns
  */
-export function ContentBooleanPieChart(props: ContentPieChartProps) {
+export default function ContentBooleanPieChart(props: ContentPieChartProps) {
   const { palette } = useTheme();
 
   const {

@@ -50,7 +50,7 @@ import ContentCardCosts from '../minor/ContentCard_Costs';
 import SelectDropdown from '../minor/SelectDropdown';
 import ContentLineChart from '../minor/ContentChart_Line';
 import ContentVerticalBarChart from '../minor/ContentChart_VerticalBar';
-import { ContentBooleanPieChart } from '../minor/ContentChart_BooleanPie';
+import ContentBooleanPieChart from '../minor/ContentChart_BooleanPie';
 import ContentHorizontalBarChart from '../minor/ContentChart_HorizontalBar';
 import { locales } from '../../utils/localeConfiguration';
 import { toast } from 'react-toastify';
