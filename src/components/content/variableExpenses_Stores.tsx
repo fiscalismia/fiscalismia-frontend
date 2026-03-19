@@ -21,7 +21,8 @@ import {
   getUniqueEffectiveMonthYears,
   getUniqueEffectiveYears,
   getUniquePurchasingDates,
-  getBreakPointWidth
+  getBreakPointWidth,
+  toggleButtonStylingProps
 } from '../../utils/sharedFunctions';
 import { ContentChartBubbleObject, RouteInfo } from '../../types/custom/customTypes';
 import SelectDropdown from '../minor/SelectDropdown';
@@ -100,18 +101,26 @@ function getUniquePurchasingDateMonths(allVariableExpenses: any): (string | RegE
  * Transforms an aggregated StoreMap into the props object consumed by the Bubble chart.
  * Each store becomes a dataset with x, y coordinates and a radius for the bubble
  * @param storeMap
+ * @param allMonthsSelected
+ * @param monthsWithCosts
  * @returns
  */
-function extractBubbleChartData(storeMap: StoreMap): ContentChartBubbleObject {
+function extractBubbleChartData(
+  storeMap: StoreMap,
+  allMonthsSelected: boolean,
+  monthsWithCosts: (string | RegExp)[][] | undefined
+): ContentChartBubbleObject {
+  const uniqueMonthCount = monthsWithCosts ? monthsWithCosts.length - 1 : 12;
   const storeCount = storeMap.size;
-  const RADIUS_DIVISOR = 50;
-  const MAX_RADIUS = 40;
-  const MIN_RADIUS = 8;
+  const MAX_RADIUS = allMonthsSelected ? 80 : 40;
+  const MIN_RADIUS = allMonthsSelected ? 6 : 8;
+  // Divide radius by month count to keep sizes even between year and month granularity
+  const RADIUS_DIVISOR = allMonthsSelected ? uniqueMonthCount : 1;
   const entries = [...storeMap.entries()];
   const dataSetsAndNames = entries.reduce(
     (acc, [storeName, { cost, count }], i) => {
       let effecticeRadius;
-      const proposedRadius = (cost * count) / RADIUS_DIVISOR;
+      const proposedRadius = Math.sqrt(cost * count) / RADIUS_DIVISOR;
       effecticeRadius = proposedRadius > MAX_RADIUS ? MAX_RADIUS : proposedRadius;
       effecticeRadius = effecticeRadius < MIN_RADIUS ? MIN_RADIUS : effecticeRadius;
       acc[`dataSet${i + 1}Name`] = storeName;
@@ -176,7 +185,7 @@ interface VariableExpenses_StoresProps {
 }
 
 /**
- *
+ * Displays the TopN stores in terms of money spent and times visited, filtered by year or month
  * @param _props
  * @returns
  */
@@ -197,29 +206,10 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   const [selectedYear, setSelectedYear] = useState<string>();
   const [monthsWithPurchasesInSelectedYear, setMonthsWithPurchasesInSelectedYear] = useState<(string | RegExp)[][]>();
   const [selectedMonth, setSelectedMonth] = useState<string>(locales().ARRAY_MONTH_ALL[0][0] as string); // default All Month Aggregate
+  const [allMonthsSelected, setAllMonthsSelected] = useState<boolean>(false);
 
   // width for page content based on current window width extracted from supplied breakpoints.
   const breakpointWidth = getBreakPointWidth(breakpoints);
-  const toggleButtonStylingProps = {
-    borderRadius: 0,
-    paddingX: 2.0,
-    '&:hover': {
-      bgcolor: palette.mode === 'light' ? palette.grey[600] : palette.grey[600],
-      color: palette.common.white
-    },
-    '&.Mui-selected:hover': {
-      bgcolor: palette.mode === 'light' ? palette.grey[800] : palette.grey[500]
-    },
-    '&.Mui-selected': {
-      bgcolor: palette.mode === 'light' ? palette.grey[900] : palette.grey[400],
-      color: palette.mode === 'light' ? palette.common.white : palette.common.black,
-      boxShadow: palette.mode === 'light' ? `0px 0px 4px 2px ${palette.grey[700]}` : '',
-      transition: 'box-shadow 0.2s linear 0s'
-    },
-    '&.Mui-disabled': {
-      color: palette.text.disabled
-    }
-  };
   useEffect(() => {
     const getAllPricesAndDiscounts = async () => {
       const allVariableExpenses = await getAllVariableExpenses();
@@ -238,8 +228,9 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       .filter((e: any) => e.purchasing_date.substring(0, 4) === newValue)
       .filter((e: any) => parseFloat(e.cost) > 0);
     setSelectedVariableExpenses(filteredYearVarExpenses);
-    // Month Selection - Initialize with Aggregate All
-    setMonthsWithPurchasesInSelectedYear(getUniquePurchasingDateMonths(filteredYearVarExpenses));
+    // Extract Months with Costs - Initialize with Aggregate All
+    const monthsWithCosts = getUniquePurchasingDateMonths(filteredYearVarExpenses);
+    setMonthsWithPurchasesInSelectedYear(monthsWithCosts);
     handleSelectMonth(res.ALL);
     // Counts all uniqueStores in the storeSet for further processing
     const uniqueStores = getUniqueStoresInVarExpenses(filteredYearVarExpenses);
@@ -254,7 +245,11 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
     setTotalPlannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_planned : 0);
     setTotalUnplannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_unplanned : 0);
     // Bubble Chart containing store data agggregates by money spent and visitation count
-    const varExpenseBubbleChart = extractBubbleChartData(storeAggregateData.storeMap);
+    const varExpenseBubbleChart = extractBubbleChartData(
+      storeAggregateData.storeMap,
+      allMonthsSelected,
+      monthsWithCosts
+    );
     setStoreBubbleChartData(varExpenseBubbleChart);
   };
 
@@ -266,11 +261,13 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       ? (monthsWithPurchasesInSelectedYear.filter((e) => e[0] === selected)[0] as string[])
       : (locales().ARRAY_MONTH_ALL.filter((e) => e[0] === selected)[0] as string[]);
     if (selectedMonthArr && selectedMonthArr[0] === res.ALL) {
+      setAllMonthsSelected(true);
       // filter all expenses by preselected year
       filteredMonthVarExpenses = allVariableExpenses.filter(
         (e: any) => e.purchasing_date.substring(0, 4) === selectedYear
       );
     } else {
+      setAllMonthsSelected(false);
       // filter all expenses by preselected year and month substring
       filteredMonthVarExpenses = allVariableExpenses
         .filter((e: any) => e.purchasing_date.substring(0, 4) === selectedYear)
@@ -288,7 +285,11 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       setTotalPlannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_planned : 0);
       setTotalUnplannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_unplanned : 0);
       // Bubble Chart containing store data agggregates by money spent and visitation count
-      const varExpenseBubbleChart = extractBubbleChartData(storeAggregateData.storeMap);
+      const varExpenseBubbleChart = extractBubbleChartData(
+        storeAggregateData.storeMap,
+        allMonthsSelected,
+        monthsWithPurchasesInSelectedYear
+      );
       setStoreBubbleChartData(varExpenseBubbleChart);
     }
     setSelectedVariableExpenses(filteredMonthVarExpenses);
@@ -458,7 +459,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                               size="large"
                               value={child}
                               selected={child === selectedYear}
-                              sx={toggleButtonStylingProps}
+                              sx={toggleButtonStylingProps(palette)}
                             >
                               {child}
                             </ToggleButton>

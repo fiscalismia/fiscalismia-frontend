@@ -4,7 +4,7 @@ import Chip from '@mui/material/Chip';
 import { styled } from '@mui/material/styles';
 import Tooltip, { tooltipClasses, TooltipProps } from '@mui/material/Tooltip';
 import { ContentCardObject, ContentChartLineObject, ContentChartVerticalBarObject } from '../types/custom/customTypes';
-import { Breakpoints, Theme, useMediaQuery } from '@mui/material';
+import { Breakpoints, Theme, Palette, useMediaQuery } from '@mui/material';
 import { locales } from './localeConfiguration';
 import { ToastOptions, ToastPosition, Zoom } from 'react-toastify';
 
@@ -325,6 +325,29 @@ export const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
     border: `2px solid ${theme.palette.mode === 'light' ? theme.palette.border.dark : theme.palette.border.light}`
   }
 }));
+
+export const toggleButtonStylingProps = (palette: Palette) => {
+  return {
+    borderRadius: 0,
+    paddingX: 2.0,
+    '&:hover': {
+      bgcolor: palette.mode === 'light' ? palette.grey[600] : palette.grey[600],
+      color: palette.common.white
+    },
+    '&.Mui-selected:hover': {
+      bgcolor: palette.mode === 'light' ? palette.grey[800] : palette.grey[500]
+    },
+    '&.Mui-selected': {
+      bgcolor: palette.mode === 'light' ? palette.grey[900] : palette.grey[400],
+      color: palette.mode === 'light' ? palette.common.white : palette.common.black,
+      boxShadow: palette.mode === 'light' ? `0px 0px 4px 2px ${palette.grey[700]}` : '',
+      transition: 'box-shadow 0.2s linear 0s'
+    },
+    '&.Mui-disabled': {
+      color: palette.text.disabled
+    }
+  };
+};
 
 /**
  * valueFormatter for AgGrid currency Columns

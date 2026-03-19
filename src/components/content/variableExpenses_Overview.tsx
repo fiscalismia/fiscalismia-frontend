@@ -36,7 +36,8 @@ import {
   getUniqueEffectiveYears,
   getUniquePurchasingDates,
   getBreakPointWidth,
-  toastOptions
+  toastOptions,
+  toggleButtonStylingProps
 } from '../../utils/sharedFunctions';
 import {
   ContentCardObject,
@@ -532,26 +533,6 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
     '&:nth-of-type(even)': { backgroundColor: 'rgba(184,184,184,0.8)' },
     '&:last-child td, &:last-child th': { border: 0 }
   };
-  const toggleButtonStylingProps = {
-    borderRadius: 0,
-    paddingX: 2.0,
-    '&:hover': {
-      bgcolor: palette.mode === 'light' ? palette.grey[600] : palette.grey[600],
-      color: palette.common.white
-    },
-    '&.Mui-selected:hover': {
-      bgcolor: palette.mode === 'light' ? palette.grey[800] : palette.grey[500]
-    },
-    '&.Mui-selected': {
-      bgcolor: palette.mode === 'light' ? palette.grey[900] : palette.grey[400],
-      color: palette.mode === 'light' ? palette.common.white : palette.common.black,
-      boxShadow: palette.mode === 'light' ? `0px 0px 4px 2px ${palette.grey[700]}` : '',
-      transition: 'box-shadow 0.2s linear 0s'
-    },
-    '&.Mui-disabled': {
-      color: palette.text.disabled
-    }
-  };
   useEffect(() => {
     const getAllPricesAndDiscounts = async () => {
       const allVariableExpenses = await getAllVariableExpenses();
@@ -762,7 +743,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
                               size="large"
                               value={child}
                               selected={child === selectedYear}
-                              sx={toggleButtonStylingProps}
+                              sx={toggleButtonStylingProps(palette)}
                             >
                               {child}
                             </ToggleButton>
@@ -783,7 +764,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
                   onClick={handleRenderAllExpenseRows}
                   value={locales().VARIABLE_EXPENSES_OVERVIEW_RENDER_ALL_EXPENSE_ROW_BTN}
                   selected={renderAllExpenseRows}
-                  sx={toggleButtonStylingProps}
+                  sx={toggleButtonStylingProps(palette)}
                 >
                   {locales().VARIABLE_EXPENSES_OVERVIEW_RENDER_ALL_EXPENSE_ROW_BTN}
                 </ToggleButton>
