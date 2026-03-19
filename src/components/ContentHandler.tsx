@@ -21,6 +21,7 @@ import VariableExpenses_Overview from './content/variableExpenses_Overview';
 import { RouteInfo } from '../types/custom/customTypes';
 import Admin_CDP_PerformanceTest from './content/admin_CDP_PerformanceTest';
 import Admin_WebscrapeSupermarkets from './content/admin_WebscrapeSupermarkets';
+import VariableExpenses_Stores from './content/variableExpenses_Stores';
 
 /**
  * Main Route Handler determining which content sites to serve based on the browser path
@@ -38,7 +39,7 @@ export default function Content() {
       case paths.VARIABLE_EXPENSES_OVERVIEW:
         return <VariableExpenses_Overview routeInfo={routeInfo} />;
       case paths.VARIABLE_EXPENSES_STORES:
-        return <TestData routeInfo={routeInfo} />;
+        return <VariableExpenses_Stores routeInfo={routeInfo} />;
       case paths.VARIABLE_EXPENSES_INDULGENCES:
         return <TestData routeInfo={routeInfo} />;
       case paths.FIXED_COSTS_OVERVIEW:

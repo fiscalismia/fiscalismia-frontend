@@ -14,22 +14,33 @@ import {
   Stack,
   ToggleButton,
   ToggleButtonGroup,
-  Tooltip
+  Tooltip,
+  Typography
 } from '@mui/material';
 import {
-  constructContentCardObject,
   getUniqueEffectiveMonthYears,
   getUniqueEffectiveYears,
   getUniquePurchasingDates,
-  getBreakPointWidth,
-  toastOptions
+  getBreakPointWidth
 } from '../../utils/sharedFunctions';
-import { ContentCardObject, ContentChartHorizontalBarObject, RouteInfo } from '../../types/custom/customTypes';
-import ContentCardCosts from '../minor/ContentCard_Costs';
+import { ContentChartBubbleObject, RouteInfo } from '../../types/custom/customTypes';
 import SelectDropdown from '../minor/SelectDropdown';
-import ContentHorizontalBarChart from '../minor/ContentChart_HorizontalBar';
 import { locales } from '../../utils/localeConfiguration';
-import { toast } from 'react-toastify';
+import ContentBubbleChart from '../minor/ContentChart_Bubble';
+
+type StoreMap = Map<string, StoreMapEntries>;
+type StoreMapEntries = { cost: number; count: number };
+type StoreTotal = { money_spent: number; total_visits: number; total_planned: number; total_unplanned: number };
+type StoreAggregate = { storeMap: StoreMap; storeTotal: StoreTotal };
+
+const DEFAULT_STORE_COUNT: number = 10;
+
+const headerInfoStyling = {
+  fontFamily: 'Hack, Roboto',
+  fontSize: '16px',
+  letterSpacing: 3,
+  textTransform: 'uppercase'
+};
 
 const chartBackgroundProperties = (palette: Palette) => {
   return {
@@ -50,6 +61,16 @@ const chartBackgroundProperties = (palette: Palette) => {
 function getUniquePurchasingDateYears(allVariableExpenses: any): string[] {
   const uniquePurchasingDateArray = getUniquePurchasingDates(allVariableExpenses);
   return getUniqueEffectiveYears(uniquePurchasingDateArray);
+}
+
+/**
+ * Extracts the store string from variable expenses and returns a unique set
+ * @param {string[]} filteredVariableExpenses
+ * @returns unique stores
+ */
+function getUniqueStoresInVarExpenses(filteredVariableExpenses: any) {
+  const uniqueStoreSet = new Set(filteredVariableExpenses.map((e: any) => (e.store ? e.store.trim() : 'No Store')));
+  return [...uniqueStoreSet];
 }
 
 /**
@@ -76,135 +97,78 @@ function getUniquePurchasingDateMonths(allVariableExpenses: any): (string | RegE
 }
 
 /**
- * Extracts all rows with contains_indulgence flag set to true, splits individual indulgences off and counts the total occurence,
- * subsequently used to populate a horizontal barchart.
- * @param allVariableExpenses
+ * Transforms an aggregated StoreMap into the props object consumed by the Bubble chart.
+ * Each store becomes a dataset with x, y coordinates and a radius for the bubble
+ * @param storeMap
  * @returns
  */
-function extractHorizontalBarChartData(allVariableExpenses: any): ContentChartHorizontalBarObject {
-  const allVariableExpensesFiltered = allVariableExpenses
-    .filter((row: any) => row.category.toLowerCase() !== 'sale')
-    .filter((row: any) => row.contains_indulgence)
-    .map((e: any): string => (e.indulgences ? e.indulgences.trim() : ''));
-
-  // creates a Map with the indulgence as the key and the summed up occurences as value
-  const indulgenceSumMap: Map<string, number> = allVariableExpensesFiltered.reduce(
-    (map: Map<string, number>, indulgences: string) => {
-      if (!indulgences || (indulgences && indulgences.length === 0)) {
-        toast.warn(
-          'indulgences is null, please check that each row with the contains_indulgence flag set to true has entries here.',
-          toastOptions
-        );
-      } else {
-        const individualIndulgences: string[] = indulgences.split(',');
-        individualIndulgences.forEach((item: string) => {
-          const indulgence = item.trim();
-          if (!map.has(indulgence)) {
-            map.set(indulgence, 0);
-          }
-          map.set(indulgence, map.get(indulgence)! + 1);
-        });
-      }
-      return map;
+function extractBubbleChartData(storeMap: StoreMap): ContentChartBubbleObject {
+  const storeCount = storeMap.size;
+  const RADIUS_DIVISOR = 50;
+  const MAX_RADIUS = 40;
+  const MIN_RADIUS = 8;
+  const entries = [...storeMap.entries()];
+  const dataSetsAndNames = entries.reduce(
+    (acc, [storeName, { cost, count }], i) => {
+      let effecticeRadius;
+      const proposedRadius = (cost * count) / RADIUS_DIVISOR;
+      effecticeRadius = proposedRadius > MAX_RADIUS ? MAX_RADIUS : proposedRadius;
+      effecticeRadius = effecticeRadius < MIN_RADIUS ? MIN_RADIUS : effecticeRadius;
+      acc[`dataSet${i + 1}Name`] = storeName;
+      acc[`dataSet${i + 1}`] = { x: count, y: cost, r: effecticeRadius };
+      return acc;
     },
-    new Map<string, number>()
+    {} as Record<string, any>
   );
-
-  // Creates a <string,number> Array containing the 6 top indulgences and their number of occurence
-  const topIndulgenceArray = Array.from(indulgenceSumMap.entries())
-    .sort((a: [string, number], b: [string, number]) => (a[1] < b[1] ? 1 : -1))
-    .slice(0, 6)
-    .map((e: [string, number]) => {
-      return Array.from([e[0], parseInt(e[1].toFixed(0))]);
-    });
-
-  const booleanPieChartObj: ContentChartHorizontalBarObject = {
-    chartTitle: locales().VARIABLE_EXPENSES_OVERVIEW_INDULGENCE_BAR_CHART_TITLE,
+  const booleanPieChartObj: ContentChartBubbleObject = {
+    chartTitle: locales().VARIABLE_EXPENSES_STORES_BUBBLE_CHART_TITLE,
     labels: [''], // To have only one dataset entry rendered without a label, empty label within an array has to be passed.
-    dataSetCount: 6,
-    skipTitle: true,
-    dataSet1: topIndulgenceArray && topIndulgenceArray.length > 0 ? [topIndulgenceArray[0][1] as number] : [],
-    dataSet2: topIndulgenceArray && topIndulgenceArray.length > 1 ? [topIndulgenceArray[1][1] as number] : [],
-    dataSet3: topIndulgenceArray && topIndulgenceArray.length > 2 ? [topIndulgenceArray[2][1] as number] : [],
-    dataSet4: topIndulgenceArray && topIndulgenceArray.length > 3 ? [topIndulgenceArray[3][1] as number] : [],
-    dataSet5: topIndulgenceArray && topIndulgenceArray.length > 4 ? [topIndulgenceArray[4][1] as number] : [],
-    dataSet6: topIndulgenceArray && topIndulgenceArray.length > 5 ? [topIndulgenceArray[5][1] as number] : [],
-    dataSet1Name: topIndulgenceArray && topIndulgenceArray.length > 0 ? (topIndulgenceArray[0][0] as string) : '',
-    dataSet2Name: topIndulgenceArray && topIndulgenceArray.length > 1 ? (topIndulgenceArray[1][0] as string) : '',
-    dataSet3Name: topIndulgenceArray && topIndulgenceArray.length > 2 ? (topIndulgenceArray[2][0] as string) : '',
-    dataSet4Name: topIndulgenceArray && topIndulgenceArray.length > 3 ? (topIndulgenceArray[3][0] as string) : '',
-    dataSet5Name: topIndulgenceArray && topIndulgenceArray.length > 4 ? (topIndulgenceArray[4][0] as string) : '',
-    dataSet6Name: topIndulgenceArray && topIndulgenceArray.length > 5 ? (topIndulgenceArray[5][0] as string) : ''
+    dataSetCount: storeCount,
+    maxXValue: 1,
+    maxYValue: 100,
+    ...dataSetsAndNames
   };
   return booleanPieChartObj;
 }
 
 /**
- * Extracts the total expenses per store and returns an array of the stores with the largest expenses for the entire provided dataset.
- * Extracts the number of purchases per store and returns an array of the stores with the highest visiting count for the entire provided dataset.
- * @param allVariableExpenses
- * @returns dict with:
- * - store_costs: 2d array consisting of 1-10 elements containing ["store name", summed_cost]
- * - store visits: 2d array consisting of 1-10 elements containing ["store name", visit_count]
+ * Aggregates variable expenses by store in a single pass, producing:
+ * - A StoreMap of the top N stores (sorted by cost descending), each containing summed cost and visit count.
+ * - A StoreTotal with overall spending, visit count, and planned/unplanned purchase breakdowns.
+ * @param filteredVariableExpenses Pre-filtered expense rows containing store, cost, and is_planned fields.
+ * @param storeCount Number of top stores to return (default: DEFAULT_STORE_COUNT). Slices the map after sorting by cost.
+ * @returns StoreAggregate containing the sliced storeMap and the unsliced storeTotal across all stores.
  */
-function aggregateCostsPerStore(allVariableExpenses: any): (string | number)[][] {
-  type StoreCostObject = { store: string; cost: number };
-  const storeCostsArr: StoreCostObject[] = allVariableExpenses.map((e: any) => {
-    return { store: e.store, cost: parseFloat(e.cost) };
-  });
+function aggregateCostsPerStore(filteredVariableExpenses: any, storeCount: number): StoreAggregate {
+  const storeTotal: StoreTotal = { money_spent: 0, total_visits: 0, total_planned: 0, total_unplanned: 0 };
+  const storeMap: StoreMap = filteredVariableExpenses.reduce(
+    (map: StoreMap, { store, cost, is_planned }: { store: string; cost: any; is_planned: boolean }) => {
+      const parsedCost = cost ? parseFloat(cost) : 0;
+      const existing = map.get(store);
 
-  // creates a Map with store as the key and the summed up cost as value
-  const storeSumMap = storeCostsArr.reduce((map, item) => {
-    if (!map.has(item.store)) {
-      map.set(item.store, 0);
-    }
-    map.set(item.store, map.get(item.store)! + item.cost);
-    return map;
-  }, new Map<string, number>());
+      // increment Map
+      if (existing) {
+        existing.cost += parsedCost;
+        existing.count += 1;
+      } else {
+        map.set(store, { cost: parsedCost, count: 1 });
+      }
+      // increment Total
+      storeTotal.money_spent += parsedCost;
+      storeTotal.total_visits += 1;
+      if (is_planned) storeTotal.total_planned += 1;
+      if (!is_planned) storeTotal.total_unplanned += 1;
 
-  // Creates a <string,number> Array containing the 10 stores with the largest expense total
-  return Array.from(storeSumMap.entries())
-    .sort((a: [string, number], b: [string, number]) => (a[1] < b[1] ? 1 : -1))
-    .slice(0, 10)
-    .map((e: [string, number]) => {
-      return Array.from([e[0], parseFloat(e[1].toFixed(2))]);
-    });
-}
-
-// TODO create custom type for purchase infoaggregateCostsPerCategory
-/**
- *
- * @param allVariableExpenses
- * @param isMonthly
- * @returns
- */
-function extractAggregatedPurchaseInformation(allVariableExpenses: any, isMonthly: boolean) {
-  const yearlyTotalExpenseCard = constructContentCardObject(
-    locales().VARIABLE_EXPENSES_OVERVIEW_TOTAL_EXPENSES,
-    null,
-    isMonthly ? '1.00' : '12.00',
-    null,
-    null,
-    res.NO_IMG
+      return map;
+    },
+    new Map<string, StoreMapEntries>()
   );
-  const categoryCards: ContentCardObject[] = [];
 
-  const costsPerCategory: (string | number)[][] = aggregateCostsPerStore(allVariableExpenses);
-  costsPerCategory.forEach((e: (string | number)[]) => {
-    categoryCards.push(
-      constructContentCardObject(e[0].toString(), Number(e[1]), isMonthly ? '1.00' : '12.00', null, null, res.NO_IMG)
-    );
-  });
+  const topN = new Map<string, StoreMapEntries>(
+    [...storeMap.entries()].sort(([, a], [, b]) => b.cost - a.cost).slice(0, storeCount)
+  );
 
-  yearlyTotalExpenseCard.amount = allVariableExpenses
-    .filter((row: any) => row.category.toLowerCase() !== 'sale')
-    .map((row: any) => parseFloat(row.cost))
-    .reduce((partialSum: number, add: number) => partialSum + add, 0);
-  const purchaseInfo = {
-    totalCard: yearlyTotalExpenseCard,
-    categoryCards: categoryCards
-  };
-  return purchaseInfo;
+  return { storeMap: topN, storeTotal: storeTotal };
 }
 
 interface VariableExpenses_StoresProps {
@@ -221,10 +185,13 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   // Variable Expense Data for Display
   const [allVariableExpenses, setAllVariableExpenses] = useState<any>(null);
   const [selectedVariableExpenses, setSelectedVariableExpenses] = useState<any>();
-  const [aggregatedPurchaseInformation, setAggregatedPurchaseInformation] = useState<any>();
-  // Horizontal Bar Chart Aggregating Indulgences/Sensitivities
-  const [indulgencesHorizontalBarChartData, setIndulgencesHorizontalBarChartData] =
-    useState<ContentChartHorizontalBarObject>();
+  const [uniqueStoreCount, setUniqueStoreCount] = useState<number>();
+  const [moneySpentByStore, setMoneySpentByStore] = useState<string>();
+  const [visitsPerStore, setVisitsPerStore] = useState<number>();
+  const [totalPlannedPurchases, setTotalPlannedPurchases] = useState<number>(5);
+  const [totalUnplannedPurchases, setTotalUnplannedPurchases] = useState<number>(4);
+  // Bubble Chart Aggregating Stores with money spent/visit count
+  const [storeBubbleChartData, setStoreBubbleChartData] = useState<ContentChartBubbleObject>();
   // year selection
   const [yearsWithPurchases, setYearsWithPurchases] = useState<string[][]>();
   const [selectedYear, setSelectedYear] = useState<string>();
@@ -274,9 +241,21 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
     // Month Selection - Initialize with Aggregate All
     setMonthsWithPurchasesInSelectedYear(getUniquePurchasingDateMonths(filteredYearVarExpenses));
     handleSelectMonth(res.ALL);
-    // Horizontal Bar Chart Aggregating Indulgences/Sensitivities
-    const varExpenseHorizontalBarChart = extractHorizontalBarChartData(filteredYearVarExpenses);
-    setIndulgencesHorizontalBarChartData(varExpenseHorizontalBarChart);
+    // Counts all uniqueStores in the storeSet for further processing
+    const uniqueStores = getUniqueStoresInVarExpenses(filteredYearVarExpenses);
+    setUniqueStoreCount(uniqueStores ? uniqueStores.length : 0);
+    // Extracts total counts, sums for the header and an aggregate map for the Bubble chart
+    const storeAggregateData = aggregateCostsPerStore(
+      filteredYearVarExpenses,
+      uniqueStores ? uniqueStores.length : DEFAULT_STORE_COUNT
+    );
+    setMoneySpentByStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.money_spent.toFixed(2) : '0');
+    setVisitsPerStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_visits : 0);
+    setTotalPlannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_planned : 0);
+    setTotalUnplannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_unplanned : 0);
+    // Bubble Chart containing store data agggregates by money spent and visitation count
+    const varExpenseBubbleChart = extractBubbleChartData(storeAggregateData.storeMap);
+    setStoreBubbleChartData(varExpenseBubbleChart);
   };
 
   const handleSelectMonth = (selected: string): void => {
@@ -291,16 +270,26 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       filteredMonthVarExpenses = allVariableExpenses.filter(
         (e: any) => e.purchasing_date.substring(0, 4) === selectedYear
       );
-      const aggregatePurchaseInfo = extractAggregatedPurchaseInformation(filteredMonthVarExpenses, false);
-      setAggregatedPurchaseInformation(aggregatePurchaseInfo);
     } else {
       // filter all expenses by preselected year and month substring
       filteredMonthVarExpenses = allVariableExpenses
         .filter((e: any) => e.purchasing_date.substring(0, 4) === selectedYear)
         .filter((e: any) => e.purchasing_date.substring(5, 7) === selectedMonthArr[1]);
-      // Horizontal Bar Chart Aggregating Indulgences/Sensitivities
-      const varExpenseHorizontalBarChart = extractHorizontalBarChartData(filteredMonthVarExpenses);
-      setIndulgencesHorizontalBarChartData(varExpenseHorizontalBarChart);
+      // Counts all uniqueStores in the storeSet for further processing
+      const uniqueStores = getUniqueStoresInVarExpenses(filteredMonthVarExpenses);
+      setUniqueStoreCount(uniqueStores ? uniqueStores.length : 0);
+      // Extracts total counts, sums for the header and an aggregate map for the Bubble chart
+      const storeAggregateData = aggregateCostsPerStore(
+        filteredMonthVarExpenses,
+        uniqueStores ? uniqueStores.length : DEFAULT_STORE_COUNT
+      );
+      setMoneySpentByStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.money_spent.toFixed(2) : '0');
+      setVisitsPerStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_visits : 0);
+      setTotalPlannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_planned : 0);
+      setTotalUnplannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_unplanned : 0);
+      // Bubble Chart containing store data agggregates by money spent and visitation count
+      const varExpenseBubbleChart = extractBubbleChartData(storeAggregateData.storeMap);
+      setStoreBubbleChartData(varExpenseBubbleChart);
     }
     setSelectedVariableExpenses(filteredMonthVarExpenses);
   };
@@ -402,6 +391,58 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                       </IconButton>
                     </div>
                   </Tooltip>
+                  <Typography
+                    sx={{
+                      ml: 12,
+                      ...headerInfoStyling
+                    }}
+                  >
+                    {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_COUNT(`${uniqueStoreCount}`)}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      ml: 5,
+                      ...headerInfoStyling
+                    }}
+                  >
+                    {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_MONEY_SPENT(`${moneySpentByStore}`)}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      ml: 5,
+                      ...headerInfoStyling
+                    }}
+                  >
+                    {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS(`${visitsPerStore}`)}
+                  </Typography>
+                  {totalUnplannedPurchases && totalPlannedPurchases ? (
+                    <>
+                      <Typography
+                        sx={{
+                          ml: 5,
+                          ...headerInfoStyling
+                        }}
+                      >
+                        {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED(
+                          `${totalPlannedPurchases}`,
+                          ` (${((totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100).toFixed(1)}%)`
+                        )}
+                      </Typography>
+                      <Typography
+                        sx={{
+                          ml: 5,
+                          ...headerInfoStyling
+                        }}
+                      >
+                        {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED(
+                          `${totalUnplannedPurchases}`,
+                          ` (${((totalUnplannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100).toFixed(1)}%)`
+                        )}
+                      </Typography>
+                    </>
+                  ) : (
+                    <Skeleton animation={false} variant="rectangular" height={60} />
+                  )}
                 </Stack>
               </Grid>
               {/* YEAR SELECTION */}
@@ -430,34 +471,8 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                   <Skeleton animation={false} variant="rectangular" height={60} />
                 )}
               </Grid>
-
-              {/* CONTENT CARDS WITH AGGREGATE VALUES PER MONTH/YEAR */}
-              {aggregatedPurchaseInformation ? (
-                <React.Fragment>
-                  {aggregatedPurchaseInformation.categoryCards
-                    ? aggregatedPurchaseInformation.categoryCards.map((e: ContentCardObject, i: number) => (
-                        <Grid xs={6} md={4} xl={2} key={i}>
-                          <ContentCardCosts elevation={12} {...e} />
-                        </Grid>
-                      ))
-                    : null}
-                  {/* Add empty grids for any months with less than 6 expense categories to retain horizontal width */}
-                  {aggregatedPurchaseInformation?.categoryCards &&
-                  aggregatedPurchaseInformation.categoryCards.length < 6
-                    ? [...new Array(6 - aggregatedPurchaseInformation.categoryCards.length)].map(
-                        (_e: any, i: number) => <Grid xs={6} md={4} xl={2} key={i}></Grid>
-                      )
-                    : null}
-                </React.Fragment>
-              ) : (
-                [...new Array(6)].map((_e, i: number) => (
-                  <Grid xs={6} md={4} xl={2} key={i}>
-                    <Skeleton animation={false} variant="rectangular" height={120} />
-                  </Grid>
-                ))
-              )}
-              <Grid xs={12} md={4} xl={3}>
-                {indulgencesHorizontalBarChartData ? (
+              <Grid xs={12}>
+                {storeBubbleChartData ? (
                   <Paper
                     elevation={6}
                     sx={{
@@ -465,7 +480,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                       height: 400
                     }}
                   >
-                    <ContentHorizontalBarChart {...indulgencesHorizontalBarChartData} />
+                    <ContentBubbleChart {...storeBubbleChartData} />
                   </Paper>
                 ) : (
                   <Skeleton animation={false} variant="rectangular" height={400} />
