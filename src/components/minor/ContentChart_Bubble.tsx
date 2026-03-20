@@ -97,7 +97,7 @@ export default function ContentBubbleChart(props: ContentBubbleChartProps) {
         position: 'bottom' as const
       },
       title: {
-        display: true,
+        display: false,
         text: chartTitle ? chartTitle : 'Chart.js Bubble Chart'
       }
     }

@@ -4,9 +4,10 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
 import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
 import { resourceProperties as res } from '../../resources/resource_properties';
-import { getAllVariableExpenses, getAllVariableExpenseStores } from '../../services/pgConnections';
+import { getAllVariableExpenses } from '../../services/pgConnections';
 import {
   Box,
+  Chip,
   Container,
   IconButton,
   Palette,
@@ -28,6 +29,7 @@ import { ContentChartBubbleObject, RouteInfo } from '../../types/custom/customTy
 import SelectDropdown from '../minor/SelectDropdown';
 import { locales } from '../../utils/localeConfiguration';
 import ContentBubbleChart from '../minor/ContentChart_Bubble';
+import LinearProgress from '@mui/material/LinearProgress';
 
 type StoreMap = Map<string, StoreMapEntries>;
 type StoreMapEntries = { cost: number; count: number };
@@ -38,9 +40,13 @@ const DEFAULT_STORE_COUNT: number = 10;
 
 const headerInfoStyling = {
   fontFamily: 'Hack, Roboto',
-  fontSize: '16px',
+  fontSize: '12px',
   letterSpacing: 3,
-  textTransform: 'uppercase'
+  textTransform: 'uppercase',
+  minWidth: 250,
+  maxWidth: 250,
+  height: 30,
+  borderRadius: 0
 };
 
 const chartBackgroundProperties = (palette: Palette) => {
@@ -183,7 +189,6 @@ function aggregateCostsPerStore(filteredVariableExpenses: any, storeCount: numbe
 interface VariableExpenses_StoresProps {
   routeInfo: RouteInfo;
 }
-
 /**
  * Displays the TopN stores in terms of money spent and times visited, filtered by year or month
  * @param _props
@@ -193,7 +198,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   const { palette, breakpoints } = useTheme();
   // Variable Expense Data for Display
   const [allVariableExpenses, setAllVariableExpenses] = useState<any>(null);
-  const [selectedVariableExpenses, setSelectedVariableExpenses] = useState<any>();
+  const [, setSelectedVariableExpenses] = useState<any>();
   const [uniqueStoreCount, setUniqueStoreCount] = useState<number>();
   const [moneySpentByStore, setMoneySpentByStore] = useState<string>();
   const [visitsPerStore, setVisitsPerStore] = useState<number>();
@@ -215,7 +220,6 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       const allVariableExpenses = await getAllVariableExpenses();
       const uniqueYears: string[] = getUniquePurchasingDateYears(allVariableExpenses.results);
       setYearsWithPurchases(new Array(uniqueYears)); // Creates 2D Array for mapping ToggleButtonGroup as parent
-      const allStores = await getAllVariableExpenseStores();
       setAllVariableExpenses(allVariableExpenses.results);
     };
     getAllPricesAndDiscounts();
@@ -392,62 +396,10 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                       </IconButton>
                     </div>
                   </Tooltip>
-                  <Typography
-                    sx={{
-                      ml: 12,
-                      ...headerInfoStyling
-                    }}
-                  >
-                    {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_COUNT(`${uniqueStoreCount}`)}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      ml: 5,
-                      ...headerInfoStyling
-                    }}
-                  >
-                    {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_MONEY_SPENT(`${moneySpentByStore}`)}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      ml: 5,
-                      ...headerInfoStyling
-                    }}
-                  >
-                    {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS(`${visitsPerStore}`)}
-                  </Typography>
-                  {totalUnplannedPurchases && totalPlannedPurchases ? (
-                    <>
-                      <Typography
-                        sx={{
-                          ml: 5,
-                          ...headerInfoStyling
-                        }}
-                      >
-                        {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED(
-                          `${totalPlannedPurchases}`,
-                          ` (${((totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100).toFixed(1)}%)`
-                        )}
-                      </Typography>
-                      <Typography
-                        sx={{
-                          ml: 5,
-                          ...headerInfoStyling
-                        }}
-                      >
-                        {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED(
-                          `${totalUnplannedPurchases}`,
-                          ` (${((totalUnplannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100).toFixed(1)}%)`
-                        )}
-                      </Typography>
-                    </>
-                  ) : (
-                    <Skeleton animation={false} variant="rectangular" height={60} />
-                  )}
                 </Stack>
               </Grid>
               {/* YEAR SELECTION */}
-              <Grid xs={12} md={4} xl={6.5}>
+              <Grid xs={12} md={5} xl={4}>
                 {yearsWithPurchases ? (
                   yearsWithPurchases.map((parent, index) => {
                     return (
@@ -471,6 +423,111 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                 ) : (
                   <Skeleton animation={false} variant="rectangular" height={60} />
                 )}
+              </Grid>
+
+              {/* HEADER INFO CHIPS AND PROGRESS BAR WITH PURCHASE ENUMERATION => 2 Columns /w 3 Rows each */}
+              <Grid xs={12} md={4} xl={5.5} display="flex" justifyContent="flex-end">
+                <Grid container>
+                  {/* Total counts within variable expense data */}
+                  <Grid xs={6}>
+                    <Stack direction="column" spacing={0.5} sx={{ ml: 5, alignSelf: 'center' }}>
+                      <Chip
+                        label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_COUNT(`${uniqueStoreCount}`)}
+                        sx={{
+                          border: `2px solid ${palette.border.dark}`,
+                          backgroundColor: palette.primary.main,
+                          color: palette.common.white,
+                          ...headerInfoStyling
+                        }}
+                      />
+                      <Chip
+                        label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_MONEY_SPENT(`${moneySpentByStore}`)}
+                        sx={{
+                          border: `2px solid ${palette.border.dark}`,
+                          backgroundColor: palette.primary.main,
+                          color: palette.common.white,
+                          ...headerInfoStyling
+                        }}
+                      />
+                      <Chip
+                        label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS(`${visitsPerStore}`)}
+                        sx={{
+                          border: `2px solid ${palette.border.dark}`,
+                          backgroundColor: palette.primary.light,
+                          color: palette.common.white,
+                          ...headerInfoStyling
+                        }}
+                      />
+                    </Stack>
+                  </Grid>
+                  {/* Counts of planned vs. unplanned purchases /w percentage */}
+                  <Grid xs={6}>
+                    {totalUnplannedPurchases && totalPlannedPurchases ? (
+                      <Stack direction="column" spacing={0.5} sx={{ ml: 5, alignSelf: 'center' }}>
+                        <Chip
+                          label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED(
+                            `${totalPlannedPurchases}`
+                          )}
+                          color="secondary"
+                          sx={{
+                            border: `2px solid ${palette.border.dark}`,
+                            ...headerInfoStyling
+                          }}
+                        />
+                        <Chip
+                          label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED(
+                            `${totalUnplannedPurchases}`
+                          )}
+                          color="primary"
+                          sx={{
+                            border: `2px solid ${palette.border.dark}`,
+                            ...headerInfoStyling
+                          }}
+                        />
+                        {/* Absolute positioned Planned/Unplanned Purchases Percentage Bar with Text Overlay */}
+                        <Box sx={{ position: 'relative', minWidth: 250 }}>
+                          <LinearProgress
+                            variant="determinate"
+                            color="secondary"
+                            value={(totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100}
+                            sx={{
+                              height: 30,
+                              border: `2px solid ${palette.border.dark}`
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              ml: 3,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'left'
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                fontFamily: 'Hack, Roboto',
+                                fontSize: '14px',
+                                letterSpacing: 2,
+                                color: palette.common.white
+                              }}
+                            >
+                              {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_PROGRESS_BAR_PLANNED(
+                                `${((totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100).toFixed(1)}`
+                              )}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Stack>
+                    ) : (
+                      <Skeleton animation={false} variant="rectangular" height={60} />
+                    )}
+                  </Grid>
+                </Grid>
               </Grid>
               <Grid xs={12}>
                 {storeBubbleChartData ? (

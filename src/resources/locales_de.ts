@@ -278,10 +278,9 @@ export const locales_de = {
   VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_COUNT: (pos1: string) => `${pos1} versch. Verkaufsstellen`,
   VARIABLE_EXPENSES_STORES_HEADER_INFO_MONEY_SPENT: (pos1: string) => `${pos1}€ insg. ausgegeben`,
   VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS: (pos1: string) => `${pos1} Einkäufe gesamt`,
-  VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED: (pos1: string, pos2: string) =>
-    `${pos1}${pos2} Einkäufe geplant`,
-  VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED: (pos1: string, pos2: string) =>
-    `${pos1}${pos2} Einkäufe spontan`,
+  VARIABLE_EXPENSES_STORES_HEADER_INFO_PROGRESS_BAR_PLANNED: (pos1: string) => `${pos1}% geplant`,
+  VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED: (pos1: string) => `${pos1} Einkäufe geplant`,
+  VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED: (pos1: string) => `${pos1} Einkäufe spontan`,
 
   MINOR_INPUT_VARIABLE_EXPENSE_MODAL_OPEN: 'Ausgabe hinzufügen',
   MINOR_INPUT_VARIABLE_EXPENSE_MODAL_INPUT_INDULGENCE: 'Unverträglichkeiten',

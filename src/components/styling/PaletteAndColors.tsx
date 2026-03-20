@@ -1,11 +1,15 @@
 export const palette = new Map();
 palette.set('defaultlight', {
   primary: {
+    light: '#245494',
     main: '#183863',
+    dark: '#0c1c32',
     contrastText: '#fff'
   },
   secondary: {
+    light: '#996e3a',
     main: '#6D4E29',
+    dark: '#412e18',
     contrastText: '#fff'
   },
   tertiary: {
@@ -54,11 +58,15 @@ palette.set('defaultlight', {
 });
 palette.set('defaultdark', {
   primary: {
+    light: '#00a0f0',
     main: '#0077B3',
+    dark: '#004e76',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   secondary: {
+    light: '#dfc7aa',
     main: '#ceaa7e',
+    dark: '#bd8d52',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   tertiary: {
@@ -112,11 +120,15 @@ palette.set('defaultdark', {
 // 4E4B35 Olive Leaf
 palette.set('pastellight', {
   primary: {
+    light: '#ccd5cf',
     main: '#AABAAF',
+    dark: '#889f8f',
     contrastText: '#fff'
   },
   secondary: {
+    light: '#c4bfb4',
     main: '#A9A192',
+    dark: '#8e8370',
     contrastText: '#fff'
   },
   tertiary: {
@@ -165,11 +177,15 @@ palette.set('pastellight', {
 });
 palette.set('pasteldark', {
   primary: {
+    light: '#eadce5',
     main: '#D3B6C9',
+    dark: '#bc90ad',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   secondary: {
+    light: '#e8e0d7',
     main: '#D2C1B0',
+    dark: '#bca289',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   tertiary: {

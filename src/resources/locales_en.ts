@@ -276,10 +276,9 @@ export const locales_en = {
   VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_COUNT: (pos1: string) => `${pos1} unique Stores`,
   VARIABLE_EXPENSES_STORES_HEADER_INFO_MONEY_SPENT: (pos1: string) => `${pos1}€ spent total`,
   VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS: (pos1: string) => `${pos1} purchases total`,
-  VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED: (pos1: string, pos2: string) =>
-    `${pos1}${pos2} planned purchases`,
-  VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED: (pos1: string, pos2: string) =>
-    `${pos1}${pos2} spontaneous purchases`,
+  VARIABLE_EXPENSES_STORES_HEADER_INFO_PROGRESS_BAR_PLANNED: (pos1: string) => `${pos1}% planned`,
+  VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED: (pos1: string) => `${pos1} planned purchases`,
+  VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED: (pos1: string) => `${pos1} spontaneous purchases`,
 
   MINOR_INPUT_VARIABLE_EXPENSE_MODAL_OPEN: 'Add Expense',
   MINOR_INPUT_VARIABLE_EXPENSE_MODAL_INPUT_INDULGENCE: 'Indulgences',
