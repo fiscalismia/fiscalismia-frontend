@@ -29,7 +29,7 @@ import { ContentChartBubbleObject, RouteInfo } from '../../types/custom/customTy
 import SelectDropdown from '../minor/SelectDropdown';
 import { locales } from '../../utils/localeConfiguration';
 import ContentBubbleChart from '../minor/ContentChart_Bubble';
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
 type StoreMap = Map<string, StoreMapEntries>;
 type StoreMapEntries = { cost: number; count: number };
@@ -37,15 +37,16 @@ type StoreTotal = { money_spent: number; total_visits: number; total_planned: nu
 type StoreAggregate = { storeMap: StoreMap; storeTotal: StoreTotal };
 
 const DEFAULT_STORE_COUNT: number = 10;
-
+const HEADER_BAR_WIDTH = 225;
+const HEADER_BAR_HEIGHT = 30;
 const headerInfoStyling = {
   fontFamily: 'Hack, Roboto',
   fontSize: '12px',
   letterSpacing: 3,
   textTransform: 'uppercase',
-  minWidth: 250,
-  maxWidth: 250,
-  height: 30,
+  minWidth: HEADER_BAR_WIDTH,
+  maxWidth: HEADER_BAR_WIDTH,
+  height: HEADER_BAR_HEIGHT,
   borderRadius: 0
 };
 
@@ -202,8 +203,8 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   const [uniqueStoreCount, setUniqueStoreCount] = useState<number>();
   const [moneySpentByStore, setMoneySpentByStore] = useState<string>();
   const [visitsPerStore, setVisitsPerStore] = useState<number>();
-  const [totalPlannedPurchases, setTotalPlannedPurchases] = useState<number>(5);
-  const [totalUnplannedPurchases, setTotalUnplannedPurchases] = useState<number>(4);
+  const [totalPlannedPurchases, setTotalPlannedPurchases] = useState<number>();
+  const [totalUnplannedPurchases, setTotalUnplannedPurchases] = useState<number>();
   // Bubble Chart Aggregating Stores with money spent/visit count
   const [storeBubbleChartData, setStoreBubbleChartData] = useState<ContentChartBubbleObject>();
   // year selection
@@ -430,12 +431,12 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                 <Grid container>
                   {/* Total counts within variable expense data */}
                   <Grid xs={6}>
-                    <Stack direction="column" spacing={0.5} sx={{ ml: 5, alignSelf: 'center' }}>
+                    <Stack direction="column" spacing={0.5} sx={{ alignSelf: 'center' }}>
                       <Chip
                         label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_COUNT(`${uniqueStoreCount}`)}
                         sx={{
                           border: `2px solid ${palette.border.dark}`,
-                          backgroundColor: palette.primary.main,
+                          backgroundColor: palette.primary.light,
                           color: palette.common.white,
                           ...headerInfoStyling
                         }}
@@ -463,13 +464,14 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                   {/* Counts of planned vs. unplanned purchases /w percentage */}
                   <Grid xs={6}>
                     {totalUnplannedPurchases && totalPlannedPurchases ? (
-                      <Stack direction="column" spacing={0.5} sx={{ ml: 5, alignSelf: 'center' }}>
+                      <Stack direction="column" spacing={0.5} sx={{ ml: 2, alignSelf: 'center' }}>
                         <Chip
                           label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED(
                             `${totalPlannedPurchases}`
                           )}
-                          color="secondary"
                           sx={{
+                            backgroundColor: palette.success.dark,
+                            color: palette.common.white,
                             border: `2px solid ${palette.border.dark}`,
                             ...headerInfoStyling
                           }}
@@ -478,20 +480,26 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                           label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED(
                             `${totalUnplannedPurchases}`
                           )}
-                          color="primary"
                           sx={{
+                            backgroundColor: palette.warning.dark,
+                            color: palette.common.white,
                             border: `2px solid ${palette.border.dark}`,
                             ...headerInfoStyling
                           }}
                         />
                         {/* Absolute positioned Planned/Unplanned Purchases Percentage Bar with Text Overlay */}
-                        <Box sx={{ position: 'relative', minWidth: 250 }}>
+                        <Box sx={{ position: 'relative', minWidth: HEADER_BAR_WIDTH, maxWidth: HEADER_BAR_WIDTH }}>
                           <LinearProgress
                             variant="determinate"
-                            color="secondary"
                             value={(totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100}
                             sx={{
-                              height: 30,
+                              [`& .${linearProgressClasses.bar}`]: {
+                                backgroundColor: palette.success.dark
+                              },
+                              [`&.${linearProgressClasses.colorPrimary}`]: {
+                                backgroundColor: palette.warning.dark
+                              },
+                              height: HEADER_BAR_HEIGHT,
                               border: `2px solid ${palette.border.dark}`
                             }}
                           />
@@ -524,7 +532,20 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                         </Box>
                       </Stack>
                     ) : (
-                      <Skeleton animation={false} variant="rectangular" height={60} />
+                      <Stack direction="column" spacing={0.5} sx={{ ml: 2, alignSelf: 'center' }}>
+                        {[...new Array(3)].map((_e, i: number) => (
+                          <Skeleton
+                            id={`${i}`}
+                            animation={false}
+                            variant="rectangular"
+                            sx={{
+                              minWidth: HEADER_BAR_WIDTH,
+                              ml: 2
+                            }}
+                            height={HEADER_BAR_HEIGHT}
+                          />
+                        ))}
+                      </Stack>
                     )}
                   </Grid>
                 </Grid>

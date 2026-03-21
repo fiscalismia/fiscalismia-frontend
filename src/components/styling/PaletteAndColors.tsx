@@ -7,9 +7,9 @@ palette.set('defaultlight', {
     contrastText: '#fff'
   },
   secondary: {
-    light: '#996e3a',
-    main: '#6D4E29',
-    dark: '#412e18',
+    light: '#af894d',
+    main: '#7d5e36',
+    dark: '#4f3a22',
     contrastText: '#fff'
   },
   tertiary: {
@@ -25,19 +25,27 @@ palette.set('defaultlight', {
     main: '#081627'
   },
   info: {
+    light: '#1ea2fe',
     main: '#0183DE',
+    dark: '#015fa1',
     contrastText: '#fff'
   },
   success: {
+    light: '#76ba6d',
     main: '#559E4B',
+    dark: '#3f7437',
     contrastText: '#fff'
   },
   warning: {
+    light: '#e8bf60',
     main: '#E0AA2B',
+    dark: '#b4861a',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   error: {
+    light: '#d3665c',
     main: '#BF3F33',
+    dark: '#8f2f26',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   text: {
@@ -82,19 +90,27 @@ palette.set('defaultdark', {
     main: '#081627'
   },
   info: {
+    light: '#1ea2fe',
     main: '#0183DE',
+    dark: '#015fa1',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   success: {
+    light: '#76ba6d',
     main: '#559E4B',
+    dark: '#3f7437',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   warning: {
+    light: '#e8bf60',
     main: '#E0AA2B',
+    dark: '#b4861a',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   error: {
-    main: '#ab4238dc',
+    light: '#c86258',
+    main: '#ab4238',
+    dark: '#7d3029',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   text: {
@@ -144,19 +160,27 @@ palette.set('pastellight', {
     main: '#2a2f23'
   },
   info: {
+    light: '#b9d2db',
     main: '#91B8C6',
+    dark: '#699eb1',
     contrastText: '#fff'
   },
   success: {
+    light: '#8eae98',
     main: '#6a9578',
+    dark: '#51715b',
     contrastText: '#fff'
   },
   warning: {
+    light: '#fff2bd',
     main: '#ffe680',
+    dark: '#ffda43',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   error: {
+    light: '#b77676',
     main: '#9d5353',
+    dark: '#753e3e',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   text: {
@@ -201,19 +225,27 @@ palette.set('pasteldark', {
     main: '#2a2f23'
   },
   info: {
+    light: '#dae8eb',
     main: '#B2CFD6',
+    dark: '#8ab6c1',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   success: {
+    light: '#f0f7f1',
     main: '#c8e1cc',
+    dark: '#a0cba7',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   warning: {
+    light: '#ffffff',
     main: '#FAFFC7',
+    dark: '#f5ff8a',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   error: {
+    light: '#ffe7e7',
     main: '#FFAAAA',
+    dark: '#ff6d6d',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   text: {
