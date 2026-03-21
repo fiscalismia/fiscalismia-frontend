@@ -37,23 +37,23 @@ type StoreTotal = { money_spent: number; total_visits: number; total_planned: nu
 type StoreAggregate = { storeMap: StoreMap; storeTotal: StoreTotal };
 
 const DEFAULT_STORE_COUNT: number = 10;
-const HEADER_BAR_WIDTH = 225;
+const HEADER_BAR_WIDTH = 240;
 const HEADER_BAR_HEIGHT = 30;
-const headerInfoStyling = {
-  fontFamily: 'Hack, Roboto',
-  fontSize: '12px',
-  letterSpacing: 3,
-  textTransform: 'uppercase',
-  minWidth: HEADER_BAR_WIDTH,
-  maxWidth: HEADER_BAR_WIDTH,
-  height: HEADER_BAR_HEIGHT,
-  borderRadius: 0
-};
+
+// defaults to fixed width of 5 digits but can be overwritten for e.g. currency symbol addition
+const boldNumberLabel = (num: string | number, text: string, width: number = 7) => (
+  <span>
+    <span style={{ display: 'inline-block', minWidth: `${width}ch`, textAlign: 'right' }}>
+      <b>{num}</b>
+    </span>{' '}
+    {text}
+  </span>
+);
 
 const chartBackgroundProperties = (palette: Palette) => {
   return {
     borderRadius: 0,
-    border: `1px solid ${palette.border.dark}`,
+    border: `2px solid ${palette.border.main}`,
     padding: 1,
     backgroundColor: palette.background.default,
     width: '100%'
@@ -119,7 +119,7 @@ function extractBubbleChartData(
 ): ContentChartBubbleObject {
   const uniqueMonthCount = monthsWithCosts ? monthsWithCosts.length - 1 : 12;
   const storeCount = storeMap.size;
-  const MAX_RADIUS = allMonthsSelected ? 80 : 40;
+  const MAX_RADIUS = allMonthsSelected ? 100 : 50;
   const MIN_RADIUS = allMonthsSelected ? 6 : 8;
   // Divide radius by month count to keep sizes even between year and month granularity
   const RADIUS_DIVISOR = allMonthsSelected ? uniqueMonthCount : 1;
@@ -214,6 +214,22 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   const [selectedMonth, setSelectedMonth] = useState<string>(locales().ARRAY_MONTH_ALL[0][0] as string); // default All Month Aggregate
   const [allMonthsSelected, setAllMonthsSelected] = useState<boolean>(false);
 
+  // Header Info Chips palette styling
+  const HEADER_BAR_BORDER = `2px solid ${palette.border.dark}`;
+  const headerInfoStyling = {
+    fontFamily: 'Hack, Roboto',
+    fontSize: '12px',
+    letterSpacing: 3,
+    minWidth: HEADER_BAR_WIDTH,
+    maxWidth: HEADER_BAR_WIDTH,
+    height: HEADER_BAR_HEIGHT,
+    border: HEADER_BAR_BORDER,
+    borderRadius: 0,
+    justifyContent: 'flex-start', // aligns the internal flexbox layout to the left
+    '& .MuiChip-label': {
+      paddingLeft: '12px' // controls left padding of the label text
+    }
+  };
   // width for page content based on current window width extracted from supplied breakpoints.
   const breakpointWidth = getBreakPointWidth(breakpoints);
   useEffect(() => {
@@ -245,7 +261,14 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       filteredYearVarExpenses,
       uniqueStores ? uniqueStores.length : DEFAULT_STORE_COUNT
     );
-    setMoneySpentByStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.money_spent.toFixed(2) : '0');
+    setMoneySpentByStore(
+      storeAggregateData.storeTotal
+        ? `${storeAggregateData.storeTotal.money_spent.toLocaleString('de-DE', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+          })}€`
+        : '0'
+    );
     setVisitsPerStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_visits : 0);
     setTotalPlannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_planned : 0);
     setTotalUnplannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_unplanned : 0);
@@ -431,122 +454,161 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                 <Grid container>
                   {/* Total counts within variable expense data */}
                   <Grid xs={6}>
-                    <Stack direction="column" spacing={0.5} sx={{ alignSelf: 'center' }}>
-                      <Chip
-                        label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_COUNT(`${uniqueStoreCount}`)}
-                        sx={{
-                          border: `2px solid ${palette.border.dark}`,
-                          backgroundColor: palette.primary.light,
-                          color: palette.common.white,
-                          ...headerInfoStyling
-                        }}
-                      />
-                      <Chip
-                        label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_MONEY_SPENT(`${moneySpentByStore}`)}
-                        sx={{
-                          border: `2px solid ${palette.border.dark}`,
-                          backgroundColor: palette.primary.main,
-                          color: palette.common.white,
-                          ...headerInfoStyling
-                        }}
-                      />
-                      <Chip
-                        label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS(`${visitsPerStore}`)}
-                        sx={{
-                          border: `2px solid ${palette.border.dark}`,
-                          backgroundColor: palette.primary.light,
-                          color: palette.common.white,
-                          ...headerInfoStyling
-                        }}
-                      />
+                    <Stack
+                      direction="column"
+                      spacing={0.5}
+                      sx={{
+                        alignSelf: 'center'
+                      }}
+                    >
+                      {uniqueStoreCount && moneySpentByStore && visitsPerStore ? (
+                        <React.Fragment>
+                          <Chip
+                            label={boldNumberLabel(
+                              uniqueStoreCount,
+                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_COUNT
+                            )}
+                            sx={{
+                              backgroundColor: palette.primary.main,
+                              color: palette.common.white,
+                              ...headerInfoStyling
+                            }}
+                          />
+                          <Chip
+                            label={boldNumberLabel(
+                              moneySpentByStore,
+                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_MONEY_SPENT
+                            )}
+                            sx={{
+                              backgroundColor: palette.header.main,
+                              color: palette.common.white,
+                              ...headerInfoStyling
+                            }}
+                          />
+                          <Chip
+                            label={boldNumberLabel(
+                              visitsPerStore,
+                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS
+                            )}
+                            sx={{
+                              backgroundColor: palette.primary.main,
+                              color: palette.common.white,
+                              ...headerInfoStyling
+                            }}
+                          />
+                        </React.Fragment>
+                      ) : (
+                        <>
+                          {[...new Array(3)].map((_e, i: number) => (
+                            <Skeleton
+                              id={`${i}`}
+                              animation={false}
+                              variant="rectangular"
+                              sx={{
+                                minWidth: HEADER_BAR_WIDTH,
+                                ml: 2
+                              }}
+                              height={HEADER_BAR_HEIGHT}
+                            />
+                          ))}
+                        </>
+                      )}
                     </Stack>
                   </Grid>
-                  {/* Counts of planned vs. unplanned purchases /w percentage */}
+                  {/* Counts 3 header items /w planned vs. unplanned purchases /w percentage */}
                   <Grid xs={6}>
-                    {totalUnplannedPurchases && totalPlannedPurchases ? (
-                      <Stack direction="column" spacing={0.5} sx={{ ml: 2, alignSelf: 'center' }}>
-                        <Chip
-                          label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED(
-                            `${totalPlannedPurchases}`
-                          )}
-                          sx={{
-                            backgroundColor: palette.success.dark,
-                            color: palette.common.white,
-                            border: `2px solid ${palette.border.dark}`,
-                            ...headerInfoStyling
-                          }}
-                        />
-                        <Chip
-                          label={locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED(
-                            `${totalUnplannedPurchases}`
-                          )}
-                          sx={{
-                            backgroundColor: palette.warning.dark,
-                            color: palette.common.white,
-                            border: `2px solid ${palette.border.dark}`,
-                            ...headerInfoStyling
-                          }}
-                        />
-                        {/* Absolute positioned Planned/Unplanned Purchases Percentage Bar with Text Overlay */}
-                        <Box sx={{ position: 'relative', minWidth: HEADER_BAR_WIDTH, maxWidth: HEADER_BAR_WIDTH }}>
-                          <LinearProgress
-                            variant="determinate"
-                            value={(totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100}
+                    <Stack direction="column" spacing={0.5} sx={{ ml: 2, alignSelf: 'center' }}>
+                      {totalUnplannedPurchases && totalPlannedPurchases ? (
+                        <React.Fragment>
+                          <Chip
+                            label={boldNumberLabel(
+                              totalPlannedPurchases,
+                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED
+                            )}
                             sx={{
-                              [`& .${linearProgressClasses.bar}`]: {
-                                backgroundColor: palette.success.dark
-                              },
-                              [`&.${linearProgressClasses.colorPrimary}`]: {
-                                backgroundColor: palette.warning.dark
-                              },
-                              height: HEADER_BAR_HEIGHT,
-                              border: `2px solid ${palette.border.dark}`
+                              backgroundColor: palette.success.dark,
+                              color: palette.common.white,
+                              ...headerInfoStyling
                             }}
                           />
+                          <Chip
+                            label={boldNumberLabel(
+                              totalUnplannedPurchases,
+                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED
+                            )}
+                            sx={{
+                              backgroundColor: palette.warning.dark,
+                              color: palette.common.white,
+                              ...headerInfoStyling
+                            }}
+                          />
+                          {/* Absolute positioned Planned/Unplanned Purchases Percentage Bar with Text Overlay */}
                           <Box
                             sx={{
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              ml: 3,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'left'
+                              position: 'relative',
+                              minWidth: HEADER_BAR_WIDTH,
+                              maxWidth: HEADER_BAR_WIDTH
                             }}
                           >
-                            <Typography
+                            <LinearProgress
+                              variant="determinate"
+                              value={(totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100}
                               sx={{
-                                fontFamily: 'Hack, Roboto',
-                                fontSize: '14px',
-                                letterSpacing: 2,
-                                color: palette.common.white
+                                [`& .${linearProgressClasses.bar}`]: {
+                                  backgroundColor: palette.success.dark
+                                },
+                                [`&.${linearProgressClasses.colorPrimary}`]: {
+                                  backgroundColor: palette.warning.dark
+                                },
+                                height: HEADER_BAR_HEIGHT,
+                                border: HEADER_BAR_BORDER
+                              }}
+                            />
+                            <Box
+                              sx={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                paddingLeft: '12px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'left'
                               }}
                             >
-                              {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_PROGRESS_BAR_PLANNED(
-                                `${((totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100).toFixed(1)}`
-                              )}
-                            </Typography>
+                              <Typography
+                                sx={{
+                                  fontFamily: 'Hack, Roboto',
+                                  fontSize: '14px',
+                                  letterSpacing: 2,
+                                  color: palette.common.white
+                                }}
+                              >
+                                {locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_PROGRESS_BAR_PLANNED(
+                                  `${((totalPlannedPurchases / (totalPlannedPurchases + totalUnplannedPurchases)) * 100).toFixed(1)}`
+                                )}
+                              </Typography>
+                            </Box>
                           </Box>
-                        </Box>
-                      </Stack>
-                    ) : (
-                      <Stack direction="column" spacing={0.5} sx={{ ml: 2, alignSelf: 'center' }}>
-                        {[...new Array(3)].map((_e, i: number) => (
-                          <Skeleton
-                            id={`${i}`}
-                            animation={false}
-                            variant="rectangular"
-                            sx={{
-                              minWidth: HEADER_BAR_WIDTH,
-                              ml: 2
-                            }}
-                            height={HEADER_BAR_HEIGHT}
-                          />
-                        ))}
-                      </Stack>
-                    )}
+                        </React.Fragment>
+                      ) : (
+                        <>
+                          {[...new Array(3)].map((_e, i: number) => (
+                            <Skeleton
+                              id={`${i}`}
+                              animation={false}
+                              variant="rectangular"
+                              sx={{
+                                minWidth: HEADER_BAR_WIDTH,
+                                ml: 2
+                              }}
+                              height={HEADER_BAR_HEIGHT}
+                            />
+                          ))}
+                        </>
+                      )}
+                    </Stack>
                   </Grid>
                 </Grid>
               </Grid>
