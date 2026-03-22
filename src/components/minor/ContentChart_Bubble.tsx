@@ -1,6 +1,6 @@
 import { Chart as ChartJS, LinearScale, PointElement, Tooltip, Legend, ChartOptions, ChartData } from 'chart.js';
 import { Bubble } from 'react-chartjs-2';
-import { getRandomInt, invertColor } from '../../utils/sharedFunctions';
+import { getRandomInt } from '../../utils/sharedFunctions';
 import { ContentChartBubbleObject } from '../../types/custom/customTypes';
 import { useTheme } from '@mui/material/styles';
 import { locales } from '../../utils/localeConfiguration';
@@ -111,6 +111,7 @@ export default function ContentBubbleChart(props: ContentBubbleChartProps) {
         display: false
       },
       legend: {
+        display: false,
         position: 'bottom' as const
       },
       title: {
@@ -147,7 +148,8 @@ export default function ContentBubbleChart(props: ContentBubbleChartProps) {
     dataSetCount && dataSetCount > MAX_BUBBLE_COUNT ? MAX_BUBBLE_COUNT : dataSetCount
   );
 
-  const topN = 5;
+  // extracts the indices of the largest N bubbles for displaying datalabels conditionally
+  const topN = 3;
   const topNIndices = new Set(
     slicedDatasets
       .map((e, i) => ({ index: i, radius: e.data?.r ? e.data.r : 0 }))
@@ -175,11 +177,11 @@ export default function ContentBubbleChart(props: ContentBubbleChartProps) {
         datalabels: {
           // Displays the Datasetname inside the bubble of the top N inputs
           display: topNIndices.has(i),
-          color: e.color ? invertColor(e.color) : invertColor(e.defaultColor),
-          font: { weight: 'bold' as const, size: 12, family: 'Hack' },
+          color: palette.common.white,
+          font: { weight: 'bold' as const, size: 13, family: 'Hack' },
           anchor: 'center' as const,
-          textShadowColor: '#ccc',
-          textShadowBlur: 2,
+          textShadowColor: palette.common.black,
+          textShadowBlur: 5,
           align: 'center' as const,
           formatter: () => e.name?.toUpperCase() ?? ''
         },

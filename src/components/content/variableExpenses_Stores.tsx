@@ -111,7 +111,7 @@ function getUniquePurchasingDateMonths(allVariableExpenses: any): (string | RegE
 /**
  * Transforms an aggregated StoreMap into the props object consumed by the Bubble chart.
  * Each store becomes a dataset with x, y coordinates and a radius for the bubble
- * @param storeMap
+ * @param storeMap sorted by highest cost map
  * @param allMonthsSelected
  * @param monthsWithCosts
  * @returns
@@ -128,10 +128,18 @@ function extractBubbleChartData(
   // Divide radius by month count to keep sizes even between year and month granularity
   const RADIUS_DIVISOR = allMonthsSelected ? uniqueMonthCount : 1;
   const entries = [...storeMap.entries()];
+  // normalizes yearly bubble size and scales based on x axis range - deactivated for months
+  let costMultiplikator;
+  if (allMonthsSelected) {
+    const maxXValue = entries && entries.length > 0 ? entries[0][1].cost : 0;
+    costMultiplikator = maxXValue < 1000 ? 5 : maxXValue > 1000 && maxXValue < 2500 ? 2.5 : 1;
+  } else {
+    costMultiplikator = 1;
+  }
   const dataSetsAndNames = entries.reduce(
     (acc, [storeName, { cost, count }], i) => {
       let effecticeRadius;
-      const proposedRadius = Math.sqrt(cost * count) / RADIUS_DIVISOR;
+      const proposedRadius = Math.sqrt(cost * costMultiplikator * count) / RADIUS_DIVISOR;
       effecticeRadius = proposedRadius > MAX_RADIUS ? MAX_RADIUS : proposedRadius;
       effecticeRadius = effecticeRadius < MIN_RADIUS ? MIN_RADIUS : effecticeRadius;
       acc[`dataSet${i + 1}Name`] = storeName;
@@ -144,8 +152,6 @@ function extractBubbleChartData(
     chartTitle: locales().VARIABLE_EXPENSES_STORES_BUBBLE_CHART_TITLE,
     labels: [''], // To have only one dataset entry rendered without a label, empty label within an array has to be passed.
     dataSetCount: storeCount,
-    maxXValue: 1,
-    maxYValue: 100,
     ...dataSetsAndNames
   };
   return booleanPieChartObj;
@@ -184,11 +190,12 @@ function aggregateCostsPerStore(filteredVariableExpenses: any, storeCount: numbe
     new Map<string, StoreMapEntries>()
   );
 
-  const topN = new Map<string, StoreMapEntries>(
+  // ensure Map is sorted by highest cost on top
+  const sortedMap = new Map<string, StoreMapEntries>(
     [...storeMap.entries()].sort(([, a], [, b]) => b.cost - a.cost).slice(0, storeCount)
   );
 
-  return { storeMap: topN, storeTotal: storeTotal };
+  return { storeMap: sortedMap, storeTotal: storeTotal };
 }
 
 interface VariableExpenses_StoresProps {
