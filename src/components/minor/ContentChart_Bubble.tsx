@@ -3,6 +3,7 @@ import { Bubble } from 'react-chartjs-2';
 import { getRandomInt } from '../../utils/sharedFunctions';
 import { ContentChartBubbleObject } from '../../types/custom/customTypes';
 import { useTheme } from '@mui/material/styles';
+import { locales } from '../../utils/localeConfiguration';
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
 const MAX_BUBBLE_COUNT = 20;
@@ -83,10 +84,25 @@ export default function ContentBubbleChart(props: ContentBubbleChartProps) {
     },
     scales: {
       y: {
-        beginAtZero: true
+        beginAtZero: true,
+
+        ticks: {
+          /**
+           * custom formats the y axis datalabel
+           * @param value
+           * @returns german formatted number string with €
+           */
+          callback: function (value: string | number) {
+            return `${value.toLocaleString('de-DE')}€`;
+          }
+        }
       },
       x: {
-        beginAtZero: true
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: locales().VARIABLE_EXPENSES_STORES_HEADER_BUBBLE_X_AXIS_LABEL
+        }
       }
     },
     plugins: {

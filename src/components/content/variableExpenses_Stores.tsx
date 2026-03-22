@@ -243,7 +243,6 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   // dependency must be inverted !selectedYear to only re-render on first selection moving from undefined to defined
   useEffect(() => {
     const getAllPricesAndDiscounts = async () => {
-      console.log('recomputed');
       const allVariableExpenses = await getAllVariableExpenses();
       const uniqueYears: string[] = getUniquePurchasingDateYears(allVariableExpenses.results);
       setYearsWithPurchases(new Array(uniqueYears)); // Creates 2D Array for mapping ToggleButtonGroup as parent
@@ -283,11 +282,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
     setTotalPlannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_planned : 0);
     setTotalUnplannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_unplanned : 0);
     // Bubble Chart containing store data agggregates by money spent and visitation count
-    const varExpenseBubbleChart = extractBubbleChartData(
-      storeAggregateData.storeMap,
-      allMonthsSelected,
-      monthsWithCosts
-    );
+    const varExpenseBubbleChart = extractBubbleChartData(storeAggregateData.storeMap, true, monthsWithCosts);
     setStoreBubbleChartData(varExpenseBubbleChart);
   };
 
@@ -383,34 +378,6 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
             {/* MAIN CENTERED GRID */}
             <Grid container spacing={1.5}>
               {/* MONTH SELECTION */}
-              <Grid xs={12}>
-                <Box
-                  sx={{
-                    fontSize: '10px',
-                    fontFamily: 'monospace',
-                    p: 1,
-                    width: '100%'
-                  }}
-                >
-                  <Typography variant="caption">
-                    {JSON.stringify(
-                      {
-                        monthsWithPurchasesInSelectedYear: monthsWithPurchasesInSelectedYear ?? 'undefined',
-                        separator: '=================',
-                        yearsWithPurchases: yearsWithPurchases ?? 'undefined',
-                        separator2: '=================',
-                        selectedYear: selectedYear ?? 'undefined',
-                        separator3: '=================',
-                        selectedMonth: selectedMonth ?? 'undefined',
-                        separator4: '=================',
-                        allMonthsSelected
-                      },
-                      null,
-                      2
-                    )}
-                  </Typography>
-                </Box>
-              </Grid>
               <Grid xs={12} lg={6} xl={3}>
                 <Stack direction="row">
                   <Tooltip title={locales().VARIABLE_EXPENSES_OVERVIEW_PRIOR_MONTH_BTN_TOOLTIP}>
