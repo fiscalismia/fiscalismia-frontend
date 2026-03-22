@@ -237,9 +237,9 @@ palette.set('pasteldark', {
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   warning: {
-    light: '#ffffff',
-    main: '#FAFFC7',
-    dark: '#f5ff8a',
+    light: '#faffc4',
+    main: '#dadead',
+    dark: '#d4dc79',
     contrastText: 'rgba(0, 0, 0, 0.87)'
   },
   error: {

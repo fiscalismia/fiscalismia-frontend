@@ -76,8 +76,8 @@ export default function ContentBubbleChart(props: ContentBubbleChartProps) {
     elements: {
       point: {
         pointStyle: 'circle',
-        borderColor: '#333',
-        backgroundColor: '#333',
+        borderColor: palette.border.dark,
+        backgroundColor: palette.border.dark,
         hoverRadius: 15,
         borderWidth: 2,
         hoverBorderWidth: 4

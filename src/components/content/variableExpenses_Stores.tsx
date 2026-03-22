@@ -302,12 +302,12 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
     const isAllSelected = selectedMonthArr && selectedMonthArr[0] === res.ALL;
     if (isAllSelected) {
       // filter all expenses by preselected year
-      filteredMonthVarExpenses = allVariableExpenses.filter(
+      filteredMonthVarExpenses = filteredMonthVarExpenses.filter(
         (e: any) => e.purchasing_date.substring(0, 4) === selectedYear
       );
     } else {
       // filter all expenses by preselected year and month substring
-      filteredMonthVarExpenses = allVariableExpenses
+      filteredMonthVarExpenses = filteredMonthVarExpenses
         .filter((e: any) => e.purchasing_date.substring(0, 4) === selectedYear)
         .filter((e: any) => e.purchasing_date.substring(5, 7) === selectedMonthArr[1]);
     }
@@ -632,13 +632,13 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                     elevation={6}
                     sx={{
                       ...chartBackgroundProperties(palette),
-                      height: '60vh'
+                      height: '50vh'
                     }}
                   >
                     <ContentBubbleChart {...storeBubbleChartData} />
                   </Paper>
                 ) : (
-                  <Skeleton animation={false} variant="rectangular" height="60vh" />
+                  <Skeleton animation={false} variant="rectangular" height="50vh" />
                 )}
               </Grid>
             </Grid>

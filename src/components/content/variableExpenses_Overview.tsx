@@ -592,7 +592,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
       : (locales().ARRAY_MONTH_ALL.filter((e) => e[0] === selected)[0] as string[]);
     if (selectedMonthArr && selectedMonthArr[0] === res.ALL) {
       // filter all expenses by preselected year
-      filteredMonthVarExpenses = allVariableExpenses.filter(
+      filteredMonthVarExpenses = filteredMonthVarExpenses.filter(
         (e: any) => e.purchasing_date.substring(0, 4) === selectedYear
       );
       const aggregatePurchaseInfo = extractAggregatedPurchaseInformation(filteredMonthVarExpenses, false);
@@ -601,7 +601,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
       setSelectedChartLabel('');
     } else {
       // filter all expenses by preselected year and month substring
-      filteredMonthVarExpenses = allVariableExpenses
+      filteredMonthVarExpenses = filteredMonthVarExpenses
         .filter((e: any) => e.purchasing_date.substring(0, 4) === selectedYear)
         .filter((e: any) => e.purchasing_date.substring(5, 7) === selectedMonthArr[1]);
       // Pie Chart displaying is_planned and contains_indulgence flags
