@@ -533,6 +533,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
     '&:nth-of-type(even)': { backgroundColor: 'rgba(184,184,184,0.8)' },
     '&:last-child td, &:last-child th': { border: 0 }
   };
+  // dependency must be inverted !selectedYear to only re-render on first selection moving from undefined to defined
   useEffect(() => {
     const getAllPricesAndDiscounts = async () => {
       const allVariableExpenses = await getAllVariableExpenses();
@@ -552,7 +553,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
       setIndulgencesAutoCompleteItemArray(autoCompleteItemArrays.indulgencesAutoCompleteItemArray);
     };
     getAllPricesAndDiscounts();
-  }, [addedItemId, selectedYear]);
+  }, [addedItemId, !selectedYear]);
 
   const handleYearSelection = (_event: React.MouseEvent<HTMLElement> | null, newValue: string) => {
     setSelectedYear(newValue);

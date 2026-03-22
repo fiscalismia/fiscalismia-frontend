@@ -41,15 +41,19 @@ type StoreAggregate = { storeMap: StoreMap; storeTotal: StoreTotal };
 const DEFAULT_STORE_COUNT: number = 10;
 
 // defaults to fixed width of 5 digits but can be overwritten for e.g. currency symbol addition
-const boldNumberLabel = (num: string | number, text: string, width: number = 7) => (
-  <span>
-    <span style={{ display: 'inline-block', minWidth: `${width}ch`, textAlign: 'right' }}>
-      <b>{num}</b>
-    </span>{' '}
-    {text}
-  </span>
-);
-
+const boldNumberLabel = (num: string | number, text: string, width: number = 6) => {
+  const fontPixelSize = 12;
+  return (
+    <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+      <b>
+        <span style={{ display: 'inline-block', minWidth: `${width * fontPixelSize}px`, textAlign: 'right' }}>
+          {num}
+        </span>
+      </b>{' '}
+      {text}
+    </span>
+  );
+};
 const chartBackgroundProperties = (palette: Palette) => {
   return {
     borderRadius: 0,
@@ -207,7 +211,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   const [totalUnplannedPurchases, setTotalUnplannedPurchases] = useState<number>();
   // Bubble Chart Aggregating Stores with money spent/visit count
   const [storeBubbleChartData, setStoreBubbleChartData] = useState<ContentChartBubbleObject>();
-  // year selection
+  // year and month selection
   const [yearsWithPurchases, setYearsWithPurchases] = useState<string[][]>();
   const [selectedYear, setSelectedYear] = useState<string>();
   const [monthsWithPurchasesInSelectedYear, setMonthsWithPurchasesInSelectedYear] = useState<(string | RegExp)[][]>();
@@ -219,7 +223,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   // Header Info Chips palette styling
   const isLargeScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
   const isMaxScreen = useMediaQuery((theme: Theme) => theme.breakpoints.only('xl'));
-  const HEADER_BAR_WIDTH = isLargeScreen ? 240 : breakpointWidth;
+  const HEADER_BAR_WIDTH = isLargeScreen ? 250 : breakpointWidth;
   const HEADER_BAR_HEIGHT = 30;
   const HEADER_BAR_BORDER = `2px solid ${palette.border.dark}`;
   const headerInfoStyling = {
@@ -236,15 +240,17 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       paddingLeft: '12px' // controls left padding of the label text
     }
   };
+  // dependency must be inverted !selectedYear to only re-render on first selection moving from undefined to defined
   useEffect(() => {
     const getAllPricesAndDiscounts = async () => {
+      console.log('recomputed');
       const allVariableExpenses = await getAllVariableExpenses();
       const uniqueYears: string[] = getUniquePurchasingDateYears(allVariableExpenses.results);
       setYearsWithPurchases(new Array(uniqueYears)); // Creates 2D Array for mapping ToggleButtonGroup as parent
       setAllVariableExpenses(allVariableExpenses.results);
     };
     getAllPricesAndDiscounts();
-  }, [selectedYear]);
+  }, [!selectedYear]);
 
   const handleYearSelection = (_event: React.MouseEvent<HTMLElement> | null, newValue: string) => {
     setSelectedYear(newValue);
@@ -292,7 +298,8 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
     const selectedMonthArr: string[] = monthsWithPurchasesInSelectedYear
       ? (monthsWithPurchasesInSelectedYear.filter((e) => e[0] === selected)[0] as string[])
       : (locales().ARRAY_MONTH_ALL.filter((e) => e[0] === selected)[0] as string[]);
-    if (selectedMonthArr && selectedMonthArr[0] === res.ALL) {
+    const isAllSelected = selectedMonthArr && selectedMonthArr[0] === res.ALL;
+    if (isAllSelected) {
       setAllMonthsSelected(true);
       // filter all expenses by preselected year
       filteredMonthVarExpenses = allVariableExpenses.filter(
@@ -304,26 +311,27 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       filteredMonthVarExpenses = allVariableExpenses
         .filter((e: any) => e.purchasing_date.substring(0, 4) === selectedYear)
         .filter((e: any) => e.purchasing_date.substring(5, 7) === selectedMonthArr[1]);
-      // Counts all uniqueStores in the storeSet for further processing
-      const uniqueStores = getUniqueStoresInVarExpenses(filteredMonthVarExpenses);
-      setUniqueStoreCount(uniqueStores ? uniqueStores.length : 0);
-      // Extracts total counts, sums for the header and an aggregate map for the Bubble chart
-      const storeAggregateData = aggregateCostsPerStore(
-        filteredMonthVarExpenses,
-        uniqueStores ? uniqueStores.length : DEFAULT_STORE_COUNT
-      );
-      setMoneySpentByStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.money_spent.toFixed(2) : '0');
-      setVisitsPerStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_visits : 0);
-      setTotalPlannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_planned : 0);
-      setTotalUnplannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_unplanned : 0);
-      // Bubble Chart containing store data agggregates by money spent and visitation count
-      const varExpenseBubbleChart = extractBubbleChartData(
-        storeAggregateData.storeMap,
-        allMonthsSelected,
-        monthsWithPurchasesInSelectedYear
-      );
-      setStoreBubbleChartData(varExpenseBubbleChart);
     }
+
+    // Counts all uniqueStores in the storeSet for further processing
+    const uniqueStores = getUniqueStoresInVarExpenses(filteredMonthVarExpenses);
+    setUniqueStoreCount(uniqueStores ? uniqueStores.length : 0);
+    // Extracts total counts, sums for the header and an aggregate map for the Bubble chart
+    const storeAggregateData = aggregateCostsPerStore(
+      filteredMonthVarExpenses,
+      uniqueStores ? uniqueStores.length : DEFAULT_STORE_COUNT
+    );
+    setMoneySpentByStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.money_spent.toFixed(2) : '0');
+    setVisitsPerStore(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_visits : 0);
+    setTotalPlannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_planned : 0);
+    setTotalUnplannedPurchases(storeAggregateData.storeTotal ? storeAggregateData.storeTotal.total_unplanned : 0);
+    // Bubble Chart containing store data agggregates by money spent and visitation count
+    const varExpenseBubbleChart = extractBubbleChartData(
+      storeAggregateData.storeMap,
+      isAllSelected,
+      monthsWithPurchasesInSelectedYear
+    );
+    setStoreBubbleChartData(varExpenseBubbleChart);
     setSelectedVariableExpenses(filteredMonthVarExpenses);
   };
 
@@ -375,6 +383,34 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
             {/* MAIN CENTERED GRID */}
             <Grid container spacing={1.5}>
               {/* MONTH SELECTION */}
+              <Grid xs={12}>
+                <Box
+                  sx={{
+                    fontSize: '10px',
+                    fontFamily: 'monospace',
+                    p: 1,
+                    width: '100%'
+                  }}
+                >
+                  <Typography variant="caption">
+                    {JSON.stringify(
+                      {
+                        monthsWithPurchasesInSelectedYear: monthsWithPurchasesInSelectedYear ?? 'undefined',
+                        separator: '=================',
+                        yearsWithPurchases: yearsWithPurchases ?? 'undefined',
+                        separator2: '=================',
+                        selectedYear: selectedYear ?? 'undefined',
+                        separator3: '=================',
+                        selectedMonth: selectedMonth ?? 'undefined',
+                        separator4: '=================',
+                        allMonthsSelected
+                      },
+                      null,
+                      2
+                    )}
+                  </Typography>
+                </Box>
+              </Grid>
               <Grid xs={12} lg={6} xl={3}>
                 <Stack direction="row">
                   <Tooltip title={locales().VARIABLE_EXPENSES_OVERVIEW_PRIOR_MONTH_BTN_TOOLTIP}>
@@ -505,7 +541,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                         <>
                           {[...new Array(3)].map((_e, i: number) => (
                             <Skeleton
-                              id={`${i}`}
+                              key={`${i}`}
                               animation={false}
                               variant="rectangular"
                               sx={{
@@ -527,7 +563,8 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                           <Chip
                             label={boldNumberLabel(
                               totalPlannedPurchases,
-                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED
+                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_PLANNED,
+                              4
                             )}
                             sx={{
                               backgroundColor: palette.success.dark,
@@ -538,7 +575,8 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                           <Chip
                             label={boldNumberLabel(
                               totalUnplannedPurchases,
-                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED
+                              locales().VARIABLE_EXPENSES_STORES_HEADER_INFO_STORE_VISITS_UNPLANNED,
+                              4
                             )}
                             sx={{
                               backgroundColor: palette.warning.dark,
@@ -584,7 +622,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                               <Typography
                                 sx={{
                                   fontFamily: 'Hack, Roboto',
-                                  fontSize: '14px',
+                                  fontSize: '13px',
                                   letterSpacing: 2,
                                   color: palette.common.white
                                 }}
@@ -600,7 +638,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                         <>
                           {[...new Array(3)].map((_e, i: number) => (
                             <Skeleton
-                              id={`${i}`}
+                              key={`${i}`}
                               animation={false}
                               variant="rectangular"
                               sx={{
@@ -616,20 +654,20 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                   </Grid>
                 </Grid>
               </Grid>
-              {/* Chart.JS 2D Bubble Chart */}
+              {/* MAIN Chart.JS 2D Bubble Chart */}
               <Grid xs={12}>
                 {storeBubbleChartData ? (
                   <Paper
                     elevation={6}
                     sx={{
                       ...chartBackgroundProperties(palette),
-                      height: 400
+                      height: '60vh'
                     }}
                   >
                     <ContentBubbleChart {...storeBubbleChartData} />
                   </Paper>
                 ) : (
-                  <Skeleton animation={false} variant="rectangular" height={400} />
+                  <Skeleton animation={false} variant="rectangular" height="60vh" />
                 )}
               </Grid>
             </Grid>
