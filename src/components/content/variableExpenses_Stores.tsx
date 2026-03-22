@@ -216,7 +216,6 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   const [selectedYear, setSelectedYear] = useState<string>();
   const [monthsWithPurchasesInSelectedYear, setMonthsWithPurchasesInSelectedYear] = useState<(string | RegExp)[][]>();
   const [selectedMonth, setSelectedMonth] = useState<string>(locales().ARRAY_MONTH_ALL[0][0] as string); // default All Month Aggregate
-  const [allMonthsSelected, setAllMonthsSelected] = useState<boolean>(false);
 
   // width for page content based on current window width extracted from supplied breakpoints.
   const breakpointWidth = getBreakPointWidth(breakpoints);
@@ -295,13 +294,11 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       : (locales().ARRAY_MONTH_ALL.filter((e) => e[0] === selected)[0] as string[]);
     const isAllSelected = selectedMonthArr && selectedMonthArr[0] === res.ALL;
     if (isAllSelected) {
-      setAllMonthsSelected(true);
       // filter all expenses by preselected year
       filteredMonthVarExpenses = allVariableExpenses.filter(
         (e: any) => e.purchasing_date.substring(0, 4) === selectedYear
       );
     } else {
-      setAllMonthsSelected(false);
       // filter all expenses by preselected year and month substring
       filteredMonthVarExpenses = allVariableExpenses
         .filter((e: any) => e.purchasing_date.substring(0, 4) === selectedYear)

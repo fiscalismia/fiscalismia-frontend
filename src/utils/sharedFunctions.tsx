@@ -326,6 +326,45 @@ export const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   }
 }));
 
+/**
+ * @param hex receives HTML Hex Color strings and  #ababab
+ * @returns Luminance-based contrast inversion of a given color
+ */
+export function contrastColor(hex: string): string {
+  const clean = hex.replace('#', '');
+  const r = parseInt(clean.substring(0, 2), 16);
+  const g = parseInt(clean.substring(2, 4), 16);
+  const b = parseInt(clean.substring(4, 6), 16);
+  // Relative luminance formula (ITU-R BT.709)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+}
+/**
+ * Inverts an RGB hex color and shifts the result toward black or white
+ * to guarantee stronger contrast against the original background.
+ * @param hex - CSS hex color string (e.g. "#1976d2" or "1976d2")
+ * @param strength - 0 = pure inversion, 1 = fully black or white. Default 0.5
+ * @returns RGB inverted color by subtracting the value from 255 and shifting for readability
+ */
+export function invertColor(hex: string, strength: number = 0.5): string {
+  const clean = hex.replace('#', '');
+  // Invert each channel
+  let r = 255 - parseInt(clean.substring(0, 2), 16);
+  let g = 255 - parseInt(clean.substring(2, 4), 16);
+  let b = 255 - parseInt(clean.substring(4, 6), 16);
+
+  // Determine the shift target: if inverted color is already light, push to white; else to black
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  const target = luminance > 0.5 ? 255 : 0;
+
+  // Linearly interpolate each channel toward the target
+  r = Math.round(r + (target - r) * strength);
+  g = Math.round(g + (target - g) * strength);
+  b = Math.round(b + (target - b) * strength);
+
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 export const toggleButtonStylingProps = (palette: Palette) => {
   return {
     borderRadius: 0,

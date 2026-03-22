@@ -1,11 +1,12 @@
 import { Chart as ChartJS, LinearScale, PointElement, Tooltip, Legend, ChartOptions, ChartData } from 'chart.js';
 import { Bubble } from 'react-chartjs-2';
-import { getRandomInt } from '../../utils/sharedFunctions';
+import { getRandomInt, invertColor } from '../../utils/sharedFunctions';
 import { ContentChartBubbleObject } from '../../types/custom/customTypes';
 import { useTheme } from '@mui/material/styles';
 import { locales } from '../../utils/localeConfiguration';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
+ChartJS.register(LinearScale, PointElement, Tooltip, Legend, ChartDataLabels);
 const MAX_BUBBLE_COUNT = 20;
 
 interface ContentBubbleChartProps extends ContentChartBubbleObject {
@@ -118,7 +119,7 @@ export default function ContentBubbleChart(props: ContentBubbleChartProps) {
       }
     }
   };
-  const datasetConfigs = [
+  const datasets = [
     { data: dataSet1, name: dataSet1Name, color: null, defaultColor: palette.primary.main },
     { data: dataSet2, name: dataSet2Name, color: null, defaultColor: palette.secondary.main },
     { data: dataSet3, name: dataSet3Name, color: null, defaultColor: palette.tertiary.dark },
@@ -141,27 +142,50 @@ export default function ContentBubbleChart(props: ContentBubbleChartProps) {
     { data: dataSet20, name: dataSet20Name, color: null, defaultColor: palette.grey[300] }
   ];
 
+  const slicedDatasets = datasets.slice(
+    0,
+    dataSetCount && dataSetCount > MAX_BUBBLE_COUNT ? MAX_BUBBLE_COUNT : dataSetCount
+  );
+
+  const topN = 5;
+  const topNIndices = new Set(
+    slicedDatasets
+      .map((e, i) => ({ index: i, radius: e.data?.r ? e.data.r : 0 }))
+      .sort((a, b) => b.radius - a.radius)
+      .slice(0, topN)
+      .map((e) => e.index)
+  );
+
   const data = {
     ...chartData,
     labels: labels,
     // cuts at either the datasetCount or a fixed length to limit displayed bubbles
-    datasets: datasetConfigs
-      .slice(0, dataSetCount && dataSetCount > MAX_BUBBLE_COUNT ? MAX_BUBBLE_COUNT : dataSetCount)
-      .map((e) => {
-        return {
-          label: e.name ? e.name : 'Dataset 1',
-          data: e.data
-            ? [e.data]
-            : [
-                {
-                  x: getRandomInt(-100, 100),
-                  y: getRandomInt(-100, 100),
-                  r: getRandomInt(5, 20)
-                }
-              ],
-          backgroundColor: e.color ? e.color : e.defaultColor
-        };
-      })
+    datasets: slicedDatasets.map((e, i) => {
+      return {
+        label: e.name ? e.name : 'Dataset 1',
+        data: e.data
+          ? [e.data]
+          : [
+              {
+                x: getRandomInt(-100, 100),
+                y: getRandomInt(-100, 100),
+                r: getRandomInt(5, 20)
+              }
+            ],
+        datalabels: {
+          // Displays the Datasetname inside the bubble of the top N inputs
+          display: topNIndices.has(i),
+          color: e.color ? invertColor(e.color) : invertColor(e.defaultColor),
+          font: { weight: 'bold' as const, size: 12, family: 'Hack' },
+          anchor: 'center' as const,
+          textShadowColor: '#ccc',
+          textShadowBlur: 2,
+          align: 'center' as const,
+          formatter: () => e.name?.toUpperCase() ?? ''
+        },
+        backgroundColor: e.color ? e.color : e.defaultColor
+      };
+    })
   };
 
   return <Bubble options={options} data={data} />;

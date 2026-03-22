@@ -222,7 +222,7 @@ export type ContentChartBubbleObject = {
   dataSetCount: number;
   maxXValue: number;
   maxYValue: number;
-  [key: `dataSet${number}`]: number[] | undefined;
+  [key: `dataSet${number}`]: { x: number; y: number; r: number } | undefined;
   [key: `dataSet${number}Name`]: string | undefined;
   [key: `color${number}`]: string | undefined;
 };
