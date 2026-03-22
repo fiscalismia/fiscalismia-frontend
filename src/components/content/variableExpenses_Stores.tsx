@@ -212,10 +212,10 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   const [allVariableExpenses, setAllVariableExpenses] = useState<any>(null);
   const [, setSelectedVariableExpenses] = useState<any>();
   const [uniqueStoreCount, setUniqueStoreCount] = useState<number>();
-  const [moneySpentByStore, setMoneySpentByStore] = useState<string>();
-  const [visitsPerStore, setVisitsPerStore] = useState<number>();
-  const [totalPlannedPurchases, setTotalPlannedPurchases] = useState<number>();
-  const [totalUnplannedPurchases, setTotalUnplannedPurchases] = useState<number>();
+  const [moneySpentByStore, setMoneySpentByStore] = useState<string | undefined>(undefined);
+  const [visitsPerStore, setVisitsPerStore] = useState<number | undefined>(undefined);
+  const [totalPlannedPurchases, setTotalPlannedPurchases] = useState<number | undefined>(undefined);
+  const [totalUnplannedPurchases, setTotalUnplannedPurchases] = useState<number | undefined>(undefined);
   // Bubble Chart Aggregating Stores with money spent/visit count
   const [storeBubbleChartData, setStoreBubbleChartData] = useState<ContentChartBubbleObject>();
   // year and month selection
@@ -472,7 +472,9 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                         alignSelf: 'center'
                       }}
                     >
-                      {uniqueStoreCount && moneySpentByStore && visitsPerStore ? (
+                      {uniqueStoreCount !== undefined &&
+                      moneySpentByStore !== undefined &&
+                      visitsPerStore !== undefined ? (
                         <React.Fragment>
                           <Chip
                             label={boldNumberLabel(
@@ -529,7 +531,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                   {/* Counts 3 header items /w planned vs. unplanned purchases /w percentage */}
                   <Grid xs={12} lg={6}>
                     <Stack direction="column" spacing={0.75} sx={{ alignSelf: 'center' }}>
-                      {totalUnplannedPurchases && totalPlannedPurchases ? (
+                      {totalUnplannedPurchases !== undefined && totalPlannedPurchases !== undefined ? (
                         <React.Fragment>
                           <Chip
                             label={boldNumberLabel(
