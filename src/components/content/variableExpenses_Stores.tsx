@@ -13,10 +13,12 @@ import {
   Palette,
   Skeleton,
   Stack,
+  Theme,
   ToggleButton,
   ToggleButtonGroup,
   Tooltip,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@mui/material';
 import {
   getUniqueEffectiveMonthYears,
@@ -37,8 +39,6 @@ type StoreTotal = { money_spent: number; total_visits: number; total_planned: nu
 type StoreAggregate = { storeMap: StoreMap; storeTotal: StoreTotal };
 
 const DEFAULT_STORE_COUNT: number = 10;
-const HEADER_BAR_WIDTH = 240;
-const HEADER_BAR_HEIGHT = 30;
 
 // defaults to fixed width of 5 digits but can be overwritten for e.g. currency symbol addition
 const boldNumberLabel = (num: string | number, text: string, width: number = 7) => (
@@ -214,7 +214,13 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
   const [selectedMonth, setSelectedMonth] = useState<string>(locales().ARRAY_MONTH_ALL[0][0] as string); // default All Month Aggregate
   const [allMonthsSelected, setAllMonthsSelected] = useState<boolean>(false);
 
+  // width for page content based on current window width extracted from supplied breakpoints.
+  const breakpointWidth = getBreakPointWidth(breakpoints);
   // Header Info Chips palette styling
+  const isLargeScreen = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
+  const isMaxScreen = useMediaQuery((theme: Theme) => theme.breakpoints.only('xl'));
+  const HEADER_BAR_WIDTH = isLargeScreen ? 240 : breakpointWidth;
+  const HEADER_BAR_HEIGHT = 30;
   const HEADER_BAR_BORDER = `2px solid ${palette.border.dark}`;
   const headerInfoStyling = {
     fontFamily: 'Hack, Roboto',
@@ -230,8 +236,6 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
       paddingLeft: '12px' // controls left padding of the label text
     }
   };
-  // width for page content based on current window width extracted from supplied breakpoints.
-  const breakpointWidth = getBreakPointWidth(breakpoints);
   useEffect(() => {
     const getAllPricesAndDiscounts = async () => {
       const allVariableExpenses = await getAllVariableExpenses();
@@ -371,7 +375,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
             {/* MAIN CENTERED GRID */}
             <Grid container spacing={1.5}>
               {/* MONTH SELECTION */}
-              <Grid xs={12} md={3} xl={2.5}>
+              <Grid xs={12} lg={6} xl={3}>
                 <Stack direction="row">
                   <Tooltip title={locales().VARIABLE_EXPENSES_OVERVIEW_PRIOR_MONTH_BTN_TOOLTIP}>
                     {/* div required for Tooltip to render correctly if button is disabled */}
@@ -423,7 +427,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                 </Stack>
               </Grid>
               {/* YEAR SELECTION */}
-              <Grid xs={12} md={5} xl={4}>
+              <Grid xs={12} lg={6} xl={4}>
                 {yearsWithPurchases ? (
                   yearsWithPurchases.map((parent, index) => {
                     return (
@@ -450,13 +454,13 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
               </Grid>
 
               {/* HEADER INFO CHIPS AND PROGRESS BAR WITH PURCHASE ENUMERATION => 2 Columns /w 3 Rows each */}
-              <Grid xs={12} md={4} xl={5.5} display="flex" justifyContent="flex-end">
-                <Grid container>
+              <Grid xs={12} lg={6} xl={5} display="flex" justifyContent={isMaxScreen ? 'flex-end' : 'flex-start'}>
+                <Grid container spacing={1}>
                   {/* Total counts within variable expense data */}
-                  <Grid xs={6}>
+                  <Grid xs={12} lg={6}>
                     <Stack
                       direction="column"
-                      spacing={0.5}
+                      spacing={0.75}
                       sx={{
                         alignSelf: 'center'
                       }}
@@ -516,8 +520,8 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                     </Stack>
                   </Grid>
                   {/* Counts 3 header items /w planned vs. unplanned purchases /w percentage */}
-                  <Grid xs={6}>
-                    <Stack direction="column" spacing={0.5} sx={{ ml: 2, alignSelf: 'center' }}>
+                  <Grid xs={12} lg={6}>
+                    <Stack direction="column" spacing={0.75} sx={{ alignSelf: 'center' }}>
                       {totalUnplannedPurchases && totalPlannedPurchases ? (
                         <React.Fragment>
                           <Chip
@@ -612,6 +616,7 @@ export default function VariableExpenses_Stores(_props: VariableExpenses_StoresP
                   </Grid>
                 </Grid>
               </Grid>
+              {/* Chart.JS 2D Bubble Chart */}
               <Grid xs={12}>
                 {storeBubbleChartData ? (
                   <Paper

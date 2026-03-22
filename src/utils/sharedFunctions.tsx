@@ -434,8 +434,10 @@ export function stringAlphaNumericOnly(str: string) {
 
 /**
  * returns width for page content based on current window width extracted from supplied breakpoints.
+ * Subtracts an offset for centering content and respecting the Menu Navigator
  * @param breakpoints extracted via useTheme()
- * @returns width to use for outer content containers
+ * @returns width to use for outer content containers, e.g.
+ * - 444,744, 1044, 1424
  */
 export const getBreakPointWidth = (breakpoints: Breakpoints) => {
   const isXs = useMediaQuery((theme: Theme) => theme.breakpoints.only('xs'));
@@ -444,7 +446,7 @@ export const getBreakPointWidth = (breakpoints: Breakpoints) => {
   const isLg = useMediaQuery((theme: Theme) => theme.breakpoints.only('lg'));
   const isXl = useMediaQuery((theme: Theme) => theme.breakpoints.only('xl'));
   const breakpointWidth = isXs
-    ? '90%'
+    ? breakpoints.values.sm - 256
     : isSm
       ? breakpoints.values.sm - 256
       : isMd
