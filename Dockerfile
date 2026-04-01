@@ -22,7 +22,7 @@ ARG NGINX_CONF
 # bakes env vars into compiled js files
 ENV VITE_BUILD_VERSION=$BUILD_VERSION
 ENV VITE_ENVIRONMENT=$ENVIRONMENT
-RUN npm ci --only=production
+RUN npm ci --only=production --ignore-scripts --allow-git=none
 RUN npm run build
 
 #   __   ___  __        ___           ___               __
