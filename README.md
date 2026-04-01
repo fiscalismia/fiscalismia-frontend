@@ -121,7 +121,7 @@ The frontend is built in a continuous integration pipeline, tested, scanned for 
 2. **Install Dependencies:**
 
    ```bash
-   npm install
+   npm install --ignore-scripts
    ```
 
 3. **Create Environment file**

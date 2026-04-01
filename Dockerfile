@@ -7,7 +7,7 @@ ARG NGINX_CONF
 
 ### INITIAL SETUP ###
 WORKDIR /build-dir/
-COPY package-lock.json package.json ./
+COPY package-lock.json package.json .npmrc ./
 COPY tsconfig.json ./
 COPY vite.config.ts ./
 COPY public/ ./public/
