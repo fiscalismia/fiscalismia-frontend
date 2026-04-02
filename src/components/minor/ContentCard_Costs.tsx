@@ -5,7 +5,7 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/system/Stack';
+import Stack from '@mui/material/Stack';
 import { resourceProperties as res } from '../../resources/resource_properties';
 
 interface ContentCardCostsProps {

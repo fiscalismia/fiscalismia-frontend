@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CancelIcon from '@mui/icons-material/CancelSharp';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import Stack from '@mui/system/Stack';
+import Stack from '@mui/material/Stack';
 import Paper from '@mui/material/Paper';
 import aldi from '/imgs/supermarkets/aldi1.png';
 import metro from '/imgs/supermarkets/metro1.png';

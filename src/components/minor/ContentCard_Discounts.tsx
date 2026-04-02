@@ -15,7 +15,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import Typography from '@mui/material/Typography';
 import CancelIcon from '@mui/icons-material/CancelSharp';
-import Stack from '@mui/system/Stack';
+import Stack from '@mui/material/Stack';
 import { Paper, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { foodItemInputCategories as foodCategories } from '../../resources/resource_properties';
