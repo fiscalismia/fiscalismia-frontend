@@ -556,6 +556,18 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
   }, [addedItemId, !selectedYear]);
 
   const handleYearSelection = (_event: React.MouseEvent<HTMLElement> | null, newValue: string) => {
+    if (!newValue) {
+      setSelectedYear(undefined);
+      setSelectedVariableExpenses(undefined);
+      setMonthsWithPurchasesInSelectedYear(undefined);
+      setExpenseLineChartData(undefined);
+      setExpenseVerticalBarChartData(undefined);
+      setExpensePieChartData(undefined);
+      setIndulgencesHorizontalBarChartData(undefined);
+      setAggregatedPurchaseInformation(undefined);
+      setSelectedChartLabel('');
+      return;
+    }
     setSelectedYear(newValue);
     // filter all expenses by preselected year and remove negative values (Sales)
     const filteredYearVarExpenses = allVariableExpenses
@@ -564,7 +576,8 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
     setSelectedVariableExpenses(filteredYearVarExpenses);
     // Month Selection - Initialize with Aggregate All
     setMonthsWithPurchasesInSelectedYear(getUniquePurchasingDateMonths(filteredYearVarExpenses));
-    handleSelectMonth(res.ALL);
+    // Call month selector with current value not yet re-rendered in state
+    handleSelectMonth(res.ALL, newValue);
     // Line Chart aggregating total expenses per month
     const varExpenseLineChartAggregate = extractLineChartData(filteredYearVarExpenses, palette);
     setExpenseLineChartData(varExpenseLineChartAggregate.overview);
@@ -583,7 +596,13 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
     setSelectedChartLabel('');
   };
 
-  const handleSelectMonth = (selected: string): void => {
+  /**
+   *
+   * @param selected
+   * @param yearOverride when called from handleYearSelection, the selectedYear variable has stale state since a re-render has not yet happened
+   * so in order to update the rendered state correctly, the newValue from the year selection handler must be passed as an optional override
+   */
+  const handleSelectMonth = (selected: string, yearOverride?: string): void => {
     setSelectedMonth(selected);
     // remove negative values (Sales)
     let filteredMonthVarExpenses = allVariableExpenses.filter((e: any) => parseFloat(e.cost) > 0);
@@ -593,7 +612,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
     if (selectedMonthArr && selectedMonthArr[0] === res.ALL) {
       // filter all expenses by preselected year
       filteredMonthVarExpenses = filteredMonthVarExpenses.filter(
-        (e: any) => e.purchasing_date.substring(0, 4) === selectedYear
+        (e: any) => e.purchasing_date.substring(0, 4) === (yearOverride ?? selectedYear)
       );
       const aggregatePurchaseInfo = extractAggregatedPurchaseInformation(filteredMonthVarExpenses, false);
       setAggregatedPurchaseInformation(aggregatePurchaseInfo);
@@ -602,7 +621,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
     } else {
       // filter all expenses by preselected year and month substring
       filteredMonthVarExpenses = filteredMonthVarExpenses
-        .filter((e: any) => e.purchasing_date.substring(0, 4) === selectedYear)
+        .filter((e: any) => e.purchasing_date.substring(0, 4) === (yearOverride ?? selectedYear))
         .filter((e: any) => e.purchasing_date.substring(5, 7) === selectedMonthArr[1]);
       // Pie Chart displaying is_planned and contains_indulgence flags
       const varExpenseBooleanPieChart = extractPieChartData(filteredMonthVarExpenses, palette);
@@ -613,7 +632,7 @@ export default function VariableExpenses_Overview(_props: VariableExpenses_Overv
       // Content Cards with aggregated costs per largest category
       const aggregatePurchaseInfo = extractAggregatedPurchaseInformation(filteredMonthVarExpenses, true);
       setAggregatedPurchaseInformation(aggregatePurchaseInfo);
-      setSelectedChartLabel(`${selectedYear}-${selectedMonthArr[1]}`);
+      setSelectedChartLabel(`${yearOverride ?? selectedYear}-${selectedMonthArr[1]}`);
     }
     setSelectedVariableExpenses(filteredMonthVarExpenses);
   };
