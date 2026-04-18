@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout SCM
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6.0.2
       # https://github.com/actions/checkout
 
     - name: Set up Node.js
@@ -47,7 +47,7 @@ jobs:
         npm run snykDependencyAnalysis
 
     - name: Publish Typecheck & Eslint & Snyk Reports
-      uses: actions/upload-artifact@v5.0.0
+      uses: actions/upload-artifact@v7.0.1
       # https://github.com/actions/upload-artifact
       with:
         name: Fiscalismia-Frontend-Reports
@@ -67,7 +67,7 @@ jobs:
 
     steps:
     - name: Checkout SCM
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6.0.2
       # https://github.com/actions/checkout
 
     - name: Extract Version from package.json
@@ -170,7 +170,7 @@ jobs:
 
     steps:
     - name: Checkout SCM
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6.0.2
       # https://github.com/actions/checkout
 
     - name: Log in to Github Container Registry
