@@ -97,7 +97,7 @@ export const createUserCredentials = async (credentials: UserCredentials) => {
 
 /**
  * @returns Object containing a results array with all fixed costs from the db
- * @route /api/fiscalismia/fixed_costs
+ * @route /api/fixed_costs
  */
 export const getAllFixedCosts = async () => {
   setToken();
@@ -114,7 +114,7 @@ export const getAllFixedCosts = async () => {
 
 /**
  * @returns Object containing a results array with all sensitivities within variable expenses in db
- * @route /api/fiscalismia/sensitivity
+ * @route /api/sensitivity
  */
 export const getAllVariableExpenseSensitivities = async () => {
   setToken();
@@ -131,7 +131,7 @@ export const getAllVariableExpenseSensitivities = async () => {
 
 /**
  * @returns Object containing a results array with all stores within variable expenses in db
- * @route /api/fiscalismia/store
+ * @route /api/store
  */
 export const getAllVariableExpenseStores = async () => {
   setToken();
@@ -148,7 +148,7 @@ export const getAllVariableExpenseStores = async () => {
 
 /**
  * @returns Object containing a results array with all categories within variable expenses in db
- * @route /api/fiscalismia/category
+ * @route /api/category
  */
 export const getAllVariableExpenseCategories = async () => {
   setToken();
@@ -165,7 +165,7 @@ export const getAllVariableExpenseCategories = async () => {
 
 /**
  * @returns Object containing a results array with all variable Expenses from the db
- * @route /api/fiscalismia/variable_expenses
+ * @route /api/variable_expenses
  */
 export const getAllVariableExpenses = async () => {
   setToken();
@@ -182,7 +182,7 @@ export const getAllVariableExpenses = async () => {
 
 /**
  * @returns Object containing a results array with all investments from the db
- * @route /api/fiscalismia/investments
+ * @route /api/investments
  */
 export const getAllInvestments = async () => {
   setToken();
@@ -199,7 +199,7 @@ export const getAllInvestments = async () => {
 
 /**
  * @returns Object containing a results array with all dividends of investments from the db
- * @route /api/fiscalismia/investment_dividends
+ * @route /api/investment_dividends
  */
 export const getAllDividends = async () => {
   setToken();
@@ -216,7 +216,7 @@ export const getAllDividends = async () => {
 
 /**
  * @returns Object containing a results array with all fixed income data from the db
- * @route /api/fiscalismia/fixed_costs
+ * @route /api/fixed_costs
  */
 export const getAllFixedIncome = async () => {
   setToken();
@@ -234,7 +234,7 @@ export const getAllFixedIncome = async () => {
 /**
  * Returns food prices and discounts valid at the time of request (current_date)
  * @returns Object containing a results array with all food prices and discounts from the db
- * @route /api/fiscalismia/food_prices_and_discounts
+ * @route /api/food_prices_and_discounts
  */
 export const getAllFoodPricesAndDiscounts = async () => {
   setToken();
@@ -252,7 +252,7 @@ export const getAllFoodPricesAndDiscounts = async () => {
 /**
  * Returns food prices for creating a TSV file for further processing or backup
  * @returns Object containing a results array with all food prices
- * @route /api/fiscalismia/export/food_prices
+ * @route /api/export/food_prices
  */
 export const getFoodPricesForExport = async () => {
   setToken();
@@ -270,7 +270,7 @@ export const getFoodPricesForExport = async () => {
 /**
  * Returns discounted foods valid at the time of request (current_date)
  * @returns Object containing a results array with all active discounts from the db
- * @route /api/fiscalismia/discounted_foods_current
+ * @route /api/discounted_foods_current
  */
 export const getCurrentFoodDiscounts = async () => {
   setToken();
@@ -315,7 +315,7 @@ export const getUserSpecificSettings = async (username: string) => {
  * Returns fixed costs valid for a specific provided date in the format (yyyy-mm-dd)
  * @param {*} validDate Date currently required to be in english date format (yyyy-mm-dd)
  * @returns Object containing a results array with all fixed costs valid at provided date from the db
- * @route /api/fiscalismia/fixed_costs/valid/:date
+ * @route /api/fixed_costs/valid/:date
  */
 export const getFixedCostsByEffectiveDate = async (validDate: string) => {
   setToken();
@@ -334,7 +334,7 @@ export const getFixedCostsByEffectiveDate = async (validDate: string) => {
  * Returns variable expenses dependent on provided category description as string
  * @param {*} category category description string
  * @returns Object containing a results array with all variable expenses with provided category
- * @route /api/fiscalismia/variable_expenses/category/:category
+ * @route /api/variable_expenses/category/:category
  */
 export const getVariableExpenseByCategory = async (category: string) => {
   setToken();
@@ -353,7 +353,7 @@ export const getVariableExpenseByCategory = async (category: string) => {
  * Returns fixed income valid for a specific provided date in the format (yyyy-mm-dd)
  * @param {*} validDate Date currently required to be in english date format (yyyy-mm-dd)
  * @returns Object containing a results array with all fixed income data valid at provided date from the db
- * @route /api/fiscalismia/fixed_income/valid/:date
+ * @route /api/fixed_income/valid/:date
  */
 export const getFixedIncomeByEffectiveDate = async (validDate: string) => {
   setToken();

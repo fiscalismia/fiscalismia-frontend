@@ -15,6 +15,6 @@ const FASTAPI_DOMAIN: string =
 const BACKEND_PROTOCOL: string = __ENVIRONMENT__ === 'production' || __ENVIRONMENT__ === 'demo' ? 'https' : 'http';
 
 export const serverConfig = {
-  API_BASE_URL: `${BACKEND_PROTOCOL}://${BACKEND_DOMAIN}:${BACKEND_PORT}/api/fiscalismia`,
-  FASTAPI_BASE_URL: `${BACKEND_PROTOCOL}://${FASTAPI_DOMAIN}:${FASTAPI_PORT}/fastapi/fiscalismia`
+  API_BASE_URL: `${BACKEND_PROTOCOL}://${BACKEND_DOMAIN}:${BACKEND_PORT}/api/`,
+  FASTAPI_BASE_URL: `${BACKEND_PROTOCOL}://${FASTAPI_DOMAIN}:${FASTAPI_PORT}/fastapi/`
 };
